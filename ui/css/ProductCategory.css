@@ -1,0 +1,105 @@
+/* ProductCategory.css */
+
+/* Main category list container */
+.hm-category-list {
+  /* Desktop styles (vertical) - add your existing desktop styles here */
+}
+
+/* Mobile horizontal scrolling layout */
+.hm-category-list.mobile-horizontal {
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  scroll-behavior: smooth;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+/* Hide scrollbar but keep functionality */
+.hm-category-list.mobile-horizontal::-webkit-scrollbar {
+  display: none;
+}
+
+.hm-category-list.mobile-horizontal {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Category list item - mobile */
+.hm-category-list.mobile-horizontal li {
+  flex-shrink: 0;
+  min-width: 80px;
+  list-style: none;
+}
+
+/* Category link wrapper */
+.category-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+/* Mobile specific link styling */
+.category-link.mobile {
+  width: 80px;
+  text-decoration: none;
+}
+
+/* Category image */
+.category-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-bottom: 5px;
+  border-radius: 8px;
+}
+
+/* Mobile circular image */
+.category-image.mobile {
+  border-radius: 50%;
+}
+
+/* Category name heading */
+.category-name {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* Mobile category name */
+.category-name.mobile {
+  font-size: 12px;
+  max-width: 80px;
+  word-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* Active category state */
+.hm-category-list li a.active {
+  /* Add your active state styles here */
+  font-weight: bold;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  .hm-category-list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+}
+
+@media (min-width: 769px) {
+  .hm-category-list {
+    /* Desktop vertical layout styles */
+    flex-direction: column;
+  }
+}

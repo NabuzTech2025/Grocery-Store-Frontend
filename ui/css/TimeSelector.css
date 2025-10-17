@@ -1,0 +1,417 @@
+.time-selector-container {
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
+  background-color: white;
+  border-radius: 8px;
+  border: solid 1px #f0f0f0;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 16px;
+  padding-left: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: transparent;
+}
+
+.option-container:hover {
+  background-color: #f9f9f9;
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.radio-button {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.radio-button.selected {
+  border-color: #0c831f;
+}
+
+.radio-button-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #0c831f;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.radio-button.selected .radio-button-dot {
+  opacity: 1;
+}
+
+.option-label {
+  color: #374151;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.vorbestellung-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.time-input-container {
+  max-width: 350px;
+  margin-left: 32px;
+  margin-top: 12px;
+  position: relative;
+}
+
+.time-input-wrapper {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: background-color 0.2s ease;
+  gap: 8px;
+  margin-right: 150px;
+}
+
+.time-input-wrapper:hover {
+  background-color: #f3f4f6;
+}
+
+.time-input-wrapper:focus-within {
+  border-color: #0c831f;
+  background-color: white;
+}
+
+.clock-icon {
+  flex-shrink: 0;
+}
+
+.time-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  color: #374151;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.time-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.check-icon {
+  flex-shrink: 0;
+}
+
+.selected-display {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.selected-text {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.selected-text-bold {
+  font-weight: 500;
+  color: #374151;
+}
+
+.time-info {
+  margin-top: 8px;
+  padding: 10px 12px;
+  background-color: #cff4fc;
+  border: 1px solid #8aeaff;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #145160;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.time-info-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.error-message {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #ffe2e2;
+  border: 1px solid #ffadad;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #fa4747;
+}
+
+.scrollable-time-selector {
+  position: relative;
+  width: 100%;
+}
+
+.time-input-display {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 16px;
+  min-height: 48px;
+}
+
+.time-input-display:hover {
+  border-color: #c1c7cd;
+}
+
+.time-input-display.open {
+  border-color: #0c831f;
+  box-shadow: 0 0 0 3px rgba(12, 131, 31, 0.1);
+}
+
+.time-input-display.invalid {
+  border-color: #dc2626;
+}
+
+.time-display-text {
+  flex: 1;
+  color: #374151;
+  font-weight: 500;
+}
+
+.time-display-text.placeholder {
+  color: #9ca3af;
+}
+
+.clock-icon {
+  color: #6b7280;
+}
+
+.check-icon {
+  color: #0c831f;
+}
+
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  margin-top: 4px;
+  padding: 16px;
+}
+
+.dropdown-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.selected-time-display {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #9ca3af;
+  transition: all 0.2s ease;
+}
+
+.close-button:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.time-picker-container {
+  display: flex;
+  gap: 8px;
+  height: 300px;
+}
+
+.time-column {
+  flex: 1;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.column-header {
+  background: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.time-scroll {
+  height: calc(100% - 32px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+
+.time-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.time-scroll::-webkit-scrollbar-track {
+  background: #f9fafb;
+}
+
+.time-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+.time-scroll::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.time-item {
+  padding: 10px 16px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.time-item:hover {
+  background: #dbf6d0;
+}
+
+.time-item.selected {
+  background: #7acc57;
+  font-weight: 600;
+}
+
+.time-item.disabled {
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.time-item.disabled:hover {
+  background: transparent;
+  color: #9ca3af;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+}
+
+.action-button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.cancel-button {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #e5e7eb;
+}
+
+.cancel-button:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.ok-button {
+  background: #4b9d28;
+  color: white;
+}
+
+.ok-button:hover {
+  background: #3e8420;
+}
+
+
+.closed-container {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.radio-button.disabled {
+  border-color: #ccc;
+  background-color: #f5f5f5;
+}
+
+.radio-button-cross {
+  color: #999;
+  font-size: 12px;
+}
+
+.closed-label {
+  color: #999;
+}

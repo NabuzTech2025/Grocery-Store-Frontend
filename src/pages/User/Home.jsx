@@ -1,0 +1,1 @@
+const Home = () => <h1>Welcome to Food Order App</h1>; export default Home;

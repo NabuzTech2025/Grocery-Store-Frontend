@@ -1,0 +1,336 @@
+/* CartModal.css */
+
+/* Modal styling */
+.cart-modal-popup.d-none {
+  display: none;
+}
+
+/* Header layout */
+.modal-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header-left {
+  flex: 1;
+}
+
+.cart-postcode-col {
+  cursor: pointer;
+}
+
+.modal-header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Add note button */
+.add-note-button {
+  background-color: transparent;
+  color: #e25454;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-note-button.mobile {
+  font-size: 12px;
+}
+
+/* Postcode header */
+.header-postcode-cnt h3 {
+  font-size: 16px;
+}
+
+.header-postcode-cnt h3.mobile {
+  font-size: 12px;
+}
+
+/* Minimum order amount banner */
+.min-order-banner {
+  margin-bottom: 15px;
+}
+
+.min-order-icon {
+  width: 13px;
+  height: 15px;
+  margin-left: 0px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.min-order-text {
+  font-size: 14px;
+  color: #303030;
+}
+
+.min-order-text.mobile {
+  font-size: 10.5px;
+}
+
+.min-order-amount {
+  color: #e25454;
+}
+
+/* Cart item layout */
+.cart-items-area {
+  position: relative;
+}
+
+.cart-item-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cart-edit-text {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 40px;
+}
+
+/* Mobile edit button */
+.cart-mobile-edit {
+  font-size: 12px;
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  text-align: right;
+}
+
+/* Checkout button states */
+.cart-area-footer-disabled {
+  background-color: #cfcecc;
+  cursor: not-allowed;
+  width: 90%;
+}
+
+.cart-area-footer-enabled {
+  width: 90%;
+  background-color: #ffc43b;
+  cursor: pointer;
+}
+
+.checkout-link-disabled {
+  cursor: not-allowed;
+}
+
+.checkout-link-enabled {
+  cursor: pointer;
+}
+
+.cart-area-footer-wrapper {
+  display: flex;
+  gap: 5px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Arrow button - Black background with white arrow */
+.cart-area-footer-arrow {
+  background-color: #000000;
+  color: #ffffff;
+  width: 65px;
+  height: 65px;
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cart-area-footer-arrow:hover {
+  background-color: #333333;
+}
+
+.cart-area-footer-arrow:active {
+  background-color: #000000;
+  transform: scale(0.95);
+}
+
+@media (max-width: 767px) {
+  .cart-area-footer-arrow {
+    width: 55px;
+    height: 55px;
+  }
+}
+/* Cart Button Store Status */
+.cart-button-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.open {
+  background-color: #28a745;
+  color: white;
+}
+
+.status-badge.closed {
+  margin-left: 80px;
+  background-color: #dc3545;
+  color: white;
+}
+
+.status-hours {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+@media (max-width: 767px) {
+  .cart-button-status {
+    padding: 6px 6px;
+    gap: 6px;
+  }
+
+  .status-badge {
+    padding: 3px 5px;
+    font-size: 10px;
+  }
+
+  .status-hours {
+    font-size: 11px;
+  }
+}
+
+/* Container for the entire note section */
+.note-herder {
+  cursor: pointer;
+  padding: 11px 22px;
+  background-color: #fff3cd;
+  border-left: 4px solid #e25454;
+  margin: -7px 0px 4px -11px;
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  border-radius: 0;
+  overflow: hidden;
+  max-width: 100%;
+}
+
+/* Wrapper for icon and "Note:-" text to keep them together */
+.note-header-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+/* Edit icon styling */
+.note-icon {
+  flex-shrink: 0;
+}
+
+/* Note header styling */
+.note-header {
+  color: #e25454;
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+/* Note content styling */
+.note-content {
+  color: #303030;
+  font-size: 14px;
+  margin: 0;
+  padding: 0px 0px 0px 0px;
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  line-height: 1.4;
+}
+
+/* ===== Store Closed Modal (Compact + German Style) ===== */
+#storeClosedModal .modal-dialog {
+  max-width: 360px;
+}
+
+#storeClosedModal .modal-content {
+  border-radius: 14px;
+  overflow: hidden;
+  padding: 10px 0 0 0;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+/* Header */
+#storeClosedModal .modal-header {
+  border: none;
+  justify-content: center;
+  padding-bottom: 0;
+}
+
+#storeClosedModal .modal-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+/* Body */
+#storeClosedModal .modal-body {
+  font-size: 16px;
+  color: #333;
+  padding: 10px 25px;
+}
+
+/* Footer */
+#storeClosedModal .modal-footer {
+  border: none;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+/* Button */
+#storeClosedModal .btn {
+  font-size: 17px;
+  padding: 8px 30px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+/* Backdrop — match the darker blur look */
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(3px);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Make modal appear slightly animated */
+.modal.fade .modal-dialog {
+  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+  transform: translateY(-15px);
+}
+.modal.show .modal-dialog {
+  transform: translateY(0);
+  opacity: 1;
+}

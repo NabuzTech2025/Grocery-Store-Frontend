@@ -1,0 +1,416 @@
+.animated-element {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.order-buttons-container {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.search-container {
+  transition: all 0.3s ease-in-out;
+}
+
+.mobile-layout-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Product Info Modal Styles */
+.product-info-modal {
+  animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+.product-info-modal .modal-dialog {
+  animation: modalSlideIn 0.3s ease-out forwards;
+}
+
+.product-info-modal.modal-closing {
+  animation: modalFadeOut 0.3s ease-in forwards;
+}
+
+.product-info-modal.modal-closing .modal-dialog {
+  animation: modalSlideOut 0.3s ease-in forwards;
+}
+
+.product-info-modal .modal-backdrop {
+  animation: backdropFadeIn 0.3s ease-out forwards;
+}
+
+.product-info-modal.modal-closing .modal-backdrop {
+  animation: backdropFadeOut 0.3s ease-in forwards;
+}
+
+.product-info-modal .modal-content {
+  border: none;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+}
+
+.product-info-modal .modal-header {
+  border-bottom: 1px solid #f0f0f0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px 16px 0 0;
+}
+
+.product-info-modal .modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f0f0f0;
+}
+
+.product-info-modal .modal-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.product-info-modal .modal-body::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 3px;
+}
+
+.product-info-modal .modal-body::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.product-info-modal .modal-body::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+.product-info-modal h6 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.product-info-modal .alert-info {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  border: 1px solid #bee5eb;
+  border-radius: 8px;
+}
+
+.product-info-modal ul li {
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.product-info-modal ul li:last-child {
+  border-bottom: none;
+}
+
+.product-info-modal .text-danger {
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.product-info-modal .modal-footer {
+  border-top: 1px solid #f0f0f0;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 0 0 16px 16px;
+  padding: 20px;
+}
+
+.product-info-modal .modal-footer .btn {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.5px;
+}
+
+.product-info-modal .modal-footer .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.product-info-modal .badge {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 20px;
+}
+
+.product-info-modal .card {
+  transition: all 0.2s ease-in-out;
+}
+
+.product-info-modal .card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes backdropFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes backdropFadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes modalSlideOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.95);
+  }
+}
+
+.product-info-btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.product-info-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+  .product-info-modal .modal-dialog {
+    margin: 10px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .product-info-modal .modal-content {
+    border-radius: 12px;
+  }
+
+  .product-info-modal .modal-header {
+    padding: 15px 20px;
+  }
+
+  .product-info-modal .modal-body {
+    padding: 20px;
+  }
+
+  .swipe-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .swipe-bar {
+    width: 40px;
+    height: 4px;
+    background-color: #ddd;
+    border-radius: 2px;
+    opacity: 0.7;
+  }
+
+  .swipe-indicator small {
+    font-size: 11px;
+    color: #999;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.slide-in-top {
+  animation: slideInFromTop 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.slide-in-bottom {
+  animation: slideInFromBottom 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
+
+.header-row-style {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base container styles */
+.mobile-layout-container {
+  position: relative;
+  width: 100%;
+  height: 60px; /* Fixed height to prevent layout shift */
+  /* overflow: hidden; */
+}
+
+/* Store Title Styles */
+.store-title-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.store-title-element.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Order Buttons Styles */
+.order-buttons-element {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.order-buttons-element.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Mobile viewport specific styles */
+@media (max-width: 768px) {
+  .mobile-layout-container {
+    height: auto;
+    min-height: 50px;
+  }
+
+  .order-buttons-element.visible {
+    padding: 0px;
+    max-width: 360px;
+    border: 3px solid white;
+    border-radius: 8px;
+  }
+
+  .order-buttons-element.visible.banner-hidden {
+    top: 0px;
+    left: 0px;
+    right: auto;
+    margin: auto;
+  }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+  .order-buttons-element.visible.banner-hidden {
+    padding: 4px;
+    top: -33px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    max-width: 263px;
+    border: 3px solid white;
+    border-radius: 8px;
+  }
+}
+
+/* Body classes for global state management */
+body.banner-visible .store-title-element {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+body.banner-visible .order-buttons-element {
+  opacity: 0;
+  transform: translateY(10px) scale(0.95);
+  pointer-events: none;
+}
+
+body.banner-hidden .store-title-element {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}
+
+body.banner-hidden .order-buttons-element {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Additional smooth animations for better UX */
+.mobile-layout-container * {
+  will-change: transform, opacity;
+}
+
+/* Prevent layout shifts */
+.mobile-layout-container::before {
+  content: "";
+  display: block;
+  height: 1px;
+  width: 100%;
+}

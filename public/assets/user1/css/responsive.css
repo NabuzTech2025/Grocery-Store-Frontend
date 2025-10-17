@@ -1,0 +1,357 @@
+@media (max-width: 340px) {
+  .order-type-button button.select-type {
+    padding: 7px 11px 8px;
+    font-size: 10px;
+  }
+}
+
+@media (min-width: 341px) and (max-width: 767px) {
+  .order-type-button button.select-type {
+    padding: 7px 11px 8px;
+    line-height: 15px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 576px) {
+  .row.row-cols-5 .col {
+    width: 50%;
+    padding: 0 5px;
+  }
+  .cart-modal-popup .modal-dialog {
+    margin: 0;
+  }
+  .placeorder-cart {
+    width: 100%;
+  }
+  ul.cart-content-header li h5 {
+    font-size: 15px;
+  }
+  .cart-item-col .cart-item-text h6 {
+    font-size: 13px;
+    line-height: 16px;
+  }
+  .cart-modal-popup .modal-body {
+    padding: 8px 10px;
+  }
+  .cart-items-area .cart-items-price h4 {
+    font-size: 15px;
+  }
+  .cart-content-area {
+    padding: 0 15px 0 20px;
+  }
+  .cart-item-col a {
+    position: absolute;
+    left: -23px;
+  }
+  .cart-items-counter .cart-counter-text span {
+    width: 28px;
+    height: 28px;
+  }
+  .cart-items-counter .cart-counter-text qty {
+    font-size: 15px;
+    width: 28px;
+  }
+  .cart-area-footer .cart-totalprice img {
+    width: 30px;
+  }
+  .cart-area-footer .cart-totalprice h5 span {
+    font-size: 12px;
+    line-height: 15px;
+  }
+  .cart-area-footer .cart-totalprice h5 {
+    font-size: 16px;
+    line-height: 20px;
+    margin-left: 8px;
+  }
+  .cart-area-footer a {
+    font-size: 16px;
+  }
+  .cart-area-footer {
+    padding: 10px 10px;
+    border-radius: 7px;
+  }
+  .placeorder-cart .placeorder-location h6 {
+    font-size: 14px;
+  }
+  .login-area {
+    padding: 0 5% 30px;
+  }
+  ul.variants-list-style li.variants-name-list {
+    width: 50%;
+  }
+  ul.variants-list-style li.variants-name-list h6 {
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 18px;
+  }
+  ul.variants-list-style li.variants-list-price h5 {
+    font-size: 15px;
+    line-height: 15px;
+  }
+  ul.variants-list-style li.variants-item-counter button.add-btn {
+    font-size: 11px;
+    padding: 5px 22px 6px;
+    border-radius: 3px;
+  }
+  .cart-counter-text qty {
+    font-size: 12px;
+    width: 26px;
+  }
+  .cart-counter-text span {
+    width: 26px;
+    height: 26px;
+  }
+}
+@media (min-width: 577px) and (max-width: 767px) {
+  .row.row-cols-5 .col {
+    width: 33%;
+    padding: 0 5px;
+  }
+}
+
+@media (max-width: 767px) {
+  .header-search {
+    display: none;
+  }
+  .brand-logo {
+    display: none;
+  }
+  .header-middle-area .postcode-icon img {
+    width: 20px;
+    position: relative;
+    top: -3px;
+  }
+  .header-postcode-col .header-postcode-cnt h3 {
+    font-size: 16px;
+  }
+  section#hero-section img {
+    height: 130px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  .hero-col {
+    padding: 0 15px;
+  }
+
+  .restaurant-title {
+    display: block;
+  }
+  .restaurant-title h3 {
+    font-size: 12px;
+    line-height: 16px;
+    margin-left: 0;
+  }
+  .restaurant-title h3 span {
+    font-size: 9px;
+    padding: 5px 7px;
+  }
+
+  .header-login a span {
+    display: none;
+  }
+  .header-login a img {
+    width: 24px;
+  }
+  .store-title-col h1 {
+    font-size: 17px;
+    line-height: 22px;
+  }
+  .store-title-col h5 {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .order-type-button {
+    padding: 4px;
+  }
+
+  section#store-title-area {
+    padding: 12px 0;
+  }
+  header#header {
+    padding: 10px 0;
+  }
+  section#hm-product-area .col-lg-12 {
+    padding-left: 0;
+  }
+
+  ul.hm-category-list {
+    width: 80px;
+  }
+  ul.hm-category-list li a {
+    height: 80px;
+  }
+  ul.hm-category-list li a img {
+    width: 49px;
+  }
+  ul.hm-category-list li a h6 {
+    font-size: 10px;
+  }
+  .products-categroy-title-row h2 {
+    font-size: 14px;
+    line-height: 18px;
+  }
+  .products-categroy-title-row span {
+    font-size: 11px;
+    line-height: 16px;
+  }
+  .products-categroy-title-row {
+    margin-bottom: 12px;
+  }
+  .hm-product-section {
+    padding-left: 15px;
+    margin-right: 1px;
+  }
+  .products-categroy-title-row h2 {
+    font-size: 16px;
+    line-height: 20px;
+  }
+  .products-categroy-title-row p {
+    font-size: 12px;
+    line-height: 18px;
+  }
+  .prdct-text h4 {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .prdct-text p {
+    font-size: 10px;
+    line-height: 13px;
+    margin-bottom: 0px;
+  }
+  .prdct-col-counter button.add-btn {
+    font-size: 12px;
+    padding: 5px 15px 6px;
+  }
+  .prdct-col-footer h5 {
+    font-size: 13px;
+    line-height: 15px;
+  }
+  ul.hm-category-list li {
+    margin-bottom: 5px;
+  }
+  .header-postcode-col .header-postcode-cnt h3 {
+    font-size: 16px;
+  }
+  .centre-modal-popup .modal-header h5 {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  div#select-address-Modal .modal-header button.btn-close img {
+    width: 13px;
+  }
+  div#select-address-Modal .modal-header button.btn-close {
+    width: 15px;
+    height: 15px;
+  }
+  .centre-modal-popup .modal-header {
+    padding: 10px;
+  }
+  .centre-modal-popup .modal-body {
+    padding: 10px;
+  }
+  form.delivery-address-form button.btn-address-submit {
+    width: 57px;
+    height: 39px;
+  }
+  .viewcart-area {
+    max-width: 95%;
+    padding: 10px;
+    bottom: 20px;
+    right: 0;
+    margin: auto;
+    left: 0;
+  }
+  .viewcart-area .cart-totalprice img {
+    width: 30px;
+  }
+  .viewcart-area .cart-totalprice h5 {
+    font-size: 18px;
+    line-height: 24px;
+    padding-left: 8px;
+  }
+  .viewcart-area a {
+    font-size: 18px;
+    line-height: 20px;
+  }
+  section.checkout-area {
+    padding: 35px 0;
+  }
+  .payment-method-col h2 {
+    font-size: 16px;
+    line-height: 21px;
+    margin-bottom: 15px;
+  }
+  .select-payment-mode {
+    padding: 15px;
+  }
+  .select-payment-buttons {
+    display: block;
+    margin-top: 20px;
+  }
+  .select-payment-buttons a {
+    display: block;
+    margin: 10px 0;
+  }
+  .select-payment-mode .radio .checkmark {
+    height: 27px;
+    width: 27px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  header#header {
+    padding: 8px 0;
+  }
+  .header-middle-area .postcode-icon img {
+    width: 23px;
+  }
+  .brand-logo a img {
+    max-height: 54px;
+  }
+  .brand-logo {
+    margin-right: 20px;
+  }
+  .row.row-cols-5 .col {
+    width: 33%;
+    padding: 0 5px;
+  }
+  .store-title-col h1 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+  .order-type-button button.select-type {
+    padding: 5px 10px 5px;
+  }
+  ul.hm-category-list {
+    width: 90px;
+  }
+  ul.hm-category-list li a {
+    height: 90px;
+  }
+  ul.hm-category-list li a img {
+    width: 52px;
+  }
+  ul.hm-category-list li a h6 {
+    font-size: 12px;
+  }
+  ul.hm-category-list li {
+    margin-bottom: 5px;
+  }
+  .viewcart-area {
+    bottom: 20px;
+    right: 12px;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .row.row-cols-5 .col {
+    width: 25%;
+    padding: 0 5px;
+  }
+}
+
+/* new css */
+
+@media (min-width: 768px) and (max-width: 991px) {
+}

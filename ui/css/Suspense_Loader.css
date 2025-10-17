@@ -1,0 +1,44 @@
+/* src/components/Loader.css */
+.loader-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff7f0; /* warm food background */
+  color: #ff6600; /* appetizing orange */
+  font-family: "Poppins", sans-serif;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.loader-icon {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.icon-spin {
+  animation: spin 1.5s linear infinite;
+}
+
+.loader-text {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
