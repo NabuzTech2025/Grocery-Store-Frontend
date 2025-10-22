@@ -1,5 +1,24 @@
 /* HomeMain Styles */
 
+/* Top Labels */
+.top-lables {
+  background: #624ba1;
+  color: white;
+  flex: 1;
+  display: flex;
+  padding: 10px;
+  margin: 5px 10px 0px 10px;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  .top-lables {
+    display: none;
+  }
+}
+
 /* Hero Section */
 .hero-section {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -96,33 +115,38 @@
 }
 
 /* ---------------------------------------------
-   Main Category Section (Replaces Featured Products)
+   ======================================Main Category Section========================================
 ---------------------------------------------- */
 
 .main-category {
-  padding: 80px 0;
+  padding: 40px 0;
+  background: #fff;
 }
 
 .mainCategory-container {
   padding: 0 80px;
 }
 
+/* Desktop - 8 per row */
 .col-lg-8per {
   flex: 0 0 12.5%;
-  max-width: 12.5%; /* 100 / 8 = 12.5% per category */
+  max-width: 12.5%; /* 100 / 8 = 12.5% */
 }
 
+/* Category Card */
 .category-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px;
+  padding: 20px 10px;
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;
   border-radius: 12px;
   overflow: hidden;
+  background: #fff;
+  height: 100%;
 }
 
 .category-card:hover {
@@ -135,12 +159,22 @@
 .category-image {
   position: relative;
   overflow: hidden;
+  border-radius: 12px;
+  background: #f8f9fa;
+  padding: 15px;
+  margin-bottom: 12px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .category-img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
+  width: 100%;
+  max-width: 100px;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
   transition: transform 0.3s ease;
 }
 
@@ -153,34 +187,99 @@
   font-weight: 600;
   color: #624ba1;
   line-height: 1.3;
-  margin-top: 10px;
   transition: color 0.3s ease;
+  margin: 0;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 36px;
 }
 
 .category-card:hover .category-name {
   color: #3e3066;
 }
 
-/* Button styling */
-.btn-view-all {
-  display: inline-block;
-  background-color: var(--bs-primary, #007bff);
-  color: #fff;
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+/* Tablet - 4 per row */
+@media (max-width: 992px) {
+  .col-lg-8per {
+    flex: 0 0 25%;
+    max-width: 25%; /* 100 / 4 = 25% */
+  }
+
+  .mainCategory-container {
+    padding: 0 40px;
+  }
 }
 
-.btn-view-all:hover {
-  background-color: #0056b3;
+/* Mobile - 3 per row */
+@media (max-width: 768px) {
+  .col-lg-8per {
+    flex: 0 0 25%;
+    max-width: 25%; /* 100 / 3 = 33.333% */
+  }
+
+  .mainCategory-container {
+    padding: 0 10px;
+  }
+
+  .main-category {
+    padding: 20px 0;
+  }
+
+  .category-card {
+    padding: 12px 6px;
+  }
+
+  .category-img {
+    max-width: 80px;
+  }
+
+  .category-image {
+    padding: 10px;
+    margin-bottom: 8px;
+  }
+
+  .category-name {
+    font-size: 11px;
+    min-height: 30px;
+  }
+}
+
+/* Small Mobile - 3 per row */
+@media (max-width: 576px) {
+  .col-lg-8per {
+    flex: 0 0 25%;
+    max-width: 25%; /* Keep 3 per row */
+  }
+
+  .mainCategory-container {
+    padding: 0 8px;
+  }
+
+  .category-card {
+    padding: 10px 4px;
+  }
+
+  .category-img {
+    max-width: 70px;
+  }
+
+  .category-image {
+    padding: 8px;
+    margin-bottom: 6px;
+  }
+
+  .category-name {
+    font-size: 10px;
+    min-height: 28px;
+  }
 }
 
 /* ---------------------------------------------
-    ProductSection Css 
+    ==============================================ProductSection Css=======================
 ---------------------------------------------- */
 
 /* Container for all category sections */
@@ -386,37 +485,6 @@
 
   .section-title {
     font-size: 20px;
-  }
-  .mainCategory-container {
-    padding: 0 0px;
-  }
-}
-
-/* Responsive Design */
-@media (max-width: 992px) {
-  .col-lg-8per {
-    flex: 0 0 25%;
-    max-width: 25%; /* 4 per row on tablets */
-  }
-}
-
-@media (max-width: 576px) {
-  .col-lg-8per {
-    flex: 0 0 50%;
-    max-width: 50%; /* 2 per row on mobile */
-  }
-
-  .category-card {
-    padding: 10px;
-  }
-
-  .category-img {
-    width: 90px;
-    height: 90px;
-  }
-
-  .category-name {
-    font-size: 12px;
   }
 }
 

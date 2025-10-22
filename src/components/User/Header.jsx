@@ -15,7 +15,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { LuMapPin } from "react-icons/lu";
 import DesktopSearch from "./ProductArea/DesktopSearch";
 import { RiUserLine } from "react-icons/ri";
-
+import { IoIosSearch } from "react-icons/io";
 const Header = ({ status, onSearch }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -91,27 +91,7 @@ const Header = ({ status, onSearch }) => {
 
   return (
     <>
-      <div
-        style={{
-          background: "#624BA1",
-          color: "white",
-          flex: 1,
-          display: "flex",
-          padding: "10px",
-          margin: "5px 10px 0px 10px",
-          borderRadius: "5px",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        FREE Delivery & 10% Discount on first Order!
-      </div>
-      <header
-        style={{
-          padding: "20px 0px 20px 0px",
-        }}
-        id="header"
-      >
+      <header id="header">
         <div className="header-container">
           <div className="row">
             {/* Left Side */}
@@ -175,13 +155,11 @@ const Header = ({ status, onSearch }) => {
                           className="header-postcode-col"
                           onClick={() => setShowAddressModal(true)}
                         >
-                          <img
-                            src={`assets/user/img/location-icon.svg`}
-                            alt="Location"
-                            className="location-icon-mobile"
-                          />
+                          <div className="postcode-icon">
+                            <LuMapPin size={15} style={{ color: "#624BA1" }} />
+                          </div>
                           <h3
-                            className={`mobile ${
+                            className={`header-postcode-cnt mobile  ${
                               isSmallestViewport ? "smallest" : "small"
                             }`}
                           >
@@ -200,6 +178,9 @@ const Header = ({ status, onSearch }) => {
             {/* Right Side */}
             <div className="col-lg-2 col-sm-2 col-6">
               <div className="header-login">
+                {isMobileViewport && (
+                  <IoIosSearch size={35} className="right-side-icons" />
+                )}
                 {/* Account/Login */}
                 <div className="account-container">
                   {isAuthenticated ? (
@@ -221,17 +202,16 @@ const Header = ({ status, onSearch }) => {
                         setShowLoginModal(true);
                       }}
                     >
-                      <RiUserLine size={40} className="right-side-icons" />
+                      <RiUserLine
+                        size={isMobileViewport ? 35 : 40}
+                        className="right-side-icons"
+                      />
                       <span className="account-text">
                         {currentLanguage.login}
                       </span>
                     </a>
                   )}
-
-                  {/* <RiUserLine size={40} className="right-side-icons" /> */}
-
-                  {/* Language Dropdown */}
-                  <div
+                  {/* <div
                     className="language-dropdown"
                     onClick={(e) => e.stopPropagation()}
                   >
@@ -254,10 +234,10 @@ const Header = ({ status, onSearch }) => {
                           showLangDropdown ? "open" : ""
                         }`}
                       ></i>
-                    </div>
+                    </div> */}
 
-                    {/* Language Options Dropdown */}
-                    {showLangDropdown && (
+                  {/* Language Options Dropdown */}
+                  {/* {showLangDropdown && (
                       <div className="language-options">
                         <div
                           className={`language-option ${
@@ -293,8 +273,8 @@ const Header = ({ status, onSearch }) => {
                           )}
                         </div>
                       </div>
-                    )}
-                  </div>
+                    )} */}
+                  {/* </div> */}
                 </div>
 
                 {/* Account Dropdown Menu */}

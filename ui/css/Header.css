@@ -252,4 +252,12 @@
   .header-login .account-container {
     gap: 2 px;
   }
+
+  .postcode-icon {
+    padding: 0px 5px;
+  }
+
+  .header-container {
+    padding: 0px 15px;
+  }
 }

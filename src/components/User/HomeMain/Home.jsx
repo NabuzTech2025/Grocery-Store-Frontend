@@ -15,6 +15,9 @@ const Home = () => {
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
       <CartProvider>
+        {/* <div className="top-lables">
+          FREE Delivery & 10% Discount on first Order!
+        </div> */}
         <Header status={true} onSearch={setSearchTerm} />
         <main style={{ flex: 1 }}>
           <BannerSection />

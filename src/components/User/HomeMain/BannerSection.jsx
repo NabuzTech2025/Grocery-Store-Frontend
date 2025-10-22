@@ -1,76 +1,87 @@
+import { useState, useEffect, useRef } from "react";
 import "../../../../ui/css/BannerSection.css";
+import { useViewport } from "../../../contexts/ViewportContext";
 
 const BannerSection = () => {
+  const { isMobileViewport } = useViewport();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const scrollRef = useRef(null);
+
+  const banners = [
+    {
+      id: 1,
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2Fgrocery-banner-1.jpg?alt=media&token=f02180e6-c15b-4e83-9dd4-938e3b2c2433",
+      alt: "Banner 1",
+    },
+    {
+      id: 2,
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2Fgrocery-banner-2.jpg?alt=media&token=dd275a0f-086f-438f-9066-556c86ecc769",
+      alt: "Banner 2",
+    },
+    {
+      id: 3,
+      image:
+        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=400&fit=crop",
+      alt: "Banner 3",
+    },
+  ];
+
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollPosition = container.scrollLeft;
+      const slideWidth = container.clientWidth; // Use clientWidth instead of offsetWidth
+      const currentIndex = Math.round(scrollPosition / slideWidth);
+      // Add bounds checking
+      const safeIndex = Math.max(0, Math.min(currentIndex, banners.length - 1));
+      setCurrentSlide(safeIndex);
+    };
+
+    // Attach event listener
+    container.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Cleanup
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [banners.length]); // Add banners.length as dependency
+
+  const scrollToSlide = (index) => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    const slideWidth = container.clientWidth;
+
+    // Optionally set state immediately for instant feedback
+    setCurrentSlide(index);
+  };
+
   return (
-    <section>
-      <div className="banner-container">
-        {/* Main Banner - Left Side */}
-        <div className="banner-main">
-          <div className="banner-badge">100% Farm Fresh Food</div>
-          <h2 className="banner-main-title">Fresh Organic</h2>
-          <p className="banner-main-subtitle">Food For All</p>
-          <div className="banner-main-price">$59.00</div>
-          <button className="banner-btn">Shop Now</button>
-          <div className="banner-main-image">
-            <img
-              src="https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400&h=400&fit=crop"
-              alt="Organic Product"
-            />
+    <section className="banner-section">
+      <div className="banner-carousel" ref={scrollRef}>
+        {banners.map((banner) => (
+          <div key={banner.id} className="banner-slide">
+            <img src={banner.image} alt={banner.alt} className="banner-image" />
           </div>
-        </div>
+        ))}
+      </div>
 
-        {/* Right Side Grid */}
-        <div className="banner-grid">
-          {/* Top Banner */}
-          <div className="banner-item banner-item-top">
-            <h3 className="banner-item-title">
-              Creamy Fruits
-              <br />
-              baby Jem
-            </h3>
-            <div className="banner-item-price">
-              <span className="price-label">Only</span>
-              <span className="price-value">$12.99</span>
-            </div>
-            <button className="banner-btn banner-btn-light">Shop Now</button>
-            <div className="banner-item-image">
-              <img
-                src="https://images.unsplash.com/photo-1584308972272-9e4e7685e80f?w=200&h=200&fit=crop"
-                alt="Baby Food"
-              />
-            </div>
-          </div>
-
-          {/* Bottom Left Banner */}
-          <div className="banner-item banner-item-bottom-left">
-            <h3 className="banner-item-title-small">New Baby Diaper</h3>
-            <p className="banner-item-subtitle">Low Quality Baby</p>
-            <button className="banner-btn banner-btn-light">Shop Now</button>
-            <div className="banner-item-image">
-              <img
-                src="https://images.unsplash.com/photo-1563460716037-460781a7ce5e?w=150&h=150&fit=crop"
-                alt="Baby Diapers"
-              />
-            </div>
-          </div>
-
-          {/* Bottom Right Banner */}
-          <div className="banner-item banner-item-bottom-right">
-            <h3 className="banner-item-title-small">Dark wash FaceWash</h3>
-            <p className="banner-item-subtitle">All Face Size</p>
-            <div className="banner-discount">
-              <span className="discount-value">15%</span>
-              <span className="discount-label">OFF</span>
-            </div>
-            <button className="banner-btn banner-btn-light">Shop Now</button>
-            <div className="banner-item-image">
-              <img
-                src="https://images.unsplash.com/photo-1556228720-195a672e8a03?w=150&h=150&fit=crop"
-                alt="Face Wash"
-              />
-            </div>
-          </div>
-        </div>
+      {/* Pagination Dots */}
+      <div className="banner-pagination">
+        {banners.map((banner, index) => (
+          <button
+            key={banner.id}
+            className={`pagination-dot ${
+              currentSlide === index ? "active" : ""
+            }`}
+            onClick={() => scrollToSlide(index)}
+            aria-label={`Go to slide ${index + 1}`}
+          />
+        ))}
       </div>
     </section>
   );

@@ -12,7 +12,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -32,7 +32,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -52,7 +52,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -62,7 +62,7 @@ function ProductSection() {
           name: "Organic Free Range Eggs Large",
           weight: "6 pieces (1 piece = 0.58 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.49,
           originalPrice: 3.99,
           discount: "15% OFF",
@@ -82,7 +82,7 @@ function ProductSection() {
           name: "Cheddar Cheese Aged 12 Months",
           weight: "200g (1 kg = 19.95 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.99,
           originalPrice: 4.49,
           discount: "10% OFF",
@@ -102,7 +102,7 @@ function ProductSection() {
           name: "Mozzarella Cheese Fresh",
           weight: "125g (1 kg = 23.92 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 2.99,
           originalPrice: 3.29,
           discount: "10% OFF",
@@ -122,7 +122,7 @@ function ProductSection() {
           name: "Whole Milk Organic 3.5% Fat",
           weight: "1L",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 1.49,
           originalPrice: 1.69,
           discount: "10% OFF",
@@ -142,7 +142,7 @@ function ProductSection() {
           name: "Gouda Cheese Sliced",
           weight: "150g (1 kg = 19.93 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 2.99,
           originalPrice: 3.49,
           discount: "15% OFF",
@@ -167,7 +167,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -187,7 +187,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -207,7 +207,7 @@ function ProductSection() {
           name: "Philadelphia Cream Cheese Natural Double Cream",
           weight: "330g (1 kg = 11.48 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.79,
           originalPrice: 3.9,
           discount: "20% OFF",
@@ -217,7 +217,7 @@ function ProductSection() {
           name: "Organic Free Range Eggs Large",
           weight: "6 pieces (1 piece = 0.58 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.49,
           originalPrice: 3.99,
           discount: "15% OFF",
@@ -237,7 +237,7 @@ function ProductSection() {
           name: "Cheddar Cheese Aged 12 Months",
           weight: "200g (1 kg = 19.95 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 3.99,
           originalPrice: 4.49,
           discount: "10% OFF",
@@ -257,7 +257,7 @@ function ProductSection() {
           name: "Mozzarella Cheese Fresh",
           weight: "125g (1 kg = 23.92 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 2.99,
           originalPrice: 3.29,
           discount: "10% OFF",
@@ -277,7 +277,7 @@ function ProductSection() {
           name: "Whole Milk Organic 3.5% Fat",
           weight: "1L",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 1.49,
           originalPrice: 1.69,
           discount: "10% OFF",
@@ -297,7 +297,7 @@ function ProductSection() {
           name: "Gouda Cheese Sliced",
           weight: "150g (1 kg = 19.93 €)",
           image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=8bcab530-368b-47ca-805e-48b62a16e5f6",
+            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
           price: 2.99,
           originalPrice: 3.49,
           discount: "15% OFF",
