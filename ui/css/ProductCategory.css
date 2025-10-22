@@ -12,7 +12,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   white-space: nowrap;
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+  /* Smooth scrolling on iOS */
   scroll-behavior: smooth;
   gap: 10px;
   padding: 10px 0;
@@ -24,8 +25,10 @@
 }
 
 .hm-category-list.mobile-horizontal {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 /* Category list item - mobile */
@@ -83,8 +86,29 @@
 
 /* Active category state */
 .hm-category-list li a.active {
-  /* Add your active state styles here */
+  background-color: #007bff !important;
+  color: white !important;
   font-weight: bold;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Category link hover effects */
+.hm-category-list li a:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+/* Category link base styles */
+.hm-category-list li a {
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.hm-category-list li a.active {
+  border-color: #007bff;
 }
 
 /* Responsive breakpoints */

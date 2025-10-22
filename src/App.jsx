@@ -41,6 +41,7 @@ const AdminRoute = lazy(() => import("./routes/AdminRoute"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const Home = lazy(() => import("./pages/User/Home"));
+const HomeMain = lazy(() => import("./components/User/HomeMain/Home"));
 const Restaurant = lazy(() => import("./pages/User/Restaurant"));
 const CheckoutPage = lazy(() => import("./pages/User/CheckoutPage"));
 const UserAddress = lazy(() => import("./pages/User/UserAddress"));
@@ -64,10 +65,11 @@ import CheckoutProtection from "./components/Protection/CheckoutProtection";
 import { LanguageProvider } from "./contexts/LanguageContext";
 
 const initialOptions = {
-  "client-id": PAYPAL_CLIENT_ID,
+  "client-id": PAYPAL_CLIENT_ID || "sb", // Fallback for development
   currency: currentCurrency.currency,
   intent: "capture",
   disableFunding: "card",
+  debug: true, // Enable debug mode for development
 };
 
 const APP_BASE_ROUTE = import.meta.env.VITE_APP_BASE_ROUTE || "";
@@ -115,7 +117,8 @@ function App() {
                           />
 
                           {/* Front end routes */}
-                          <Route path="/" element={<Restaurant />} />
+                          <Route path="/" element={<HomeMain />} />
+                          <Route path="/restaurant" element={<Restaurant />} />
 
                           {/* User-protected routes */}
                           <Route element={<UserRoute />}>

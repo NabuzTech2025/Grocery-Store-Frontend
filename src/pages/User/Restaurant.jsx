@@ -11,6 +11,7 @@ import CartModal from "@/components/User/modals/CartModal";
 import LoginModal from "@/components/User/modals/LoginModal";
 import ScrollToTopButton from "@/components/User/ScrollToTopButton";
 import { CartProvider } from "@/contexts/CartContext";
+import { StoreStatusProvider } from "@/contexts/StoreStatusContext";
 
 const Restaurant = () => {
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -24,20 +25,20 @@ const Restaurant = () => {
       className="restaurant-page"
       style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
     >
-      {/* <StoreStatusProvider> */}
-      <CartProvider>
+      <StoreStatusProvider>
+        <CartProvider>
         <Header
           onAddressClick={() => setShowAddressModal(true)}
           onLoginClick={() => setShowLoginModal(true)}
           status={true}
           onSearch={setSearchTerm}
         />
-        {/* <Hero /> */}
+        <Hero />
 
         {/* Main content area that will grow and allow scrolling */}
         <main style={{ flex: 1 }}>
           <div className="sticky top-0 z-10 bg-white">
-            {/* <StoreTitle /> */}
+            <StoreTitle />
           </div>
 
           <ProductsArea
@@ -46,7 +47,7 @@ const Restaurant = () => {
           />
         </main>
 
-        {/* <Footer /> */}
+        <Footer />
         <CartButton onViewCartClick={() => setShowCartModal(true)} />
 
         {/* Modals */}
@@ -64,8 +65,8 @@ const Restaurant = () => {
         />
         <VariantModal />
         <ScrollToTopButton />
-      </CartProvider>
-      {/* </StoreStatusProvider> */}
+        </CartProvider>
+      </StoreStatusProvider>
     </div>
   );
 };

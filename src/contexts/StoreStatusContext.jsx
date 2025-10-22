@@ -40,7 +40,7 @@ export const StoreStatusProvider = ({ children }) => {
   const [discountLoading, setDiscountLoading] = useState(true);
   const { translations: currentLanguage } = useLanguage();
 
-  const STORE_ID = import.meta.env.VITE_STORE_ID;
+  const STORE_ID = import.meta.env.VITE_STORE_ID || "1"; // Fallback store ID
   const base_url = import.meta.env.VITE_API_BASE_URL;
   const wsRef = useRef(null);
   const statusIntervalRef = useRef(null);
@@ -228,15 +228,17 @@ export const StoreStatusProvider = ({ children }) => {
 
   const fetchStore = async () => {
     try {
+      console.log("Fetching store with ID:", STORE_ID);
       const response = await getStoreDetails(STORE_ID);
+      console.log("Store response:", response);
       setStore(response);
 
       const berlinNow = DateTime.now().setZone("Europe/Berlin");
       const today = berlinNow.weekday % 7;
 
-      const hours = response.store_hours.filter(
+      const hours = response.store_hours ? response.store_hours.filter(
         (slot) => slot.day_of_week === today
-      );
+      ) : [];
 
       setTodayHours(hours);
       cachedHoursRef.current = hours;
@@ -256,6 +258,15 @@ export const StoreStatusProvider = ({ children }) => {
       }
     } catch (err) {
       console.error("Error fetching store:", err.message);
+      console.error("Full error:", err);
+      // Set a fallback store for development
+      setStore({
+        id: "1",
+        name: "Demo Store",
+        address: "123 Demo Street",
+        country: "Germany",
+        store_hours: []
+      });
     }
   };
 
@@ -475,7 +486,7 @@ export const StoreStatusProvider = ({ children }) => {
   useEffect(() => {
     const fetchDiscounts = async () => {
       try {
-        const response = await getStoreDisscount();
+        const response = await getStoreDisscount(STORE_ID);
 
         if (response.data && Array.isArray(response.data)) {
           const discountData = {
@@ -507,7 +518,7 @@ export const StoreStatusProvider = ({ children }) => {
     };
 
     fetchDiscounts();
-  }, []);
+  }, [STORE_ID]);
 
   return (
     <StoreStatusContext.Provider

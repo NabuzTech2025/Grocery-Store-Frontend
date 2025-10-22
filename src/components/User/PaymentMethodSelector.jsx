@@ -15,11 +15,52 @@ const PaymentMethodSelector = ({
   const [paypalPaymentCompleted, setPaypalPaymentCompleted] = useState(false);
   const [paypalTransactionId, setPaypalTransactionId] = useState(null);
   const [paypalError, setPaypalError] = useState(null);
+  const [paypalLoadingError, setPaypalLoadingError] = useState(false);
+  const [paypalTimeout, setPaypalTimeout] = useState(false);
   const {
     language,
     translations: currentLanguage,
     changeLanguage,
   } = useLanguage();
+
+  // Handle PayPal loading errors
+  useEffect(() => {
+    const handlePayPalError = (event) => {
+      if (event.target && event.target.src && event.target.src.includes('paypal')) {
+        console.warn('PayPal script blocked by browser or ad blocker');
+        setPaypalLoadingError(true);
+      }
+    };
+
+    // Listen for PayPal script loading errors
+    window.addEventListener('error', handlePayPalError);
+
+    // Also check for blocked requests
+    const originalFetch = window.fetch;
+    window.fetch = function(...args) {
+      return originalFetch.apply(this, args).catch(error => {
+        if (args[0] && args[0].includes('paypal')) {
+          console.warn('PayPal API request blocked');
+          setPaypalLoadingError(true);
+        }
+        throw error;
+      });
+    };
+
+    // Set timeout for PayPal loading
+    const timeout = setTimeout(() => {
+      if (isPending) {
+        console.warn('PayPal loading timeout');
+        setPaypalTimeout(true);
+      }
+    }, 10000); // 10 second timeout
+
+    return () => {
+      window.removeEventListener('error', handlePayPalError);
+      window.fetch = originalFetch;
+      clearTimeout(timeout);
+    };
+  }, [isPending]);
 
   const handleChange = (method) => {
     setPaymentMethod(method);
@@ -200,7 +241,27 @@ const PaymentMethodSelector = ({
 
           {paymentMethod === "online" && (
             <div className="paypal-container mt-3">
-              {isPending ? (
+              {paypalLoadingError || paypalTimeout ? (
+                <div className="alert alert-warning">
+                  <i className="fas fa-exclamation-triangle"></i>
+                  <p>
+                    {paypalLoadingError 
+                      ? "PayPal is blocked by your browser or ad blocker. Please disable ad blockers or use cash payment."
+                      : "PayPal is taking too long to load. Please use cash payment or try again later."
+                    }
+                  </p>
+                  <button 
+                    className="btn btn-sm btn-outline-primary mt-2"
+                    onClick={() => {
+                      setPaypalLoadingError(false);
+                      setPaypalTimeout(false);
+                      window.location.reload();
+                    }}
+                  >
+                    Retry PayPal
+                  </button>
+                </div>
+              ) : isPending ? (
                 <div className="text-center">
                   <div className="spinner-border text-primary" role="status">
                     <span className="sr-only">

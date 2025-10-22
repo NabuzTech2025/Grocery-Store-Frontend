@@ -10,13 +10,13 @@ const payload_url =
     : import.meta.env.VITE_APP_BASE_URL;
 const resetPassword_url = basePath !== "" ? payload_url : payload_url + "/";
 
-// for PayPAl
+// for PayPal
 const APP_MODE = import.meta.env.VITE_APP_MODE || "DEVELOPMENT";
 
 const PAYPAL_CLIENT_ID =
   APP_MODE === "PRODUCTION"
-    ? import.meta.env.VITE_PAYMENT_LIVE_CLIENT_ID
-    : import.meta.env.VITE_PAYMENT_SANDBOX_CLIENT_ID;
+    ? import.meta.env.VITE_PAYMENT_LIVE_CLIENT_ID || "sb"
+    : import.meta.env.VITE_PAYMENT_SANDBOX_CLIENT_ID || "sb";
 
 export {
   basePath,

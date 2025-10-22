@@ -33,7 +33,15 @@ const StoreTitle = () => {
     localStorage.setItem("order_type", type);
   };
 
-  if (!store) return null;
+  if (!store) {
+    return (
+      <div className="loading-store-title" style={{ padding: "20px", textAlign: "center" }}>
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading store...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section

@@ -150,16 +150,16 @@ export const resetPassword = async (payload) => {
   }
 };
 
-export const getStoreDisscount = async () => {
+export const getStoreDisscount = async (store_id = null) => {
   try {
-    const store_id = import.meta.env.VITE_STORE_ID;
-    if (!store_id) {
+    const storeId = store_id || import.meta.env.VITE_STORE_ID || "1";
+    if (!storeId) {
       throw new Error("Store ID not found");
     }
-    const response = await axiosInstance.get(`/discounts/${store_id}`);
+    const response = await axiosInstance.get(`/discounts/${storeId}`);
     return response;
   } catch (error) {
     console.error("addresses API error:", error);
-    throw error; // propagate to caller’s catch
+    throw error; // propagate to caller's catch
   }
 };
