@@ -27,44 +27,39 @@ const Restaurant = () => {
     >
       <StoreStatusProvider>
         <CartProvider>
-        <Header
-          onAddressClick={() => setShowAddressModal(true)}
-          onLoginClick={() => setShowLoginModal(true)}
-          status={true}
-          onSearch={setSearchTerm}
-        />
-        <Hero />
+          <Header status={true} onSearch={setSearchTerm} />
+          <Hero />
 
-        {/* Main content area that will grow and allow scrolling */}
-        <main style={{ flex: 1 }}>
-          <div className="sticky top-0 z-10 bg-white">
-            <StoreTitle />
-          </div>
+          {/* Main content area that will grow and allow scrolling */}
+          <main style={{ flex: 1 }}>
+            <div className="sticky top-0 z-10 bg-white">
+              <StoreTitle />
+            </div>
 
-          <ProductsArea
-            onAddClick={() => setShowVariantModal(true)}
-            searchTerm={searchTerm}
+            <ProductsArea
+              onAddClick={() => setShowVariantModal(true)}
+              searchTerm={searchTerm}
+            />
+          </main>
+
+          <Footer />
+          <CartButton onViewCartClick={() => setShowCartModal(true)} />
+
+          {/* Modals */}
+          <AddressModal
+            show={showAddressModal}
+            handleClose={() => setShowAddressModal(false)}
           />
-        </main>
-
-        <Footer />
-        <CartButton onViewCartClick={() => setShowCartModal(true)} />
-
-        {/* Modals */}
-        <AddressModal
-          show={showAddressModal}
-          handleClose={() => setShowAddressModal(false)}
-        />
-        <CartModal
-          show={showCartModal}
-          handleClose={() => setShowCartModal(false)}
-        />
-        <LoginModal
-          show={showLoginModal}
-          handleClose={() => setShowLoginModal(false)}
-        />
-        <VariantModal />
-        <ScrollToTopButton />
+          <CartModal
+            show={showCartModal}
+            handleClose={() => setShowCartModal(false)}
+          />
+          <LoginModal
+            show={showLoginModal}
+            handleClose={() => setShowLoginModal(false)}
+          />
+          <VariantModal />
+          <ScrollToTopButton />
         </CartProvider>
       </StoreStatusProvider>
     </div>

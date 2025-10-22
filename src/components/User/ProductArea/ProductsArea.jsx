@@ -892,7 +892,10 @@ const ProductsArea = ({ searchTerm }) => {
   if (error) return <div className="error">Error: {error}</div>;
   if (!store) {
     return (
-      <div className="loading-products" style={{ padding: "40px", textAlign: "center" }}>
+      <div
+        className="loading-products"
+        style={{ padding: "40px", textAlign: "center" }}
+      >
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading products...</span>
         </div>

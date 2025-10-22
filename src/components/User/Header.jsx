@@ -12,6 +12,9 @@ import english_flag from "../../../public/assets/user/img/english-flag.jpg";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
 import "./../../../ui/css/Header.css";
 import { useLanguage } from "../../contexts/LanguageContext";
+import { LuMapPin } from "react-icons/lu";
+import DesktopSearch from "./ProductArea/DesktopSearch";
+import { RiUserLine } from "react-icons/ri";
 
 const Header = ({ status, onSearch }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -88,8 +91,28 @@ const Header = ({ status, onSearch }) => {
 
   return (
     <>
-      <header id="header">
-        <div className="container">
+      <div
+        style={{
+          background: "#624BA1",
+          color: "white",
+          flex: 1,
+          display: "flex",
+          padding: "10px",
+          margin: "5px 10px 0px 10px",
+          borderRadius: "5px",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        FREE Delivery & 10% Discount on first Order!
+      </div>
+      <header
+        style={{
+          padding: "20px 0px 20px 0px",
+        }}
+        id="header"
+      >
+        <div className="header-container">
           <div className="row">
             {/* Left Side */}
             <div className="col-lg-10 col-sm-10 col-6">
@@ -126,10 +149,7 @@ const Header = ({ status, onSearch }) => {
                           onClick={() => setShowAddressModal(true)}
                         >
                           <div className="postcode-icon">
-                            <img
-                              src={`assets/user/img/location-icon.svg`}
-                              alt="Location"
-                            />
+                            <LuMapPin size={25} style={{ color: "#624BA1" }} />
                           </div>
                           <div className="header-postcode-cnt">
                             <h3>
@@ -141,6 +161,11 @@ const Header = ({ status, onSearch }) => {
                           </div>
                         </div>
                       )}
+                      <DesktopSearch
+                        onSearch={() => {
+                          console.log("Desktop Search");
+                        }}
+                      />
                     </div>
 
                     {/* Mobile */}
@@ -186,15 +211,6 @@ const Header = ({ status, onSearch }) => {
                       }}
                     >
                       <img src={userLogo} alt="Account" />
-                      <span className="account-text">
-                        {isMobileViewport
-                          ? user?.customer_name?.split(" ")[0]?.length > 4
-                            ? `${user.customer_name
-                                .split(" ")[0]
-                                .slice(0, 4)}...`
-                            : user?.customer_name?.split(" ")[0]
-                          : user?.customer_name?.split(" ")[0]}
-                      </span>
                     </div>
                   ) : (
                     <a
@@ -205,12 +221,14 @@ const Header = ({ status, onSearch }) => {
                         setShowLoginModal(true);
                       }}
                     >
-                      <img src={userLogo} alt="Login" />
+                      <RiUserLine size={40} className="right-side-icons" />
                       <span className="account-text">
                         {currentLanguage.login}
                       </span>
                     </a>
                   )}
+
+                  {/* <RiUserLine size={40} className="right-side-icons" /> */}
 
                   {/* Language Dropdown */}
                   <div

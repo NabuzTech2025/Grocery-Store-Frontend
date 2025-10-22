@@ -111,8 +111,7 @@ h6,
 /************ Header Style *****************/
 
 header#header {
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f1f1;
+  padding: 0px 0;
 }
 
 .header-left-area {
@@ -136,6 +135,7 @@ header#header {
   justify-content: start;
   align-items: center;
   margin-right: 30px;
+  gap: 5px;
 }
 
 .header-middle-area .postcode-icon img {

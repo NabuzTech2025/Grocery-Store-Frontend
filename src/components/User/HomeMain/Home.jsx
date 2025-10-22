@@ -1,19 +1,25 @@
-import React from "react";
-import Header from "./Header";
-import Banner from "./Banner";
-import FeaturedProducts from "./FeaturedProducts";
+import BannerSection from "./BannerSection";
 import Footer from "./Footer";
 import { CartProvider } from "../../../contexts/CartContext";
 import "../../../../ui/css/HomeMain.css";
+import Header from "../Header";
+import { useState } from "react";
+import MainCategory from "./MainCategory";
+import ProductSection from "./ProductSection";
 
 const Home = () => {
+  const [searchTerm, setSearchTerm] = useState("");
   return (
-    <div className="home-page" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      className="home-page"
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
       <CartProvider>
-        <Header />
+        <Header status={true} onSearch={setSearchTerm} />
         <main style={{ flex: 1 }}>
-          <Banner />
-          <FeaturedProducts />
+          <BannerSection />
+          <MainCategory />
+          <ProductSection />
         </main>
         <Footer />
       </CartProvider>
