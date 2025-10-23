@@ -1,12 +1,9 @@
-name: Deploy Food Store Frontend
+name: Deploy Grocery App (Citibite)
 
 on:
   push:
     branches:
-      - adria-main
-      - bombay-main
-      - chotivalaswiss-main
-      - jaipur-main
+      - main
 
 jobs:
   build-and-push:
@@ -22,62 +19,21 @@ jobs:
       - name: Docker Login
         run: docker login -u jasveer399 -p ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      - name: Set ENV based on Branch
+      - name: Set ENV for Citibite
         id: setenv
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/adria-main" ]]; then
-            echo "image_tag=adria" >> $GITHUB_OUTPUT
-            echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
-            echo "port=3001" >> $GITHUB_OUTPUT
-            echo "VITE_APP_NAME=Adria" >> $GITHUB_ENV
-            echo "VITE_STORE_ID=13" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_URL=https://adrialandshut.de/" >> $GITHUB_ENV
-            echo "VITE_APP_COPYRIGHT_TEXT=Copyright © Pizzaservice Adria" >> $GITHUB_ENV
-            echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_ROUTE=order-online" >> $GITHUB_ENV
-            echo "VITE_APP_MODE=DEVELOPMENT" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=AYtWpBvjCBR9vG3hhWICqLmO50cydwWRZ3zzI9momAkgivwMjJ9X3wQICdgCiwv4J7iQVBn_EOKJDVUU" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_ADRIA }}" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/bombay-main" ]]; then
-            echo "image_tag=bombay" >> $GITHUB_OUTPUT
-            echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
-            echo "port=3002" >> $GITHUB_OUTPUT
-            echo "VITE_APP_NAME=Bombay" >> $GITHUB_ENV
-            echo "VITE_STORE_ID=14" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_URL=https://bombay-online.de/" >> $GITHUB_ENV
-            echo "VITE_APP_COPYRIGHT_TEXT=© Bombay Heimservice, Verdistr. 103, 81247 München" >> $GITHUB_ENV
-            echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_ROUTE=order-online" >> $GITHUB_ENV
-            echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=AXIO8j8Nl34w0HyOpSLsKJhZQlKl4SqOJS6e6nI6ygU_IEjiwFajwn5dR9NKDIQyoamwJOZa2MuzBCH_" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_BOMBAY }}" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/chotivalaswiss-main" ]]; then
-            echo "image_tag=chotivalaswiss" >> $GITHUB_OUTPUT
-            echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
-            echo "port=3003" >> $GITHUB_OUTPUT
-            echo "VITE_APP_NAME=Chotivalaswiss" >> $GITHUB_ENV
-            echo "VITE_STORE_ID=12" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_URL=https://chotivalaswiss.com/" >> $GITHUB_ENV
-            echo "VITE_APP_COPYRIGHT_TEXT=© 2018 bei Chotivala. Alle Rechte vorbehalten. Website gestaltet von Chotivala" >> $GITHUB_ENV
-            echo "VITE_COUNTRY=SWITZERLAND" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_ROUTE=order-online" >> $GITHUB_ENV
-            echo "VITE_APP_MODE=DEVELOPMENT" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=AYtWpBvjCBR9vG3hhWICqLmO50cydwWRZ3zzI9momAkgivwMjJ9X3wQICdgCiwv4J7iQVBn_EOKJDVUU" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_CHOTIVALA }}" >> $GITHUB_ENV
-          elif [[ "${{ github.ref }}" == "refs/heads/jaipur-main" ]]; then
-            echo "image_tag=jaipur" >> $GITHUB_OUTPUT
-            echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
-            echo "port=3004" >> $GITHUB_OUTPUT
-            echo "VITE_APP_NAME=Jaipur" >> $GITHUB_ENV
-            echo "VITE_STORE_ID=15" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_URL=https://jaipur-heimservice.de/" >> $GITHUB_ENV
-            echo "VITE_APP_COPYRIGHT_TEXT=© Jaipur Heimservice, Schellingstraße 136 80797 München" >> $GITHUB_ENV
-            echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
-            echo "VITE_APP_BASE_ROUTE=order-online" >> $GITHUB_ENV
-            echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=AYtWpBvjCBR9vG3hhWICqLmO50cydwWRZ3zzI9momAkgivwMjJ9X3wQICdgCiwv4J7iQVBn_EOKJDVUU" >> $GITHUB_ENV
-            echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_JAIPUR }}" >> $GITHUB_ENV
-          fi
+          echo "image_tag=citibite" >> $GITHUB_OUTPUT
+          echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
+          echo "port=3008" >> $GITHUB_OUTPUT
+          echo "VITE_APP_NAME=Citibite" >> $GITHUB_ENV
+          echo "VITE_STORE_ID=13" >> $GITHUB_ENV
+          echo "VITE_APP_BASE_URL=https://citibite.de/" >> $GITHUB_ENV
+          echo "VITE_APP_COPYRIGHT_TEXT=© Citibite Grocery" >> $GITHUB_ENV
+          echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
+          echo "VITE_APP_BASE_ROUTE=/" >> $GITHUB_ENV
+          echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
+          echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=YOUR_SANDBOX_CLIENT_ID" >> $GITHUB_ENV
+          echo "VITE_PAYMENT_LIVE_CLIENT_ID=YOUR_LIVE_CLIENT_ID" >> $GITHUB_ENV
 
           # Common environment variables
           echo "VITE_IMAGE_BASE_URL=https://magskr.com" >> $GITHUB_ENV
@@ -99,10 +55,10 @@ jobs:
             --build-arg VITE_PAYMENT_LIVE_CLIENT_ID="${{ env.VITE_PAYMENT_LIVE_CLIENT_ID }}" \
             --build-arg VITE_PAYMENT_SANDBOX_CLIENT_ID="${{ env.VITE_PAYMENT_SANDBOX_CLIENT_ID }}" \
             --build-arg VITE_APP_MODE="${{ env.VITE_APP_MODE }}" \
-            -t jasveer399/food-store-web:${{ steps.setenv.outputs.image_tag }} .
+            -t jasveer399/citibite-web:${{ steps.setenv.outputs.image_tag }} .
 
       - name: Push Docker Image
-        run: docker push jasveer399/food-store-web:${{ steps.setenv.outputs.image_tag }}
+        run: docker push jasveer399/citibite-web:${{ steps.setenv.outputs.image_tag }}
 
   deploy:
     needs: build-and-push
@@ -117,13 +73,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no -i server.pem root@${{ needs.build-and-push.outputs.server_ip }} << 'EOF'
             IMAGE_TAG=${{ needs.build-and-push.outputs.image_tag }}
-            CONTAINER_NAME=food-store-$IMAGE_TAG
+            CONTAINER_NAME=grocery-$IMAGE_TAG
             PORT=${{ needs.build-and-push.outputs.port }}
 
             echo "Deploying $IMAGE_TAG to production server..."
 
             # Pull the latest image
-            docker pull jasveer399/food-store-web:$IMAGE_TAG
+            docker pull jasveer399/citibite-web:$IMAGE_TAG
 
             # Stop and remove existing container if it exists
             if docker ps -a --format 'table {{.Names}}' | grep -q "^$CONTAINER_NAME$"; then
@@ -138,7 +94,7 @@ jobs:
               --name $CONTAINER_NAME \
               --restart unless-stopped \
               -p $PORT:80 \
-              jasveer399/food-store-web:$IMAGE_TAG
+              jasveer399/citibite-web:$IMAGE_TAG
 
             # Verify container is running
             if docker ps | grep -q $CONTAINER_NAME; then
