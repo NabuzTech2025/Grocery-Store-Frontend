@@ -33,7 +33,7 @@ jobs:
           echo "VITE_APP_BASE_ROUTE=/" >> $GITHUB_ENV
           echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
           echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=YOUR_SANDBOX_CLIENT_ID" >> $GITHUB_ENV
-          echo "VITE_PAYMENT_LIVE_CLIENT_ID=YOUR_LIVE_CLIENT_ID" >> $GITHUB_ENV
+          echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_CITIBITE }}" >> $GITHUB_ENV
 
           # Common environment variables
           echo "VITE_IMAGE_BASE_URL=https://magskr.com" >> $GITHUB_ENV
