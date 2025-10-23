@@ -1,5 +1,7 @@
 // utils/categoryAvailability.js
 
+import { useCallback } from "react";
+
 /**
  * Converts time string (HH:MM:SS) to minutes since midnight
  * @param {string} timeString - Time in format "HH:MM:SS"
@@ -92,6 +94,15 @@ export const filterAvailableCategories = (categories, serverTime) => {
   return categories.filter((category) =>
     isCategoryAvailable(category, serverTime)
   );
+};
+
+export const getAvailableCategories = (categories, serverTime) => {
+  if (!serverTime) {
+    // If no server time, show all categories (fallback)
+    return categories;
+  }
+
+  return filterAvailableCategories(categories, serverTime);
 };
 
 /**

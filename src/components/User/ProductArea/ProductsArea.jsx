@@ -14,7 +14,7 @@ import "../../../../ui/css/product_area.css";
 import StoreTitle from "./StoreTitle";
 import MobileSearchBar from "./MobileSearchBar";
 import {
-  filterAvailableCategories,
+  getAvailableCategories,
   isCategoryAvailable,
 } from "../../../utils/categoryAvailability";
 import { useLanguage } from "../../../contexts/LanguageContext";
@@ -399,15 +399,6 @@ const ProductsArea = ({ searchTerm }) => {
       }
     };
   }, [debouncedScrollSpy]);
-
-  const getAvailableCategories = useCallback((categories, serverTime) => {
-    if (!serverTime) {
-      // If no server time, show all categories (fallback)
-      return categories;
-    }
-
-    return filterAvailableCategories(categories, serverTime);
-  }, []);
 
   useEffect(() => {
     if (isCategoriesFetched) return;

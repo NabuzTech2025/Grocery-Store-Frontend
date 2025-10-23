@@ -1,324 +1,199 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../../../../ui/css/HomeMain.css";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
+import { useStoreStatus } from "../../../contexts/StoreStatusContext";
+import { getAvailableCategories } from "../../../utils/categoryAvailability";
+import sortCategoriesByDisplayOrder from "../../../utils/helper/User/sortCategoriesByDisplayOrder";
+import { getCategory } from "../../../api/UserServices";
 
 function ProductSection() {
-  const CategoryProducts = [
-    {
-      category: "Cheese, Eggs & Dairy",
-      products: [
-        {
-          id: 1,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 2,
-          name: "Meggle Kräuter-Tube vegan 80ml",
-          weight: "80ml (1 l = 31.13 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.94,
-          originalPrice: 3.0,
-          discount: "20% OFF",
-        },
-        {
-          id: 3,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 4,
-          name: "Meggle Kräuter-Tube vegan 80ml",
-          weight: "80ml (1 l = 31.13 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.94,
-          originalPrice: 3.0,
-          discount: "20% OFF",
-        },
-        {
-          id: 5,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 6,
-          name: "Organic Free Range Eggs Large",
-          weight: "6 pieces (1 piece = 0.58 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.49,
-          originalPrice: 3.99,
-          discount: "15% OFF",
-        },
-        {
-          id: 7,
-          name: "Butter Unsalted Premium Quality",
-          weight: "250g (1 kg = 15.96 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 3.99,
-          originalPrice: 4.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 8,
-          name: "Cheddar Cheese Aged 12 Months",
-          weight: "200g (1 kg = 19.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.99,
-          originalPrice: 4.49,
-          discount: "10% OFF",
-        },
-        {
-          id: 9,
-          name: "Greek Yogurt Natural 0% Fat",
-          weight: "500g (1 kg = 5.98 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.99,
-          originalPrice: 3.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 10,
-          name: "Mozzarella Cheese Fresh",
-          weight: "125g (1 kg = 23.92 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 2.99,
-          originalPrice: 3.29,
-          discount: "10% OFF",
-        },
-        {
-          id: 11,
-          name: "Parmesan Cheese Grated",
-          weight: "100g (1 kg = 49.90 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 4.99,
-          originalPrice: 5.49,
-          discount: "10% OFF",
-        },
-        {
-          id: 12,
-          name: "Whole Milk Organic 3.5% Fat",
-          weight: "1L",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 1.49,
-          originalPrice: 1.69,
-          discount: "10% OFF",
-        },
-        {
-          id: 13,
-          name: "Cream Cheese Light Herb",
-          weight: "200g (1 kg = 14.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.99,
-          originalPrice: 3.29,
-          discount: "10% OFF",
-        },
-        {
-          id: 14,
-          name: "Gouda Cheese Sliced",
-          weight: "150g (1 kg = 19.93 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 2.99,
-          originalPrice: 3.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 15,
-          name: "Sour Cream 18% Fat",
-          weight: "200ml (1 l = 9.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 1.99,
-          originalPrice: 2.29,
-          discount: "15% OFF",
-        },
-      ],
-    },
-    {
-      category: "Fruits & Vegetables",
-      products: [
-        {
-          id: 1,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 2,
-          name: "Meggle Kräuter-Tube vegan 80ml",
-          weight: "80ml (1 l = 31.13 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.94,
-          originalPrice: 3.0,
-          discount: "20% OFF",
-        },
-        {
-          id: 3,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 4,
-          name: "Meggle Kräuter-Tube vegan 80ml",
-          weight: "80ml (1 l = 31.13 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.94,
-          originalPrice: 3.0,
-          discount: "20% OFF",
-        },
-        {
-          id: 5,
-          name: "Philadelphia Cream Cheese Natural Double Cream",
-          weight: "330g (1 kg = 11.48 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.79,
-          originalPrice: 3.9,
-          discount: "20% OFF",
-        },
-        {
-          id: 6,
-          name: "Organic Free Range Eggs Large",
-          weight: "6 pieces (1 piece = 0.58 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.49,
-          originalPrice: 3.99,
-          discount: "15% OFF",
-        },
-        {
-          id: 7,
-          name: "Butter Unsalted Premium Quality",
-          weight: "250g (1 kg = 15.96 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 3.99,
-          originalPrice: 4.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 8,
-          name: "Cheddar Cheese Aged 12 Months",
-          weight: "200g (1 kg = 19.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 3.99,
-          originalPrice: 4.49,
-          discount: "10% OFF",
-        },
-        {
-          id: 9,
-          name: "Greek Yogurt Natural 0% Fat",
-          weight: "500g (1 kg = 5.98 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.99,
-          originalPrice: 3.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 10,
-          name: "Mozzarella Cheese Fresh",
-          weight: "125g (1 kg = 23.92 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 2.99,
-          originalPrice: 3.29,
-          discount: "10% OFF",
-        },
-        {
-          id: 11,
-          name: "Parmesan Cheese Grated",
-          weight: "100g (1 kg = 49.90 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 4.99,
-          originalPrice: 5.49,
-          discount: "10% OFF",
-        },
-        {
-          id: 12,
-          name: "Whole Milk Organic 3.5% Fat",
-          weight: "1L",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 1.49,
-          originalPrice: 1.69,
-          discount: "10% OFF",
-        },
-        {
-          id: 13,
-          name: "Cream Cheese Light Herb",
-          weight: "200g (1 kg = 14.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 2.99,
-          originalPrice: 3.29,
-          discount: "10% OFF",
-        },
-        {
-          id: 14,
-          name: "Gouda Cheese Sliced",
-          weight: "150g (1 kg = 19.93 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F06bc3389bd890f8a42c0630a1b8402d3892de966.png?alt=media&token=f30965d1-4a4c-42dc-aa02-d9db648c837f",
-          price: 2.99,
-          originalPrice: 3.49,
-          discount: "15% OFF",
-        },
-        {
-          id: 15,
-          name: "Sour Cream 18% Fat",
-          weight: "200ml (1 l = 9.95 €)",
-          image:
-            "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2F18b4d9d95bc3d2ef9d1442d9da4f9f61db16bc56.png?alt=media&token=61f4f7d1-c261-4bb8-9e5e-dc1373f59a4e",
-          price: 1.99,
-          originalPrice: 2.29,
-          discount: "15% OFF",
-        },
-      ],
-    },
-  ];
+  const [categories, setCategories] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [categoryProducts, setCategoryProducts] = useState([]);
+  const [isCategoriesFetched, setIsCategoriesFetched] = useState(false);
+  const [error, setError] = useState(null);
+  const { serverTime } = useStoreStatus();
+  const STORE_ID = import.meta.env.VITE_STORE_ID;
+  const ITEMS_PER_PAGE = 20;
+
+  // Fetch categories
+  useEffect(() => {
+    if (isCategoriesFetched) return;
+
+    (async () => {
+      try {
+        const res = await getCategory(STORE_ID);
+        const cats = res.data ?? res;
+
+        const availableCategories = getAvailableCategories(cats, serverTime);
+        const sortedCategories =
+          sortCategoriesByDisplayOrder(availableCategories);
+
+        setCategories(sortedCategories);
+      } catch (err) {
+        setError(err.message || "Failed to load categories");
+      } finally {
+        setIsCategoriesFetched(true);
+      }
+    })();
+  }, [isCategoriesFetched, serverTime]);
+
+  // Fetch products for all categories
+  useEffect(() => {
+    if (categories.length === 0) return;
+
+    (async () => {
+      try {
+        const productsPromises = categories.map(async (category) => {
+          const response = await fetch(
+            `https://magskr.com/products/limitbycat/${ITEMS_PER_PAGE}?offset=0&store_id=${STORE_ID}&category_id=${category.id}`
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const productsData = await response.json();
+
+          return {
+            categoryId: category.id,
+            categoryName: category.name,
+            products: productsData,
+          };
+        });
+
+        const allCategoryProducts = await Promise.all(productsPromises);
+        setAllProducts(allCategoryProducts);
+      } catch (err) {
+        console.error("Error fetching products:", err);
+        setError(err.message);
+      }
+    })();
+  }, [categories, STORE_ID]);
+
+  // Transform combined data
+  useEffect(() => {
+    if (categories.length === 0 || allProducts.length === 0) return;
+
+    const transformedData = allProducts
+      .filter((categoryData) => categoryData.products.length > 0)
+      .map((categoryData) => {
+        const category = categories.find(
+          (cat) => cat.id === categoryData.categoryId
+        );
+
+        return {
+          category: category?.name || categoryData.categoryName,
+          categoryImage: category?.image_url || "",
+          products: categoryData.products
+            .filter((product) => product.isActive)
+            .map((product) => {
+              // Handle variable products (get price from first variant)
+              let productPrice = Number(product.price) || 0;
+              let discountPrice = Number(product.discount_price) || 0;
+
+              // If product is variable and has variants, use first variant price
+              if (
+                product.type === "variable" &&
+                product.variants &&
+                product.variants.length > 0
+              ) {
+                const firstVariant = product.variants[0];
+                productPrice = Number(firstVariant.price) || 0;
+                discountPrice = Number(firstVariant.discount_price) || 0;
+              }
+
+              const hasDiscount =
+                discountPrice > 0 && discountPrice < productPrice;
+
+              return {
+                id: product.id,
+                name: product.name,
+                weight: product.item_code || "",
+                description: product.description || "",
+                image: String(product.image_url || "").split("?")[0],
+                price: hasDiscount ? discountPrice : productPrice,
+                originalPrice: productPrice,
+                discount: hasDiscount
+                  ? `${Math.round(
+                      ((productPrice - discountPrice) / productPrice) * 100
+                    )}% OFF`
+                  : null,
+                category: categoryData.categoryName,
+                categoryId: categoryData.categoryId,
+                type: product.type,
+                taxPercentage: product.tax?.percentage || 0,
+                taxName: product.tax?.name || "",
+
+                // Store complete variant data
+                variants:
+                  product.variants?.map((variant) => ({
+                    id: variant.id,
+                    size: variant.size || variant.name || "",
+                    price: Number(variant.price) || 0,
+                    discountPrice: Number(variant.discount_price) || 0,
+                    stock: variant.stock || 0,
+                    sku: variant.sku || "",
+                    isAvailable: variant.isAvailable !== false,
+                    image: variant.image_url || product.image_url || "",
+                    // Keep any additional variant properties
+                    ...variant,
+                  })) || [],
+
+                // Store enriched topping groups for customization
+                enrichedToppingGroups:
+                  product.enriched_topping_groups?.map((group) => ({
+                    id: group.id,
+                    name: group.name,
+                    required: group.required || false,
+                    minSelection: group.min_selection || 0,
+                    maxSelection: group.max_selection || 1,
+                    toppings:
+                      group.toppings?.map((topping) => ({
+                        id: topping.id,
+                        name: topping.name,
+                        price: Number(topping.price) || 0,
+                        isAvailable: topping.isAvailable !== false,
+                        image: topping.image_url || "",
+                      })) || [],
+                  })) || [],
+
+                // Store allergy information
+                allergyItems: product.allergy_items || [],
+
+                // Additional metadata
+                ownerId: product.owner_id,
+                storeId: product.store_id,
+                displayOrder: product.display_order || 0,
+
+                // Flags
+                isVariableProduct: product.type === "variable",
+                hasVariants: product.variants && product.variants.length > 0,
+                hasToppings:
+                  product.enriched_topping_groups &&
+                  product.enriched_topping_groups.length > 0,
+              };
+            })
+            .filter((product) => product.price > 0 || product.hasVariants), // Include variable products even if base price is 0
+        };
+      })
+      .filter((categoryData) => categoryData.products.length > 0);
+
+    console.log("transformedData with variants ======>", transformedData);
+    setCategoryProducts(transformedData);
+  }, [categories, allProducts]);
+
+  if (error) {
+    return <div className="error-message">Error: {error}</div>;
+  }
+
+  if (categoryProducts.length === 0) {
+    return <div className="loading-message">Loading products...</div>;
+  }
 
   return (
     <div className="all-categories-container">
-      {CategoryProducts.map((categoryData, categoryIndex) => (
+      {categoryProducts.map((categoryData, categoryIndex) => (
         <div key={categoryIndex} className="product-section">
           <h2 className="section-title">{categoryData.category}</h2>
 
@@ -341,19 +216,21 @@ function ProductSection() {
                     <div className="product-footer">
                       <div className="price-container">
                         <span className="current-price">
-                          {product.price.toFixed(2)} €
+                          {(product.price ?? 0).toFixed(2)} €
                         </span>
-                        <span className="original-price">
-                          {product.originalPrice.toFixed(2)} €
-                        </span>
+                        {product.discount && product.originalPrice && (
+                          <span className="original-price">
+                            {(product.originalPrice ?? 0).toFixed(2)} €
+                          </span>
+                        )}
                       </div>
 
-                      <button className="add-to-cart">
+                      <button
+                        className="add-to-cart"
+                        onClick={() => handleAddToCart(product)}
+                      >
                         <img
-                          style={{
-                            width: "25px",
-                            height: "25px",
-                          }}
+                          style={{ width: "25px", height: "25px" }}
                           src={shopTrolley}
                           alt="shop Trolley"
                         />
