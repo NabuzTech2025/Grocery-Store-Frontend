@@ -30,7 +30,7 @@ jobs:
           echo "VITE_APP_BASE_URL=https://citibite.de/" >> $GITHUB_ENV
           echo "VITE_APP_COPYRIGHT_TEXT=© Citibite Grocery" >> $GITHUB_ENV
           echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
-          echo "VITE_APP_BASE_ROUTE=/" >> $GITHUB_ENV
+          echo "VITE_APP_BASE_ROUTE=" >> $GITHUB_ENV
           echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
           echo "VITE_PAYMENT_SANDBOX_CLIENT_ID=YOUR_SANDBOX_CLIENT_ID" >> $GITHUB_ENV
           echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_CITIBITE }}" >> $GITHUB_ENV
