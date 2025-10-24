@@ -5,6 +5,7 @@ import { useCart } from "../../contexts/CartContext";
 import { currentCurrency } from "../../utils/helper/currency_type";
 import { getProduct } from "@/api/UserServices";
 import { useLanguage } from "../../contexts/LanguageContext";
+import ProductDetailModal from "./modals/ProductDetailModel";
 
 const ProductModal = ({ show, handleClose, product, data }) => {
   if (!show || !product) return null;
@@ -80,6 +81,7 @@ const ProductItem = ({ product }) => {
   // Product modal state
   const [showProductModal, setShowProductModal] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
+  const [showProductDetailModal, setShowProductDetailModal] = useState(false);
 
   // ─── VARIANT HANDLING ────────────────────────────────
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -108,6 +110,10 @@ const ProductItem = ({ product }) => {
     }
   };
 
+  const handleProductImageClick = () => {
+    setShowProductDetailModal(true);
+  };
+
   const openProductInfo = async () => {
     setShowProductModal(true);
 
@@ -134,6 +140,33 @@ const ProductItem = ({ product }) => {
   return (
     <div className="col">
       <div className="product-cnt-col">
+        {/* Product Image */}
+        <div className="product-image-container mb-3" style={{ textAlign: "center" }}>
+          <img
+            src={product.image_url ? product.image_url.split("?")[0] : "/assets/images/default-product.png"}
+            alt={product.name}
+            className="img-fluid"
+            style={{
+              width: "120px",
+              height: "120px",
+              objectFit: "cover",
+              borderRadius: "8px",
+              cursor: "pointer",
+              border: "2px solid #f8f9fa",
+              transition: "all 0.3s ease"
+            }}
+            onClick={handleProductImageClick}
+            onMouseEnter={(e) => {
+              e.target.style.transform = "scale(1.05)";
+              e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "none";
+            }}
+          />
+        </div>
+
         <div className="prdct-text">
           <div className="mb-2">
             <button
@@ -202,6 +235,13 @@ const ProductItem = ({ product }) => {
         handleClose={() => setShowProductModal(false)}
         product={product}
         data={data}
+      />
+
+      {/* ✅ Product Detail Modal with Image Magnifier */}
+      <ProductDetailModal
+        product={product}
+        isOpen={showProductDetailModal}
+        onClose={() => setShowProductDetailModal(false)}
       />
     </div>
   );

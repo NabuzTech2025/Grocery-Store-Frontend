@@ -19,6 +19,7 @@ import {
 import { CgAdd } from "react-icons/cg";
 import Swal from "sweetalert2";
 import { currentCurrency } from "../../utils/helper/currency_type";
+import ImageMagnifier from "../ImageMagnifier";
 
 const ProductTable = ({ reload, onSuccess }) => {
   // State variables
@@ -383,9 +384,12 @@ const ProductTable = ({ reload, onSuccess }) => {
                             <td>{indexOfFirstItem + index + 1}</td>
                             <td>
                               {item.image_url ? (
-                                <img
+                                <ImageMagnifier
                                   src={`https://magskr.com${item.image_url}`}
                                   alt={item.name}
+                                  magnifierSize={40}
+                                  zoomLevel={2}
+                                  showLens={false}
                                   style={{
                                     width: "50px",
                                     height: "50px",

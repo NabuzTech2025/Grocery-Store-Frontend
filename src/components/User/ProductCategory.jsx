@@ -4,6 +4,7 @@ import { useViewport } from "../../contexts/ViewportContext";
 import { useCart } from "../../contexts/CartContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import "../../../ui/css/ProductCategory.css";
+import ImageMagnifier from "../ImageMagnifier";
 
 const ProductCategory = ({
   categories,
@@ -172,8 +173,7 @@ const ProductCategory = ({
               }),
             }}
           >
-            <img
-              className="img-fluid"
+            <ImageMagnifier
               src={
                 category.image_url
                   ? `${
@@ -182,6 +182,9 @@ const ProductCategory = ({
                   : "assets/images/default-category.png"
               }
               alt={category.name}
+              magnifierSize={60}
+              zoomLevel={1.5}
+              showLens={false}
               style={{
                 width: "60px",
                 height: "60px",
