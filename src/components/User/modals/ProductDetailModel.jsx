@@ -94,7 +94,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     ? product.image_url.split("?")[0]
     : "/assets/images/default-product.png";
 
-  console.log("Image URL:", productImage);
+  console.log("Product in ProductDetailModal:======>", product);
 
   return (
     <div className="modal fade show" style={{ display: "block" }} tabIndex="-1">

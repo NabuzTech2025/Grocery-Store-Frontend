@@ -130,7 +130,7 @@ function ProductSection() {
                 name: product.name,
                 weight: product.item_code || "",
                 description: product.description || "",
-                image: String(product.image_url || "").split("?")[0],
+                image_url: String(product.image_url || "").split("?")[0],
                 price: hasDiscount ? discountPrice : productPrice,
                 originalPrice: productPrice,
                 discount: hasDiscount
@@ -224,9 +224,12 @@ function ProductSection() {
                     <div className="discount-badge">{product.discount}</div>
                   )}
 
-                  <div className="product-image" onClick={() => handleProductImageClick(product)}>
-                    <img 
-                      src={product.image} 
+                  <div
+                    className="product-image"
+                    onClick={() => handleProductImageClick(product)}
+                  >
+                    <img
+                      src={product.image_url}
                       alt={product.name}
                       style={{
                         maxWidth: "100%",
@@ -235,7 +238,7 @@ function ProductSection() {
                         cursor: "pointer",
                         borderRadius: "8px",
                         border: "2px solid #f8f9fa",
-                        transition: "all 0.3s ease"
+                        transition: "all 0.3s ease",
                       }}
                       onMouseEnter={(e) => {
                         e.target.style.transform = "scale(1.05)";

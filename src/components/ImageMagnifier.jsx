@@ -144,6 +144,8 @@ const ImageMagnifier = ({
     setLensPosition({ x: 0, y: 0, visible: false });
   };
 
+  console.log("SRC==========>", src);
+
   return (
     <div
       className="image-magnifier-container"
