@@ -4,7 +4,7 @@ import { useViewport } from "../../contexts/ViewportContext";
 import { useCart } from "../../contexts/CartContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import "../../../ui/css/ProductCategory.css";
-import ImageMagnifier from "../ImageMagnifier";
+
 
 const ProductCategory = ({
   categories,
@@ -173,26 +173,7 @@ const ProductCategory = ({
               }),
             }}
           >
-            <ImageMagnifier
-              src={
-                category.image_url
-                  ? `${
-                      category.image_url.split("?")[0] || "default-category.png"
-                    }`
-                  : "assets/images/default-category.png"
-              }
-              alt={category.name}
-              magnifierSize={60}
-              zoomLevel={1.5}
-              showLens={false}
-              style={{
-                width: "60px",
-                height: "60px",
-                objectFit: "cover",
-                marginBottom: "5px",
-                borderRadius: isMobileViewport ? "50%" : "8px", // Circular on mobile
-              }}
-            />
+    
             <h6
               style={{
                 margin: 0,

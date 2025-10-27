@@ -5,7 +5,6 @@ import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 import { getAvailableCategories } from "../../../utils/categoryAvailability";
 import sortCategoriesByDisplayOrder from "../../../utils/helper/User/sortCategoriesByDisplayOrder";
 import { getCategory } from "../../../api/UserServices";
-import ImageMagnifier from "../../ImageMagnifier";
 import ProductDetailModal from "../modals/ProductDetailModel";
 
 function ProductSection() {

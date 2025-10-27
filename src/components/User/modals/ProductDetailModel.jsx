@@ -86,15 +86,10 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     }
   };
 
-  console.log("ProductDetailModal - Product:", product);
-  console.log("ProductDetailModal - Available Sizes:", availableSizes);
-
   // Since backend sends single image URL as string
   const productImage = product.image_url
     ? product.image_url.split("?")[0]
     : "/assets/images/default-product.png";
-
-  console.log("Product in ProductDetailModal:======>", product);
 
   return (
     <div className="modal fade show" style={{ display: "block" }} tabIndex="-1">
@@ -118,7 +113,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                   className="product-image-container"
                   style={{ position: "relative" }}
                 >
-                  {/* Left: Main Product Image */}
+                  {/* Main Product Image */}
                   <img
                     src={productImage}
                     alt={product.name}
@@ -126,11 +121,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     style={{
                       width: "auto",
                       height: "400px",
-                      objectFit: "unset",
+                      objectFit: "contain",
                       borderRadius: "8px",
-                      cursor: "zoom-in",
+                      cursor: isMobileViewport ? "default" : "zoom-in",
                       margin: "auto",
-                      display: "flex",
+                      display: "block",
                     }}
                     onMouseMove={
                       !isMobileViewport
@@ -158,45 +153,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               visible: true,
                             });
 
-                            // Update zoomed view with live tracking
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              const xPercent = (x / rect.width) * 100;
-                              const yPercent = (y / rect.height) * 100;
-                              zoomedView.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
-                            }
-                          }
-                        : undefined
-                    }
-                    onTouchMove={
-                      !isMobileViewport
-                        ? (e) => {
-                            const rect =
-                              e.currentTarget.getBoundingClientRect();
-                            const touch = e.touches[0];
-                            const x = touch.clientX - rect.left;
-                            const y = touch.clientY - rect.top;
-
-                            // Constrain lens within image bounds
-                            const lensSize = 100;
-                            const constrainedX = Math.max(
-                              0,
-                              Math.min(x - lensSize / 2, rect.width - lensSize)
-                            );
-                            const constrainedY = Math.max(
-                              0,
-                              Math.min(y - lensSize / 2, rect.height - lensSize)
-                            );
-
-                            // Update lens position
-                            setLensPosition({
-                              x: constrainedX,
-                              y: constrainedY,
-                              visible: true,
-                            });
-
-                            // Update zoomed view with live tracking
+                            // Update zoomed view
                             const zoomedView =
                               document.getElementById("zoomed-view");
                             if (zoomedView) {
@@ -217,26 +174,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               zoomedView.style.display = "block";
                               zoomedView.style.opacity = "1";
                             }
-                            // Hide text content during tracking
-                            const productDetails =
-                              document.getElementById("product-details");
-                            if (productDetails) {
-                              productDetails.style.display = "none";
-                            }
-                          }
-                        : undefined
-                    }
-                    onTouchStart={
-                      !isMobileViewport
-                        ? () => {
-                            setIsHovering(true);
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              zoomedView.style.display = "block";
-                              zoomedView.style.opacity = "1";
-                            }
-                            // Hide text content during tracking
+                            // Hide text content during zoom
                             const productDetails =
                               document.getElementById("product-details");
                             if (productDetails) {
@@ -265,30 +203,10 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           }
                         : undefined
                     }
-                    onTouchEnd={
-                      !isMobileViewport
-                        ? () => {
-                            setIsHovering(false);
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              zoomedView.style.display = "none";
-                              zoomedView.style.opacity = "0";
-                            }
-                            setLensPosition({ x: 0, y: 0, visible: false });
-                            // Show text content again
-                            const productDetails =
-                              document.getElementById("product-details");
-                            if (productDetails) {
-                              productDetails.style.display = "block";
-                            }
-                          }
-                        : undefined
-                    }
                   />
 
-                  {/* Blue Transparent Dotted Lens */}
-                  {lensPosition.visible && (
+                  {/* Blue Transparent Lens - Only on Desktop */}
+                  {lensPosition.visible && !isMobileViewport && (
                     <div
                       style={{
                         position: "absolute",
@@ -307,40 +225,39 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     />
                   )}
 
-                  {/* Right: Zoomed Portion with Live Tracking */}
-                  <div
-                    id="zoomed-view"
-                    style={{
-                      position: "absolute",
-                      top: "0",
-                      right: window.innerWidth <= 768 ? "-200px" : "-450px",
-                      width: window.innerWidth <= 768 ? "200px" : "400px",
-                      height: window.innerWidth <= 768 ? "200px" : "400px",
-                      backgroundImage: `url(${productImage})`,
-                      backgroundSize:
-                        window.innerWidth <= 768
-                          ? "400px 400px"
-                          : "800px 800px",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "0% 0%",
-                      borderRadius: "8px",
-                      border: "2px solid #007bff",
-                      display: "none",
-                      opacity: "0",
-                      zIndex: 1000,
-                      boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                      transition: "opacity 0.2s ease-out",
-                    }}
-                  />
+                  {/* Zoomed View - Only on Desktop */}
+                  {!isMobileViewport && (
+                    <div
+                      id="zoomed-view"
+                      style={{
+                        position: "absolute",
+                        top: "0",
+                        right: "-450px",
+                        width: "400px",
+                        height: "400px",
+                        backgroundImage: `url(${productImage})`,
+                        backgroundSize: "800px 800px",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "0% 0%",
+                        borderRadius: "8px",
+                        border: "2px solid #007bff",
+                        display: "none",
+                        opacity: "0",
+                        zIndex: 1000,
+                        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                        transition: "opacity 0.2s ease-out",
+                      }}
+                    />
+                  )}
                 </div>
               </div>
 
               {/* Product Details */}
               <div className="col-md-6" id="product-details">
                 <div className="product-details">
-                  <h3 className="product-name ">{product.name}</h3>
+                  <h3 className="product-name">{product.name}</h3>
 
-                  <div className="product-price ">
+                  <div className="product-price">
                     <span
                       className="price-display"
                       style={{
@@ -374,7 +291,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                   )}
 
                   {/* Quantity Selector */}
-                  <div className="quantity-selector ">
+                  <div className="quantity-selector">
                     <h6>Quantity:</h6>
                     <div className="d-flex align-items-center quantity-buttons">
                       <button
@@ -449,7 +366,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                       Add to Cart
                     </button>
                   </div>
-                  <div className="product-description ">
+                  <div className="product-description">
                     <h6>Description:</h6>
                     <p className="text-muted">
                       {product.description ||
