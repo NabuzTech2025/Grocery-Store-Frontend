@@ -5,6 +5,7 @@ import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 import { getAvailableCategories } from "../../../utils/categoryAvailability";
 import sortCategoriesByDisplayOrder from "../../../utils/helper/User/sortCategoriesByDisplayOrder";
 import { getCategory } from "../../../api/UserServices";
+import ProductDetailModal from "../modals/ProductDetailModel";
 
 function ProductSection() {
   const [categories, setCategories] = useState([]);
@@ -15,6 +16,23 @@ function ProductSection() {
   const { serverTime } = useStoreStatus();
   const STORE_ID = import.meta.env.VITE_STORE_ID;
   const ITEMS_PER_PAGE = 20;
+
+  // Modal state
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showProductModal, setShowProductModal] = useState(false);
+
+  // Handle add to cart functionality
+  const handleAddToCart = (product) => {
+    console.log("Adding to cart:", product);
+    // Add your cart logic here
+    // This is a placeholder - you can integrate with your existing cart context
+  };
+
+  // Handle product image click
+  const handleProductImageClick = (product) => {
+    setSelectedProduct(product);
+    setShowProductModal(true);
+  };
 
   // Fetch categories
   useEffect(() => {
@@ -111,7 +129,7 @@ function ProductSection() {
                 name: product.name,
                 weight: product.item_code || "",
                 description: product.description || "",
-                image: String(product.image_url || "").split("?")[0],
+                image_url: String(product.image_url || "").split("?")[0],
                 price: hasDiscount ? discountPrice : productPrice,
                 originalPrice: productPrice,
                 discount: hasDiscount
@@ -205,8 +223,31 @@ function ProductSection() {
                     <div className="discount-badge">{product.discount}</div>
                   )}
 
-                  <div className="product-image">
-                    <img src={product.image} alt={product.name} />
+                  <div
+                    className="product-image"
+                    onClick={() => handleProductImageClick(product)}
+                  >
+                    <img
+                      src={product.image_url}
+                      alt={product.name}
+                      style={{
+                        maxWidth: "100%",
+                        maxHeight: "100%",
+                        objectFit: "contain",
+                        cursor: "pointer",
+                        borderRadius: "8px",
+                        border: "2px solid #f8f9fa",
+                        transition: "all 0.3s ease",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = "scale(1.05)";
+                        e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = "scale(1)";
+                        e.target.style.boxShadow = "none";
+                      }}
+                    />
                   </div>
 
                   <div className="product-info">
@@ -255,6 +296,18 @@ function ProductSection() {
           </div>
         </div>
       ))}
+
+      {/* Product Detail Modal */}
+      {selectedProduct && (
+        <ProductDetailModal
+          product={selectedProduct}
+          isOpen={showProductModal}
+          onClose={() => {
+            setShowProductModal(false);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -20,6 +20,7 @@ import { CgAdd } from "react-icons/cg";
 import Swal from "sweetalert2";
 import { currentCurrency } from "../../utils/helper/currency_type";
 
+
 const ProductTable = ({ reload, onSuccess }) => {
   // State variables
   const [data, setData] = useState([]);
@@ -382,20 +383,8 @@ const ProductTable = ({ reload, onSuccess }) => {
                           <tr key={item.id}>
                             <td>{indexOfFirstItem + index + 1}</td>
                             <td>
-                              {item.image_url ? (
-                                <img
-                                  src={`https://magskr.com${item.image_url}`}
-                                  alt={item.name}
-                                  style={{
-                                    width: "50px",
-                                    height: "50px",
-                                    objectFit: "cover",
-                                    borderRadius: "50%",
-                                  }}
-                                />
-                              ) : (
-                                <span className="text-muted">No image</span>
-                              )}
+                           
+                           
                             </td>
                             <td>{item.name}</td>
                             <td>{item.item_code || "-"}</td>
