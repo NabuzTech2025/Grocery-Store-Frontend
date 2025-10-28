@@ -23,7 +23,7 @@ import {
   useCategoryProducts,
 } from "../../../Hooks/useProductData.js";
 
-const ProductsArea = ({ searchTerm }) => {
+const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [loadingMore, setLoadingMore] = useState({});
   const [categoryMeta, setCategoryMeta] = useState({});
@@ -343,6 +343,88 @@ const ProductsArea = ({ searchTerm }) => {
       });
     };
   }, []);
+
+  useEffect(() => {
+    // Only run if we have a selectedCategory_id prop and categories/products are loaded
+    if (
+      selectedCategory_id &&
+      categories.length > 0 &&
+      allProductsState[selectedCategory_id] &&
+      isInitialized
+    ) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const targetCategoryId = selectedCategory_id;
+
+        // Find the category section element
+        const titleElement = document.querySelector(
+          `#cat-section-${targetCategoryId} .products-categroy-title-row`
+        );
+        const sectionElement = document.getElementById(
+          `cat-section-${targetCategoryId}`
+        );
+        const targetElement = titleElement || sectionElement;
+
+        if (targetElement) {
+          // Calculate scroll position
+          const stickyHeaderHeight =
+            document.getElementById("store-title-area")?.offsetHeight || 0;
+          const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
+
+          const targetRect = targetElement.getBoundingClientRect();
+          const currentScrollY = window.pageYOffset;
+          const targetScrollY =
+            currentScrollY +
+            targetRect.top -
+            stickyHeaderHeight -
+            SCROLL_OFFSET;
+
+          const finalScrollY = Math.max(0, targetScrollY);
+
+          // Scroll to the category
+          window.scrollTo({
+            top: finalScrollY,
+            behavior: "smooth",
+          });
+
+          // Update the selected category in state
+          setSelectedCategoryId(selectedCategory_id);
+
+          // Scroll the category navigation to show the active category
+          const categoryElement = document.querySelector(
+            `.hm-category-list li a[data-category-id="${selectedCategory_id}"]`
+          )?.parentElement;
+
+          if (categoryElement) {
+            const container = document.querySelector(".hm-category-list");
+            if (container) {
+              const containerRect = container.getBoundingClientRect();
+              const elementRect = categoryElement.getBoundingClientRect();
+
+              const scrollLeft =
+                container.scrollLeft +
+                (elementRect.left - containerRect.left) -
+                containerRect.width / 2 +
+                elementRect.width / 2;
+
+              container.scrollTo({
+                left: scrollLeft,
+                behavior: "smooth",
+              });
+            }
+          }
+        }
+      }, 300); // 300ms delay to ensure DOM is fully rendered
+
+      return () => clearTimeout(timer);
+    }
+  }, [
+    selectedCategory_id,
+    categories,
+    allProductsState,
+    isInitialized,
+    isMobileViewport,
+  ]);
 
   // Improved scroll spy logic
   const improvedHandleScrollSpy = useCallback(() => {
