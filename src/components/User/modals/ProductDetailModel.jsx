@@ -17,9 +17,9 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   });
   const [isHovering, setIsHovering] = useState(false);
 
-  // Use actual variants from API only - no static prices
+  // Use actual variants from API only - guard against null product
   const availableSizes =
-    product.variants && product.variants.length > 0
+    product?.variants?.length > 0
       ? product.variants.map((variant) => ({
           id: variant.id,
           name: variant.name,
@@ -36,11 +36,12 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
   // Get current price based on selected size from API variants
   const getCurrentPrice = () => {
+    if (!product) return 0;
     if (selectedSize && availableSizes.length > 0) {
       const variant = availableSizes.find((v) => v.name === selectedSize);
-      return variant ? variant.price : product.price;
+      return variant ? variant.price : product.price || 0;
     }
-    return product.price;
+    return product.price || 0;
   };
 
   if (!isOpen || !product) return null;
@@ -87,7 +88,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   };
 
   // Since backend sends single image URL as string
-  const productImage = product.image_url
+  const productImage = product?.image_url
     ? product.image_url.split("?")[0]
     : "/assets/images/default-product.png";
 

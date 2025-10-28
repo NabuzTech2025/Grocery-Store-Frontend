@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ProductCategory from "../ProductCategory";
 import ProductSection from "../ProductSection";
+import ProductDetailModal from "../modals/ProductDetailModel";
 import { debounce } from "lodash";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 import Footer from "@/components/User/Footer";
@@ -42,6 +43,8 @@ const ProductsArea = ({ searchTerm }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isshowSearchOnMobile, setIsshowSearchMobile] = useState(false);
   const { translations: currentLanguage } = useLanguage();
+  const [activeProduct, setActiveProduct] = useState(null);
+  const [showDetail, setShowDetail] = useState(false);
 
   const onChangeSearch = (e) => {
     const val = e.target.value;
@@ -534,6 +537,11 @@ const ProductsArea = ({ searchTerm }) => {
     }, 2000);
   };
 
+  const handleOpenDetail = (product) => {
+    setActiveProduct(product);
+    setShowDetail(true);
+  };
+
   // Error and loading states
   const error = categoriesError || productsError;
   const loading = {
@@ -883,6 +891,7 @@ const ProductsArea = ({ searchTerm }) => {
                           products={filteredProducts}
                           loading={false}
                           loadingMore={isLoadingMore}
+                          onOpenDetail={handleOpenDetail}
                         />
 
                         {hasMore && (
@@ -928,6 +937,13 @@ const ProductsArea = ({ searchTerm }) => {
           </div>
         </div>
       </section>
+
+      {/* Single shared Product Detail Modal for all categories */}
+      <ProductDetailModal
+        product={activeProduct}
+        isOpen={showDetail && !!activeProduct}
+        onClose={() => setShowDetail(false)}
+      />
     </>
   );
 };

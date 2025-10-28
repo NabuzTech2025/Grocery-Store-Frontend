@@ -69,7 +69,7 @@ const ProductInfoModal = ({ show, handleClose, product, data }) => {
   );
 };
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ product, onOpenDetail }) => {
   const { cartItems, addToCart, setSelectedProduct, setShowVariantModal } =
     useCart();
   const {
@@ -83,7 +83,7 @@ const ProductItem = ({ product }) => {
   // Product modal state
   const [showProductInfoModal, setShowProductInfoModal] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
-  const [showProductDetailModal, setShowProductDetailModal] = useState(false);
+  // detail modal is fully controlled by parent via onOpenDetail
 
   // ─── VARIANT HANDLING ────────────────────────────────
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -129,7 +129,7 @@ const ProductItem = ({ product }) => {
   };
 
   const handleProductImageClick = () => {
-    setShowProductDetailModal(true);
+    onOpenDetail && onOpenDetail(product);
   };
 
   const openProductInfo = async () => {
@@ -193,12 +193,7 @@ const ProductItem = ({ product }) => {
         data={data}
       />
 
-      {/* ✅ Product Detail Modal with Image Magnifier */}
-      <ProductDetailModal
-        product={product}
-        isOpen={showProductDetailModal}
-        onClose={() => setShowProductDetailModal(false)}
-      />
+      {/* Modal is rendered once by parent ProductSection */}
     </div>
   );
 };
