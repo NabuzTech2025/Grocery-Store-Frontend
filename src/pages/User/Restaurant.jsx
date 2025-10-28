@@ -12,6 +12,7 @@ import LoginModal from "@/components/User/modals/LoginModal";
 import ScrollToTopButton from "@/components/User/ScrollToTopButton";
 import { CartProvider } from "@/contexts/CartContext";
 import { StoreStatusProvider } from "@/contexts/StoreStatusContext";
+import { useLocation } from "react-router-dom";
 
 const Restaurant = () => {
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -19,7 +20,10 @@ const Restaurant = () => {
   const [showCartModal, setShowCartModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const location = useLocation();
+  const selectedCategoryId = location.state?.selectedCategoryId; // 👈 Access here
 
+  console.log("Selected Category ID:", selectedCategoryId);
   return (
     <div
       className="restaurant-page"
@@ -34,6 +38,7 @@ const Restaurant = () => {
             <ProductsArea
               onAddClick={() => setShowVariantModal(true)}
               searchTerm={searchTerm}
+              selectedCategory_id={selectedCategoryId}
             />
           </main>
 
