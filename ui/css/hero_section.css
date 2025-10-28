@@ -16,46 +16,8 @@
   background: #0c831f;
 }
 
-.discount-badge {
-  color: white;
-  padding: 12px 10px;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 100px;
-  text-align: center;
-  animation: slideInUp 0.8s ease-out;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
 .color2 {
   background: #ec8f04;
-}
-
-.discount-badge:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-}
-
-.discount-badge.delivery {
-  animation-delay: 0.2s;
-}
-
-.discount-badge.pickup {
-  animation-delay: 0.4s;
-}
-
-.discount-badge.loading {
-  opacity: 0.7;
-  animation: pulse 1.5s infinite;
-}
-
-.discount-text {
-  font-size: 20px;
-  font-weight: bold;
-  line-height: 1.2;
 }
 
 .service-type {
@@ -101,15 +63,6 @@
     gap: 8px;
     flex-direction: row;
   }
-
-  .discount-badge {
-    padding: 6px 10px;
-    min-width: 100px;
-  }
-
-  .discount-text {
-    font-size: 12px;
-  }
 }
 
 @media (max-width: 600px) {
@@ -119,11 +72,6 @@
     left: auto;
     gap: 5px;
     flex-direction: row;
-  }
-
-  .discount-badge {
-    padding: 9px 8px;
-    min-width: 80px;
   }
 
   .discount-text {
@@ -139,11 +87,6 @@
     gap: 4px;
     flex-direction: row;
     z-index: 1000;
-  }
-
-  .discount-badge {
-    padding: 5px 5px;
-    min-width: 70px;
   }
 
   .discount-text {

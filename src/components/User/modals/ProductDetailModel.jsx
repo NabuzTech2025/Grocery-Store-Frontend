@@ -17,9 +17,9 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   });
   const [isHovering, setIsHovering] = useState(false);
 
-  // Use actual variants from API only - no static prices
+  // Use actual variants from API only - guard against null product
   const availableSizes =
-    product.variants && product.variants.length > 0
+    product?.variants?.length > 0
       ? product.variants.map((variant) => ({
           id: variant.id,
           name: variant.name,
@@ -36,11 +36,12 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
   // Get current price based on selected size from API variants
   const getCurrentPrice = () => {
+    if (!product) return 0;
     if (selectedSize && availableSizes.length > 0) {
       const variant = availableSizes.find((v) => v.name === selectedSize);
-      return variant ? variant.price : product.price;
+      return variant ? variant.price : product.price || 0;
     }
-    return product.price;
+    return product.price || 0;
   };
 
   if (!isOpen || !product) return null;
@@ -87,7 +88,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   };
 
   // Since backend sends single image URL as string
-  const productImage = product.image_url
+  const productImage = product?.image_url
     ? product.image_url.split("?")[0]
     : "/assets/images/default-product.png";
 
@@ -111,7 +112,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
               <div className="col-md-6">
                 <div
                   className="product-image-container"
-                  style={{ position: "relative" }}
+                  style={{ position: "relative", overflow: "visible" }}
                 >
                   {/* Main Product Image */}
                   <img
@@ -153,10 +154,15 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               visible: true,
                             });
 
-                            // Update zoomed view
+                            // Update zoomed view with live tracking
                             const zoomedView =
                               document.getElementById("zoomed-view");
                             if (zoomedView) {
+                              // Make sure zoom panel is visible while moving
+                              zoomedView.style.display = "block";
+                              zoomedView.style.opacity = "1";
+                              // Match zoom image size to 2x of rendered image size for clear movement
+                              zoomedView.style.backgroundSize = `${rect.width * 2}px ${rect.height * 2}px`;
                               const xPercent = (x / rect.width) * 100;
                               const yPercent = (y / rect.height) * 100;
                               zoomedView.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
@@ -174,7 +180,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               zoomedView.style.display = "block";
                               zoomedView.style.opacity = "1";
                             }
-                            // Hide text content during zoom
+                            // Hide text content during zoom (match reference behavior)
                             const productDetails =
                               document.getElementById("product-details");
                             if (productDetails) {
@@ -194,7 +200,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               zoomedView.style.opacity = "0";
                             }
                             setLensPosition({ x: 0, y: 0, visible: false });
-                            // Show text content again
+                            // Show text content again (match reference behavior)
                             const productDetails =
                               document.getElementById("product-details");
                             if (productDetails) {
@@ -214,13 +220,14 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         top: `${lensPosition.y}px`,
                         width: "100px",
                         height: "100px",
-                        border: "2px dashed #007bff",
-                        backgroundColor: "rgba(0, 123, 255, 0.1)",
+                        border: "2px solid #007bff",
+                        backgroundColor: "rgba(0, 123, 255, 0.15)",
                         borderRadius: "4px",
                         pointerEvents: "none",
                         zIndex: 999,
-                        transition: "all 0.05s ease-out",
-                        boxShadow: "0 0 10px rgba(0, 123, 255, 0.3)",
+                        transition: "all 0.1s ease-out",
+                        boxShadow: "0 0 15px rgba(0, 123, 255, 0.4)",
+                        backdropFilter: "blur(1px)",
                       }}
                     />
                   )}
@@ -232,11 +239,12 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                       style={{
                         position: "absolute",
                         top: "0",
-                        right: "-450px",
-                        width: "400px",
-                        height: "400px",
+                        right: window.innerWidth <= 1200 ? "-220px" : "-450px",
+                        width: window.innerWidth <= 1200 ? "220px" : "400px",
+                        height: window.innerWidth <= 1200 ? "220px" : "400px",
                         backgroundImage: `url(${productImage})`,
-                        backgroundSize: "800px 800px",
+                        backgroundSize:
+                          window.innerWidth <= 1200 ? "440px 440px" : "800px 800px",
                         backgroundRepeat: "no-repeat",
                         backgroundPosition: "0% 0%",
                         borderRadius: "8px",
@@ -246,6 +254,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         zIndex: 1000,
                         boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
                         transition: "opacity 0.2s ease-out",
+                        pointerEvents: "none",
                       }}
                     />
                   )}

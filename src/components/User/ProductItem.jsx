@@ -6,8 +6,10 @@ import { currentCurrency } from "../../utils/helper/currency_type";
 import { getProduct } from "@/api/UserServices";
 import { useLanguage } from "../../contexts/LanguageContext";
 import ProductDetailModal from "./modals/ProductDetailModel";
+import "../../../ui/css/HomeMain.css";
+import ProductCard from "./ProductArea/ProductCard";
 
-const ProductModal = ({ show, handleClose, product, data }) => {
+const ProductInfoModal = ({ show, handleClose, product, data }) => {
   if (!show || !product) return null;
 
   const displayData = data || product;
@@ -67,7 +69,7 @@ const ProductModal = ({ show, handleClose, product, data }) => {
   );
 };
 
-const ProductItem = ({ product }) => {
+const ProductItem = ({ product, onOpenDetail }) => {
   const { cartItems, addToCart, setSelectedProduct, setShowVariantModal } =
     useCart();
   const {
@@ -79,9 +81,9 @@ const ProductItem = ({ product }) => {
   const STORE_ID = import.meta.env.VITE_STORE_ID;
 
   // Product modal state
-  const [showProductModal, setShowProductModal] = useState(false);
+  const [showProductInfoModal, setShowProductInfoModal] = useState(false);
   const [productDetails, setProductDetails] = useState(null);
-  const [showProductDetailModal, setShowProductDetailModal] = useState(false);
+  // detail modal is fully controlled by parent via onOpenDetail
 
   // ─── VARIANT HANDLING ────────────────────────────────
   const [selectedVariant, setSelectedVariant] = useState(null);
@@ -91,17 +93,33 @@ const ProductItem = ({ product }) => {
     }
   }, [product]);
 
-  // ───── QUANTITY CALCULATION ─────
-  const quantity = cartItems
-    .filter((item) => {
-      if (item.id !== product.id) return false;
-      if (product.type === "simple") return true;
-      return item.selectedVariant?.id === selectedVariant?.id;
-    })
-    .reduce((sum, item) => sum + item.quantity, 0);
+  // ───── CALCULATE DISCOUNT ─────
+  const getDiscountInfo = () => {
+    let originalPrice = Number(product.price) || 0;
+    let discountAmount = Number(product.discount_price) || 0;
+
+    if (product.type === "variable" && selectedVariant) {
+      originalPrice = Number(selectedVariant.price) || 0;
+      discountAmount = Number(selectedVariant.discount_price) || 0;
+    }
+
+    const hasDiscount = discountAmount > 0;
+    const finalPrice = hasDiscount
+      ? originalPrice - discountAmount
+      : originalPrice;
+
+    return {
+      hasDiscount,
+      finalPrice,
+      originalPrice,
+      discount_price: discountAmount,
+    };
+  };
+
+  const discountInfo = getDiscountInfo();
 
   // ─── EVENT HANDLERS ──────────────────────────────────
-  const handleProductClick = () => {
+  const handleAddToCart = () => {
     if (product.enriched_topping_groups.length > 0) {
       setSelectedProduct(product);
       setShowVariantModal(true);
@@ -111,11 +129,11 @@ const ProductItem = ({ product }) => {
   };
 
   const handleProductImageClick = () => {
-    setShowProductDetailModal(true);
+    onOpenDetail && onOpenDetail(product);
   };
 
   const openProductInfo = async () => {
-    setShowProductModal(true);
+    setShowProductInfoModal(true);
 
     if (product.allergy_items.length > 0) {
       return;
@@ -123,7 +141,6 @@ const ProductItem = ({ product }) => {
 
     if (productDetails) return;
     try {
-      // TODO : Remove this Extra Api Call
       const res = await getProduct(STORE_ID);
       const list = res?.data ?? res ?? [];
       const found = Array.isArray(list)
@@ -137,112 +154,46 @@ const ProductItem = ({ product }) => {
   };
 
   const data = productDetails || product;
+
+  // Prepare product data for ProductCard
+  const productCardData = {
+    ...product,
+    price: discountInfo.finalPrice,
+    originalPrice: discountInfo.originalPrice,
+    discount_price: discountInfo.discount_price,
+    selectedVariant: selectedVariant,
+  };
+
   return (
     <div className="col">
-      <div className="product-cnt-col">
-        {/* Product Image */}
-        <div className="product-image-container mb-3" style={{ textAlign: "center" }}>
-          <img
-            src={product.image_url ? product.image_url.split("?")[0] : "/assets/images/default-product.png"}
-            alt={product.name}
-            className="img-fluid"
-            style={{
-              width: "120px",
-              height: "120px",
-              objectFit: "cover",
-              borderRadius: "8px",
-              cursor: "pointer",
-              border: "2px solid #f8f9fa",
-              transition: "all 0.3s ease"
-            }}
-            onClick={handleProductImageClick}
-            onMouseEnter={(e) => {
-              e.target.style.transform = "scale(1.05)";
-              e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = "scale(1)";
-              e.target.style.boxShadow = "none";
-            }}
-          />
-        </div>
+      {/* Product Info Button (if has allergy items) */}
+      {product.allergy_items.length > 0 && (
+        <button
+          className="product-info-btn info-btn"
+          onClick={openProductInfo}
+          style={{ marginBottom: "8px" }}
+        >
+          Produktinfo
+        </button>
+      )}
 
-        <div className="prdct-text">
-          <div className="mb-2">
-            <button
-              style={{
-                display: product.allergy_items.length > 0 ? "block" : "none",
-              }}
-              className="product-info-btn info-btn"
-              onClick={() => openProductInfo()}
-            >
-              Produktinfo
-            </button>
-
-            <h4 className="product-title">{product.name}</h4>
-          </div>
-
-          <p className="product-description">{product.description}</p>
-        </div>
-
-        <div className="prdct-col-footer">
-          {/* PRICE */}
-          {product.type === "simple" ? (
-            <h5>
-              {currentCurrency.symbol}{" "}
-              {product.price !== null
-                ? product.price.toLocaleString(currentCurrency.locale, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })
-                : "0.00"}
-            </h5>
-          ) : (
-            <div className="variant-select">
-              <h5>
-                {currentCurrency.symbol}{" "}
-                {product.price !== null
-                  ? product.price.toLocaleString(currentCurrency.locale, {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })
-                  : "0.00"}
-              </h5>
-            </div>
-          )}
-
-          {/* ADD BUTTON */}
-          <div className="prdct-col-counter">
-            <button
-              style={{
-                background: quantity > 0 && "#0c831f",
-                color: quantity > 0 && "white",
-              }}
-              className={`add-btn ${quantity > 0 ? "added" : ""}`}
-              onClick={handleProductClick}
-            >
-              {quantity > 0
-                ? `${quantity} ${currentLanguage.added}`
-                : currentLanguage.add}
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* Product Card */}
+      <ProductCard
+        product={productCardData}
+        onImageClick={handleProductImageClick}
+        onAddToCart={handleAddToCart}
+        currency={currentCurrency}
+      />
 
       {/* ✅ Product Info Modal */}
-      <ProductModal
-        show={showProductModal}
-        handleClose={() => setShowProductModal(false)}
+      <ProductInfoModal
+        show={showProductInfoModal}
+        handleClose={() => setShowProductInfoModal(false)}
         product={product}
         data={data}
       />
 
-      {/* ✅ Product Detail Modal with Image Magnifier */}
-      <ProductDetailModal
-        product={product}
-        isOpen={showProductDetailModal}
-        onClose={() => setShowProductDetailModal(false)}
-      />
+      {/* Modal is rendered once by parent ProductSection */}
     </div>
   );
 };

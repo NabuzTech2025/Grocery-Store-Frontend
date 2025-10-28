@@ -3,7 +3,7 @@ import ProductItem from "./ProductItem";
 import { ProductSectionSkeleton } from "../../../ui/Loader/ProductSectionSkeleton";
 import { useLanguage } from "../../contexts/LanguageContext";
 
-const ProductSection = ({ products, loading = false, loadingMore = false }) => {
+const ProductSection = ({ products, loading = false, loadingMore = false, onOpenDetail }) => {
   const {
     language,
     translations: currentLanguage,
@@ -21,10 +21,10 @@ const ProductSection = ({ products, loading = false, loadingMore = false }) => {
 
   return (
     <>
-      <div className="row row-cols-1 row-cols-sm-2">
+      <div className="row row-cols-1 row-cols-sm-4">
         {products.map((product) => (
           <div className="col" key={`prod-${product.id}`}>
-            <ProductItem product={product} />
+            <ProductItem product={product} onOpenDetail={onOpenDetail} />
           </div>
         ))}
       </div>

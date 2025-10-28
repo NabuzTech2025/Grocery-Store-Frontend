@@ -5,7 +5,6 @@ import { useCart } from "../../contexts/CartContext";
 import { useLanguage } from "../../contexts/LanguageContext";
 import "../../../ui/css/ProductCategory.css";
 
-
 const ProductCategory = ({
   categories,
   onSelect,
@@ -14,7 +13,6 @@ const ProductCategory = ({
   loading = false,
   isshowSearchOnMobile = false,
 }) => {
-  const _imageBaseUrl = import.meta.env.VITE_IMAGE_BASE_URL || "";
   const refs = useRef({});
   const scrollTimeoutRef = useRef(null);
   const { isMobileViewport } = useViewport();
@@ -173,7 +171,24 @@ const ProductCategory = ({
               }),
             }}
           >
-    
+            <img
+              className="img-fluid"
+              src={
+                category.image_url
+                  ? `${
+                      category.image_url.split("?")[0] || "default-category.png"
+                    }`
+                  : "assets/images/default-category.png"
+              }
+              alt={category.name}
+              style={{
+                width: "60px",
+                height: "60px",
+                objectFit: "cover",
+                marginBottom: "5px",
+                borderRadius: isMobileViewport ? "50%" : "8px", // Circular on mobile
+              }}
+            />
             <h6
               style={{
                 margin: 0,

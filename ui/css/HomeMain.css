@@ -147,6 +147,7 @@
   overflow: hidden;
   background: #fff;
   height: 100%;
+  cursor: pointer;
 }
 
 .category-card:hover {
@@ -449,6 +450,22 @@
 
 .add-to-cart:hover {
   background: #5a3aa3;
+}
+
+.product-quantity {
+  position: absolute;
+  top: -15px;
+  left: -10px;
+  background: #fcb906;
+  color: #5a3aa3;
+  font-size: 12px;
+  font-weight: 700;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .scroll-arrow {

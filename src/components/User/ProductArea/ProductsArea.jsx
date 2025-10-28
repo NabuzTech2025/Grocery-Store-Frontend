@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import ProductCategory from "../ProductCategory";
 import ProductSection from "../ProductSection";
-import { getCategory } from "@/api/UserServices";
+import ProductDetailModal from "../modals/ProductDetailModel";
 import { debounce } from "lodash";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 import Footer from "@/components/User/Footer";
@@ -13,26 +13,26 @@ import OrderTypeButtons from "./OrderTypeButtons";
 import "../../../../ui/css/product_area.css";
 import StoreTitle from "./StoreTitle";
 import MobileSearchBar from "./MobileSearchBar";
-import {
-  getAvailableCategories,
-  isCategoryAvailable,
-} from "../../../utils/categoryAvailability";
+import { isCategoryAvailable } from "../../../utils/categoryAvailability";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
-const ProductsArea = ({ searchTerm }) => {
-  const [categories, setCategories] = useState([]);
-  const [allProducts, setAllProducts] = useState({});
-  const [categoryMeta, setCategoryMeta] = useState({});
+// Import React Query hooks
+import {
+  useCategories,
+  useAllCategoryProducts,
+  useCategoryProducts,
+} from "../../../Hooks/useProductData.js";
+
+const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
-  const [loading, setLoading] = useState({ categories: true, products: true });
   const [loadingMore, setLoadingMore] = useState({});
-  const [error, setError] = useState(null);
+  const [categoryMeta, setCategoryMeta] = useState({});
+  const [allProductsState, setAllProductsState] = useState({});
   const [isInitialized, setIsInitialized] = useState(false);
   const isUserClick = useRef(false);
   const scrollTimeoutRef = useRef(null);
   const observerRefs = useRef({});
   const { isMobileViewport } = useViewport();
-  const [isCategoriesFetched, setIsCategoriesFetched] = useState(false);
 
   // Search handling
   const [localSearchTerm, setLocalSearchTerm] = useState("");
@@ -43,6 +43,8 @@ const ProductsArea = ({ searchTerm }) => {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isshowSearchOnMobile, setIsshowSearchMobile] = useState(false);
   const { translations: currentLanguage } = useLanguage();
+  const [activeProduct, setActiveProduct] = useState(null);
+  const [showDetail, setShowDetail] = useState(false);
 
   const onChangeSearch = (e) => {
     const val = e.target.value;
@@ -53,6 +55,57 @@ const ProductsArea = ({ searchTerm }) => {
   const ITEMS_PER_PAGE = 20;
   const STORE_ID = import.meta.env.VITE_STORE_ID;
   const APP_BASE_ROUTE = import.meta.env.VITE_APP_NAME || "";
+
+  // ============================================
+  // REACT QUERY HOOKS - Replace all API calls
+  // ============================================
+
+  // Fetch categories using React Query
+  const {
+    data: categories = [],
+    isLoading: categoriesLoading,
+    error: categoriesError,
+  } = useCategories(serverTime);
+
+  // Fetch all products for categories using React Query
+  const {
+    data: allProducts = [],
+    isLoading: productsLoading,
+    error: productsError,
+  } = useAllCategoryProducts(categories);
+
+  // Transform allProducts array to object format for component compatibility
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      const productsObject = {};
+      const metaObject = {};
+
+      allProducts.forEach((categoryData) => {
+        productsObject[categoryData.categoryId] = categoryData.products;
+        metaObject[categoryData.categoryId] = {
+          hasMore: categoryData.products.length === ITEMS_PER_PAGE,
+          currentOffset: 0,
+          totalLoaded: categoryData.products.length,
+        };
+      });
+
+      setAllProductsState(productsObject);
+      setCategoryMeta(metaObject);
+    }
+  }, [allProducts]);
+
+  // Set initial selected category
+  useEffect(() => {
+    if (categories.length > 0 && !isInitialized) {
+      const sortedCategories = sortCategoriesByDisplayOrder(categories);
+      setSelectedCategoryId(sortedCategories[0].id);
+      setIsInitialized(true);
+    }
+  }, [categories, isInitialized]);
+
+  // ============================================
+  // EXISTING LOGIC (unchanged)
+  // ============================================
 
   // Enhanced banner visibility check with smooth transitions
   useEffect(() => {
@@ -71,17 +124,14 @@ const ProductsArea = ({ searchTerm }) => {
       const bannerVisibilityThreshold = totalBannerHeight * 0.8;
       const isBannerVisible = scrollY < bannerVisibilityThreshold;
 
-      // Update state only if changed
       if (isBannerVisible !== isbannerShow) {
         setIsbannerShow(isBannerVisible);
       }
 
-      // Update body classes for CSS targeting
       document.body.classList.toggle("banner-visible", isBannerVisible);
       document.body.classList.toggle("banner-hidden", !isBannerVisible);
     };
 
-    // Throttled scroll handler for better performance
     let ticking = false;
     const handleScroll = () => {
       if (!ticking) {
@@ -103,7 +153,7 @@ const ProductsArea = ({ searchTerm }) => {
     };
   }, [isbannerShow]);
 
-  // Cache management functions
+  // Cache management functions (kept for load more functionality)
   const getCacheKey = (categoryId, offset) =>
     `products_${APP_BASE_ROUTE}_${categoryId}_${offset}`;
   const getCacheTimeKey = (categoryId) =>
@@ -196,7 +246,7 @@ const ProductsArea = ({ searchTerm }) => {
         await loadProductsForCategory(categoryId, nextOffset, true);
 
       if (newProducts.length > 0) {
-        setAllProducts((prev) => {
+        setAllProductsState((prev) => {
           const existingProducts = prev[categoryId] || [];
           const combinedProducts = [...existingProducts, ...newProducts];
           const uniqueProducts = removeDuplicateProducts(combinedProducts);
@@ -252,7 +302,7 @@ const ProductsArea = ({ searchTerm }) => {
               entry.isIntersecting &&
               categoryMeta[categoryId]?.hasMore &&
               !loadingMore[categoryId] &&
-              !isUserClick.current // Don't load more during user navigation
+              !isUserClick.current
             ) {
               console.log("Loading more products for category:", categoryId);
               loadMoreProducts(categoryId);
@@ -274,14 +324,17 @@ const ProductsArea = ({ searchTerm }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       categories.forEach((category) => {
-        if (allProducts[category.id] && categoryMeta[category.id]?.hasMore) {
+        if (
+          allProductsState[category.id] &&
+          categoryMeta[category.id]?.hasMore
+        ) {
           setupIntersectionObserver(category.id);
         }
       });
     }, 100);
 
     return () => clearTimeout(timer);
-  }, [categories, allProducts, categoryMeta, setupIntersectionObserver]);
+  }, [categories, allProductsState, categoryMeta, setupIntersectionObserver]);
 
   useEffect(() => {
     return () => {
@@ -291,6 +344,88 @@ const ProductsArea = ({ searchTerm }) => {
     };
   }, []);
 
+  useEffect(() => {
+    // Only run if we have a selectedCategory_id prop and categories/products are loaded
+    if (
+      selectedCategory_id &&
+      categories.length > 0 &&
+      allProductsState[selectedCategory_id] &&
+      isInitialized
+    ) {
+      // Small delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const targetCategoryId = selectedCategory_id;
+
+        // Find the category section element
+        const titleElement = document.querySelector(
+          `#cat-section-${targetCategoryId} .products-categroy-title-row`
+        );
+        const sectionElement = document.getElementById(
+          `cat-section-${targetCategoryId}`
+        );
+        const targetElement = titleElement || sectionElement;
+
+        if (targetElement) {
+          // Calculate scroll position
+          const stickyHeaderHeight =
+            document.getElementById("store-title-area")?.offsetHeight || 0;
+          const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
+
+          const targetRect = targetElement.getBoundingClientRect();
+          const currentScrollY = window.pageYOffset;
+          const targetScrollY =
+            currentScrollY +
+            targetRect.top -
+            stickyHeaderHeight -
+            SCROLL_OFFSET;
+
+          const finalScrollY = Math.max(0, targetScrollY);
+
+          // Scroll to the category
+          window.scrollTo({
+            top: finalScrollY,
+            behavior: "smooth",
+          });
+
+          // Update the selected category in state
+          setSelectedCategoryId(selectedCategory_id);
+
+          // Scroll the category navigation to show the active category
+          const categoryElement = document.querySelector(
+            `.hm-category-list li a[data-category-id="${selectedCategory_id}"]`
+          )?.parentElement;
+
+          if (categoryElement) {
+            const container = document.querySelector(".hm-category-list");
+            if (container) {
+              const containerRect = container.getBoundingClientRect();
+              const elementRect = categoryElement.getBoundingClientRect();
+
+              const scrollLeft =
+                container.scrollLeft +
+                (elementRect.left - containerRect.left) -
+                containerRect.width / 2 +
+                elementRect.width / 2;
+
+              container.scrollTo({
+                left: scrollLeft,
+                behavior: "smooth",
+              });
+            }
+          }
+        }
+      }, 300); // 300ms delay to ensure DOM is fully rendered
+
+      return () => clearTimeout(timer);
+    }
+  }, [
+    selectedCategory_id,
+    categories,
+    allProductsState,
+    isInitialized,
+    isMobileViewport,
+  ]);
+
   // Improved scroll spy logic
   const improvedHandleScrollSpy = useCallback(() => {
     if (isUserClick.current) return;
@@ -299,7 +434,6 @@ const ProductsArea = ({ searchTerm }) => {
     const stickyHeaderHeight =
       document.getElementById("store-title-area")?.offsetHeight || 0;
 
-    // Get viewport height for better calculation
     const viewportHeight = window.innerHeight;
     const centerPoint = scrollY + viewportHeight / 2;
 
@@ -325,7 +459,6 @@ const ProductsArea = ({ searchTerm }) => {
 
     if (sections.length === 0) return;
 
-    // Find the section closest to the center of the viewport
     let activeSection = sections[0];
     let minDistance = Math.abs(centerPoint - sections[0].center);
 
@@ -337,11 +470,9 @@ const ProductsArea = ({ searchTerm }) => {
       }
     });
 
-    // Only update if the active section has changed
     if (activeSection && activeSection.id !== selectedCategoryId) {
       setSelectedCategoryId(activeSection.id);
 
-      // Update category navigation
       const categoryElement = document.querySelector(
         `.hm-category-list li a[data-category-id="${activeSection.id}"]`
       )?.parentElement;
@@ -375,9 +506,8 @@ const ProductsArea = ({ searchTerm }) => {
     }
   }, [categories, selectedCategoryId]);
 
-  // Update the debounced scroll spy to use the improved version
   const debouncedScrollSpy = useCallback(
-    debounce(improvedHandleScrollSpy, 50), // Slightly increased debounce for better performance
+    debounce(improvedHandleScrollSpy, 50),
     [improvedHandleScrollSpy]
   );
 
@@ -401,107 +531,6 @@ const ProductsArea = ({ searchTerm }) => {
   }, [debouncedScrollSpy]);
 
   useEffect(() => {
-    if (isCategoriesFetched) return;
-
-    (async () => {
-      try {
-        const res = await getCategory(STORE_ID);
-        const cats = res.data ?? res;
-
-        // Filter categories based on availability
-        const availableCategories = getAvailableCategories(cats, serverTime);
-
-        const sortedCategories =
-          sortCategoriesByDisplayOrder(availableCategories);
-
-        setCategories(sortedCategories);
-
-        if (sortedCategories.length > 0) {
-          // Select the FIRST category after sorting
-          setSelectedCategoryId(sortedCategories[0].id);
-          setIsInitialized(true);
-        }
-      } catch (err) {
-        setError(err.message || "Failed to load categories");
-      } finally {
-        setLoading((l) => ({ ...l, categories: false }));
-        setIsCategoriesFetched(true);
-      }
-    })();
-  }, [isCategoriesFetched, serverTime, getAvailableCategories]);
-
-  // Add a new useEffect to re-filter categories when serverTime changes
-  useEffect(() => {
-    if (categories.length === 0 || !serverTime) return;
-
-    // Re-fetch and filter categories when server time updates
-    (async () => {
-      try {
-        const res = await getCategory(STORE_ID);
-        const cats = res.data ?? res;
-        const availableCategories = getAvailableCategories(cats, serverTime);
-
-        console.log("Re-filtering categories based on time:", serverTime);
-        console.log("Available categories now:", availableCategories);
-
-        // Only update if the available categories have changed
-        const currentCategoryIds = categories.map((cat) => cat.id).sort();
-        const newCategoryIds = availableCategories.map((cat) => cat.id).sort();
-
-        if (
-          JSON.stringify(currentCategoryIds) !== JSON.stringify(newCategoryIds)
-        ) {
-          setCategories(availableCategories);
-
-          // Update selected category if current one is no longer available
-          if (
-            selectedCategoryId &&
-            !availableCategories.find((cat) => cat.id === selectedCategoryId)
-          ) {
-            if (availableCategories.length > 0) {
-              setSelectedCategoryId(availableCategories[0].id);
-            }
-          }
-        }
-      } catch (err) {
-        console.error("Error re-filtering categories:", err);
-      }
-    })();
-  }, [serverTime]);
-
-  useEffect(() => {
-    const loadInitialProducts = async () => {
-      if (categories.length === 0) return;
-
-      try {
-        const productsData = {};
-        const metaData = {};
-
-        await Promise.all(
-          categories.map(async (category) => {
-            const { products, meta } = await loadProductsForCategory(
-              category.id,
-              0,
-              true
-            );
-            productsData[category.id] = removeDuplicateProducts(products);
-            metaData[category.id] = meta;
-          })
-        );
-
-        setAllProducts(productsData);
-        setCategoryMeta(metaData);
-      } catch (err) {
-        setError(err.message || "Failed to load products");
-      } finally {
-        setLoading((l) => ({ ...l, products: false }));
-      }
-    };
-
-    loadInitialProducts();
-  }, [categories]);
-
-  useEffect(() => {
     if (isMobileViewport) {
       document.body.classList.toggle(
         "mobile-search-visible",
@@ -514,40 +543,37 @@ const ProductsArea = ({ searchTerm }) => {
     };
   }, [isshowSearchOnMobile, isMobileViewport]);
 
-  // Enhanced handleCategorySelect function
   const handleCategorySelect = (id) => {
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
 
-    // Clear search term and hide mobile search
     setLocalSearchTerm("");
     setIsshowSearchMobile(false);
     setSelectedCategoryId(id);
     isUserClick.current = true;
 
-    // Store the target category ID for tracking
     const targetCategoryId = id;
 
-    // Disable intersection observers temporarily to prevent unwanted loading
     const tempDisableObservers = () => {
       Object.values(observerRefs.current).forEach((observer) => {
         if (observer) observer.disconnect();
       });
     };
 
-    // Re-enable intersection observers after scrolling settles
     const reEnableObservers = () => {
       setTimeout(() => {
         categories.forEach((category) => {
-          if (allProducts[category.id] && categoryMeta[category.id]?.hasMore) {
+          if (
+            allProductsState[category.id] &&
+            categoryMeta[category.id]?.hasMore
+          ) {
             setupIntersectionObserver(category.id);
           }
         });
       }, 100);
     };
 
-    // Enhanced scroll function that maintains precise positioning
     const scrollToCategory = () => {
       const titleElement = document.querySelector(
         `#cat-section-${targetCategoryId} .products-categroy-title-row`
@@ -562,22 +588,12 @@ const ProductsArea = ({ searchTerm }) => {
           document.getElementById("store-title-area")?.offsetHeight || 0;
         const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
 
-        // Calculate target position more precisely
         const targetRect = targetElement.getBoundingClientRect();
         const currentScrollY = window.pageYOffset;
         const targetScrollY =
           currentScrollY + targetRect.top - stickyHeaderHeight - SCROLL_OFFSET;
 
-        // Ensure we don't scroll to negative position
         const finalScrollY = Math.max(0, targetScrollY);
-
-        console.log("Scrolling to category:", targetCategoryId, {
-          currentScrollY,
-          targetRect: { top: targetRect.top, height: targetRect.height },
-          stickyHeaderHeight,
-          SCROLL_OFFSET,
-          finalScrollY,
-        });
 
         window.scrollTo({
           top: finalScrollY,
@@ -589,284 +605,31 @@ const ProductsArea = ({ searchTerm }) => {
       return null;
     };
 
-    // Temporarily disable observers to prevent loading during scroll
     tempDisableObservers();
 
-    // Wait for React re-render, then handle scrolling
     setTimeout(() => {
-      const sortedCategories = sortCategoriesByDisplayOrder(categories);
-      const selectedCategoryIndex = sortedCategories.findIndex(
-        (cat) => cat.id === targetCategoryId
-      );
-      const categoriesAbove = sortedCategories.slice(0, selectedCategoryIndex);
-
-      // Check current loading states
-      const currentlyLoading = categoriesAbove.filter(
-        (category) => loadingMore[category.id]
-      );
-
-      if (currentlyLoading.length > 0) {
-        // Wait for currently loading content to finish
-        const waitForCurrentLoading = () => {
-          const stillLoading = currentlyLoading.some(
-            (category) => loadingMore[category.id]
-          );
-
-          if (!stillLoading) {
-            // Current loading finished, now scroll
-            const targetScrollY = scrollToCategory();
-
-            // Set up monitoring for any new content that might load
-            if (targetScrollY !== null) {
-              const monitorContentChanges = () => {
-                setTimeout(() => {
-                  const newTargetElement = document.getElementById(
-                    `cat-section-${targetCategoryId}`
-                  );
-                  if (newTargetElement) {
-                    const newTargetRect =
-                      newTargetElement.getBoundingClientRect();
-                    const currentScrollY = window.pageYOffset;
-                    const stickyHeaderHeight =
-                      document.getElementById("store-title-area")
-                        ?.offsetHeight || 0;
-                    const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
-
-                    // Check if the element has moved significantly from expected position
-                    const expectedPosition = stickyHeaderHeight + SCROLL_OFFSET;
-                    const actualPosition = newTargetRect.top;
-                    const positionDifference = Math.abs(
-                      actualPosition - expectedPosition
-                    );
-
-                    // If position has changed significantly, readjust
-                    if (positionDifference > 30) {
-                      const adjustedScrollY =
-                        currentScrollY + (actualPosition - expectedPosition);
-                      console.log(
-                        "Adjusting scroll position due to content changes:",
-                        {
-                          expectedPosition,
-                          actualPosition,
-                          positionDifference,
-                          adjustedScrollY,
-                        }
-                      );
-
-                      window.scrollTo({
-                        top: Math.max(0, adjustedScrollY),
-                        behavior: "smooth",
-                      });
-                    }
-                  }
-                }, 300); // Wait a bit for content to settle
-              };
-
-              // Monitor for content changes for a short period
-              monitorContentChanges();
-              setTimeout(monitorContentChanges, 600);
-              setTimeout(monitorContentChanges, 1000);
-            }
-
-            // Re-enable observers after scrolling and monitoring
-            setTimeout(() => {
-              reEnableObservers();
-            }, 1200);
-          } else {
-            // Still loading, check again
-            setTimeout(waitForCurrentLoading, 100);
-          }
-        };
-
-        waitForCurrentLoading();
-      } else {
-        // No current loading, scroll immediately
-        const targetScrollY = scrollToCategory();
-
-        // Still monitor for potential content changes
-        if (targetScrollY !== null) {
-          setTimeout(() => {
-            const newTargetElement = document.getElementById(
-              `cat-section-${targetCategoryId}`
-            );
-            if (newTargetElement) {
-              const newTargetRect = newTargetElement.getBoundingClientRect();
-              const stickyHeaderHeight =
-                document.getElementById("store-title-area")?.offsetHeight || 0;
-              const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
-              const expectedPosition = stickyHeaderHeight + SCROLL_OFFSET;
-              const actualPosition = newTargetRect.top;
-              const positionDifference = Math.abs(
-                actualPosition - expectedPosition
-              );
-
-              if (positionDifference > 30) {
-                const currentScrollY = window.pageYOffset;
-                const adjustedScrollY =
-                  currentScrollY + (actualPosition - expectedPosition);
-
-                window.scrollTo({
-                  top: Math.max(0, adjustedScrollY),
-                  behavior: "smooth",
-                });
-              }
-            }
-          }, 500);
-        }
-
-        // Re-enable observers
-        setTimeout(() => {
-          reEnableObservers();
-        }, 800);
-      }
+      scrollToCategory();
+      setTimeout(() => {
+        reEnableObservers();
+      }, 800);
     }, 100);
 
-    // Reset user click flag after a longer delay
     setTimeout(() => {
       isUserClick.current = false;
     }, 2000);
   };
 
-  // Additional useEffect to handle content changes
-  useEffect(() => {
-    // Recalculate positions when products are loaded or updated
-    const recalculatePositions = () => {
-      if (isUserClick.current && selectedCategoryId) {
-        // If user just clicked a category, ensure proper scrolling after content loads
-        const targetElement = document.getElementById(
-          `cat-section-${selectedCategoryId}`
-        );
-        if (targetElement) {
-          const stickyHeaderHeight =
-            document.getElementById("store-title-area")?.offsetHeight || 0;
-          const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
+  const handleOpenDetail = (product) => {
+    setActiveProduct(product);
+    setShowDetail(true);
+  };
 
-          const elementPosition =
-            targetElement.getBoundingClientRect().top + window.pageYOffset;
-          const currentScrollPosition = window.pageYOffset;
-          const idealPosition =
-            elementPosition - stickyHeaderHeight - SCROLL_OFFSET;
-
-          // Only adjust if we're significantly off from the ideal position
-          const difference = Math.abs(currentScrollPosition - idealPosition);
-          if (difference > 50) {
-            window.scrollTo({
-              top: Math.max(0, idealPosition),
-              behavior: "smooth",
-            });
-          }
-        }
-      }
-    };
-
-    // Delay to allow DOM updates
-    const timeoutId = setTimeout(recalculatePositions, 300);
-
-    return () => clearTimeout(timeoutId);
-  }, [allProducts, selectedCategoryId, isMobileViewport]);
-
-  // MutationObserver to detect when content height changes - Enhanced version
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      // Only act if user clicked on a category
-      if (!isUserClick.current || !selectedCategoryId) return;
-
-      let shouldRecalculate = false;
-      let affectedCategoryId = null;
-
-      mutations.forEach((mutation) => {
-        if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
-          // Check if product elements were added
-          const hasProductNodes = Array.from(mutation.addedNodes).some(
-            (node) =>
-              node.nodeType === Node.ELEMENT_NODE &&
-              (node.classList?.contains("product-item") ||
-                node.querySelector?.(".product-item"))
-          );
-
-          if (hasProductNodes) {
-            // Try to determine which category was affected
-            const parentSection = mutation.target.closest(
-              '[id^="cat-section-"]'
-            );
-            if (parentSection) {
-              const categoryId = parentSection.id.replace("cat-section-", "");
-              affectedCategoryId = categoryId;
-
-              // Only recalculate if the affected category is above the selected one
-              const sortedCategories = sortCategoriesByDisplayOrder(categories);
-              const selectedIndex = sortedCategories.findIndex(
-                (cat) => cat.id === selectedCategoryId
-              );
-              const affectedIndex = sortedCategories.findIndex(
-                (cat) => cat.id === categoryId
-              );
-
-              if (affectedIndex < selectedIndex) {
-                shouldRecalculate = true;
-              }
-            }
-          }
-        }
-      });
-
-      if (shouldRecalculate && affectedCategoryId) {
-        console.log(
-          "Content added to category above selected category:",
-          affectedCategoryId,
-          "Selected:",
-          selectedCategoryId
-        );
-
-        // Recalculate scroll position after content loads
-        setTimeout(() => {
-          const targetElement = document.getElementById(
-            `cat-section-${selectedCategoryId}`
-          );
-          if (targetElement) {
-            const stickyHeaderHeight =
-              document.getElementById("store-title-area")?.offsetHeight || 0;
-            const SCROLL_OFFSET = isMobileViewport ? 135 : 25;
-
-            const targetRect = targetElement.getBoundingClientRect();
-            const currentScrollY = window.pageYOffset;
-            const expectedPosition = stickyHeaderHeight + SCROLL_OFFSET;
-            const actualPosition = targetRect.top;
-
-            // Only adjust if the position has changed significantly
-            const positionDifference = actualPosition - expectedPosition;
-
-            if (Math.abs(positionDifference) > 20) {
-              const adjustedScrollY = currentScrollY - positionDifference;
-
-              console.log("Adjusting scroll due to content load:", {
-                expectedPosition,
-                actualPosition,
-                positionDifference,
-                currentScrollY,
-                adjustedScrollY,
-              });
-
-              window.scrollTo({
-                top: Math.max(0, adjustedScrollY),
-                behavior: "smooth",
-              });
-            }
-          }
-        }, 150); // Slightly longer delay to ensure content is fully rendered
-      }
-    });
-
-    const productArea = document.getElementById("hm-product-area");
-    if (productArea) {
-      observer.observe(productArea, {
-        childList: true,
-        subtree: true,
-      });
-    }
-
-    return () => observer.disconnect();
-  }, [selectedCategoryId, isMobileViewport, categories]);
+  // Error and loading states
+  const error = categoriesError || productsError;
+  const loading = {
+    categories: categoriesLoading,
+    products: productsLoading,
+  };
 
   if (storeError && !store) {
     return (
@@ -880,7 +643,8 @@ const ProductsArea = ({ searchTerm }) => {
     );
   }
 
-  if (error) return <div className="error">Error: {error}</div>;
+  if (error) return <div className="error">Error: {error.message}</div>;
+
   if (!store) {
     return (
       <div
@@ -896,7 +660,7 @@ const ProductsArea = ({ searchTerm }) => {
   }
 
   const getFilteredProducts = (categoryId) => {
-    const categoryProducts = allProducts[categoryId] || [];
+    const categoryProducts = allProductsState[categoryId] || [];
     const uniqueProducts = removeDuplicateProducts(categoryProducts);
 
     if (!effectiveSearchTerm || !effectiveSearchTerm.trim()) {
@@ -910,11 +674,9 @@ const ProductsArea = ({ searchTerm }) => {
     );
   };
 
-  // Update the sortedCategories and activeCategories logic
   const sortedCategories = sortCategoriesByDisplayOrder(categories);
   const activeCategories = sortedCategories.filter((category) => {
     const filteredProducts = getFilteredProducts(category.id);
-    // Double-check availability in case serverTime changed recently
     const isAvailable = isCategoryAvailable(category, serverTime);
     return filteredProducts.length > 0 && isAvailable;
   });
@@ -999,9 +761,7 @@ const ProductsArea = ({ searchTerm }) => {
           )}
           <div className="row align-items-center header-row-style">
             {isMobileViewport ? (
-              // Mobile behavior with smooth transitions - render both components
               <>
-                {/* MobileSearchBar with smooth transitions */}
                 <div
                   className={`mobile-search-container ${
                     isshowSearchOnMobile ? "visible" : "hidden"
@@ -1031,7 +791,6 @@ const ProductsArea = ({ searchTerm }) => {
                   />
                 </div>
 
-                {/* StoreTitle with smooth transitions */}
                 <div
                   className={`col-lg-5 col-sm-4 col-xs-6 col-6 title-hide-mobile store-title-container ${
                     !isshowSearchOnMobile ? "visible" : "hidden"
@@ -1049,14 +808,12 @@ const ProductsArea = ({ searchTerm }) => {
                 </div>
               </>
             ) : (
-              // Desktop behavior remains the same
               <div className="col-lg-5 col-sm-4 col-xs-6 col-6 title-hide-mobile">
                 <StoreTitle isbannerShow={isbannerShow} />
               </div>
             )}
 
             <div className="col-lg-7 col-sm-8 col-xs-6 col-6 d-flex align-items-center justify-content-end gap-2">
-              {/* Search Input with smooth animation */}
               <div
                 className="header-search search-container"
                 style={{
@@ -1118,7 +875,6 @@ const ProductsArea = ({ searchTerm }) => {
                 </div>
               </div>
 
-              {/* Dynamic Delivery / Pickup Buttons with enhanced animations */}
               {!isMobileViewport && <OrderTypeButtons />}
 
               {!isshowSearchOnMobile && (
@@ -1148,7 +904,6 @@ const ProductsArea = ({ searchTerm }) => {
         </div>
       </section>
 
-      {/* Product Area with fade-in animation */}
       <section
         id="hm-product-area"
         className="fade-in"
@@ -1218,9 +973,9 @@ const ProductsArea = ({ searchTerm }) => {
                           products={filteredProducts}
                           loading={false}
                           loadingMore={isLoadingMore}
+                          onOpenDetail={handleOpenDetail}
                         />
 
-                        {/* Load More Trigger with animation */}
                         {hasMore && (
                           <div
                             id={`load-more-trigger-${category.id}`}
@@ -1265,7 +1020,12 @@ const ProductsArea = ({ searchTerm }) => {
         </div>
       </section>
 
-      <Footer />
+      {/* Single shared Product Detail Modal for all categories */}
+      <ProductDetailModal
+        product={activeProduct}
+        isOpen={showDetail && !!activeProduct}
+        onClose={() => setShowDetail(false)}
+      />
     </>
   );
 };

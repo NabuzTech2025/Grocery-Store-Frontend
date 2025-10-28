@@ -63,6 +63,7 @@ import { currentCurrency } from "./utils/helper/currency_type";
 import { PAYPAL_CLIENT_ID } from "./utils/common_urls";
 import CheckoutProtection from "./components/Protection/CheckoutProtection";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const initialOptions = {
   "client-id": PAYPAL_CLIENT_ID || "sb", // Fallback for development
@@ -74,135 +75,147 @@ const initialOptions = {
 
 const APP_BASE_ROUTE = import.meta.env.VITE_APP_BASE_ROUTE || "";
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     // <React.StrictMode>
-    <LanguageProvider>
-      <CommonContextProvider>
-        <PayPalScriptProvider options={initialOptions}>
-          <ViewportProvider>
-            <Provider store={store}>
-              <AuthProvider>
-                <StoreStatusProvider>
-                  <CartProvider>
-                    <BrowserRouter basename={`/${APP_BASE_ROUTE}`}>
-                      <TitleUpdater />
-                      <DisableZoom />
-                      <Suspense fallback={<Suspense_Loader />}>
-                        <Routes>
-                          {/* Auth Routes */}
-                          <Route path="/admin" element={<AdminLogin />} />
-                          <Route
-                            path="/login/:nextpage?"
-                            element={<LoginPage />}
-                          />
-                          <Route path="/register" element={<RegisterPage />} />
-                          <Route
-                            path="/guest-login"
-                            element={<GuestAddressPage />}
-                          />
-                          <Route
-                            path="/forgot-password"
-                            element={<ForgotPassword />}
-                          />
-                          <Route
-                            path="/reset-password"
-                            element={<ResetPassword />}
-                          />
-
-                          <Route path="/support" element={<SupportPage />} />
-                          <Route
-                            path="/privacypolicy"
-                            element={<PrivacypolicyPage />}
-                          />
-
-                          {/* Front end routes */}
-                          <Route path="/" element={<HomeMain />} />
-                          <Route path="/restaurant" element={<Restaurant />} />
-
-                          {/* User-protected routes */}
-                          <Route element={<UserRoute />}>
+    <QueryClientProvider client={queryClient}>
+      <LanguageProvider>
+        <CommonContextProvider>
+          <PayPalScriptProvider options={initialOptions}>
+            <ViewportProvider>
+              <Provider store={store}>
+                <AuthProvider>
+                  <StoreStatusProvider>
+                    <CartProvider>
+                      <BrowserRouter basename={`/${APP_BASE_ROUTE}`}>
+                        <TitleUpdater />
+                        <DisableZoom />
+                        <Suspense fallback={<Suspense_Loader />}>
+                          <Routes>
+                            {/* Auth Routes */}
+                            <Route path="/admin" element={<AdminLogin />} />
                             <Route
-                              path="/checkout"
-                              element={
-                                <CheckoutProtection>
-                                  <CheckoutPage />
-                                </CheckoutProtection>
-                              }
+                              path="/login/:nextpage?"
+                              element={<LoginPage />}
                             />
                             <Route
-                              path="/update-address"
-                              element={<UserAddress />}
+                              path="/register"
+                              element={<RegisterPage />}
                             />
-                          </Route>
+                            <Route
+                              path="/guest-login"
+                              element={<GuestAddressPage />}
+                            />
+                            <Route
+                              path="/forgot-password"
+                              element={<ForgotPassword />}
+                            />
+                            <Route
+                              path="/reset-password"
+                              element={<ResetPassword />}
+                            />
 
-                          {/* Admin-protected routes */}
-                          <Route element={<AdminRoute />}>
-                            <Route path="/admin" element={<AdminLayout />}>
-                              <Route path="home" element={<Dashboard />} />
-                              <Route path="category" element={<Category />} />
+                            <Route path="/support" element={<SupportPage />} />
+                            <Route
+                              path="/privacypolicy"
+                              element={<PrivacypolicyPage />}
+                            />
+
+                            {/* Front end routes */}
+                            <Route path="/" element={<HomeMain />} />
+                            <Route
+                              path="/restaurant"
+                              element={<Restaurant />}
+                            />
+
+                            {/* User-protected routes */}
+                            <Route element={<UserRoute />}>
                               <Route
-                                path="category-list"
-                                element={<CategoryList />}
-                              />
-                              <Route path="products" element={<Products />} />
-                              <Route
-                                path="products-list"
-                                element={<ProductsList />}
-                              />
-                              <Route path="tax" element={<TaxListPage />} />
-                              <Route
-                                path="store-setting"
-                                element={<StoreHoursListPage />}
-                              />
-                              <Route
-                                path="disscount"
-                                element={<DisscountPage />}
-                              />
-                              <Route
-                                path="toppings"
-                                element={<ToppingListPage />}
+                                path="/checkout"
+                                element={
+                                  <CheckoutProtection>
+                                    <CheckoutPage />
+                                  </CheckoutProtection>
+                                }
                               />
                               <Route
-                                path="topping-groups"
-                                element={<ToppingGroupsListPage />}
+                                path="/update-address"
+                                element={<UserAddress />}
                               />
-                              <Route
-                                path="group-item"
-                                element={<GroupsItemListPage />}
-                              />
-                              <Route
-                                path="product-groups"
-                                element={<ProductGroupsPage />}
-                              />
-                              <Route path="allergy" element={<AllergyPage />} />
-                              {/* <Route
+                            </Route>
+
+                            {/* Admin-protected routes */}
+                            <Route element={<AdminRoute />}>
+                              <Route path="/admin" element={<AdminLayout />}>
+                                <Route path="home" element={<Dashboard />} />
+                                <Route path="category" element={<Category />} />
+                                <Route
+                                  path="category-list"
+                                  element={<CategoryList />}
+                                />
+                                <Route path="products" element={<Products />} />
+                                <Route
+                                  path="products-list"
+                                  element={<ProductsList />}
+                                />
+                                <Route path="tax" element={<TaxListPage />} />
+                                <Route
+                                  path="store-setting"
+                                  element={<StoreHoursListPage />}
+                                />
+                                <Route
+                                  path="disscount"
+                                  element={<DisscountPage />}
+                                />
+                                <Route
+                                  path="toppings"
+                                  element={<ToppingListPage />}
+                                />
+                                <Route
+                                  path="topping-groups"
+                                  element={<ToppingGroupsListPage />}
+                                />
+                                <Route
+                                  path="group-item"
+                                  element={<GroupsItemListPage />}
+                                />
+                                <Route
+                                  path="product-groups"
+                                  element={<ProductGroupsPage />}
+                                />
+                                <Route
+                                  path="allergy"
+                                  element={<AllergyPage />}
+                                />
+                                {/* <Route
                               path="allergy-group"
                               element={<AllergyGroupPage />}
                             /> */}
-                              <Route
-                                path="item-allergy"
-                                element={<ItemAllergyPage />}
-                              />
-                              {/* FIXED: CategoriesPage को AdminLayout के अंदर move किया */}
-                              <Route
-                                path="categories-page"
-                                element={<CategoriesPage />}
-                              />
+                                <Route
+                                  path="item-allergy"
+                                  element={<ItemAllergyPage />}
+                                />
+                                {/* FIXED: CategoriesPage को AdminLayout के अंदर move किया */}
+                                <Route
+                                  path="categories-page"
+                                  element={<CategoriesPage />}
+                                />
+                              </Route>
                             </Route>
-                          </Route>
-                        </Routes>
-                      </Suspense>
-                    </BrowserRouter>
-                  </CartProvider>
-                </StoreStatusProvider>
-              </AuthProvider>
-            </Provider>
-          </ViewportProvider>
-        </PayPalScriptProvider>
-      </CommonContextProvider>
-    </LanguageProvider>
-
+                          </Routes>
+                        </Suspense>
+                      </BrowserRouter>
+                    </CartProvider>
+                  </StoreStatusProvider>
+                </AuthProvider>
+              </Provider>
+            </ViewportProvider>
+          </PayPalScriptProvider>
+        </CommonContextProvider>
+      </LanguageProvider>
+    </QueryClientProvider>
     // </React.StrictMode>
   );
 }

@@ -15,6 +15,35 @@ export const CartProvider = ({ children }) => {
   const [deliveryFee, setDeliveryFee] = useState(0);
   const { orderType, discounts } = useStoreStatus();
 
+  // ───── QUANTITY CALCULATION FUNCTION ─────
+  const getProductQuantity = (
+    productId,
+    variantId = null,
+    productType = "simple"
+  ) => {
+    return cartItems
+      .filter((item) => {
+        if (item.id !== productId) return false;
+        if (productType === "simple") return true;
+        // For variable products, match variant
+        return item.selectedVariant?.id === variantId;
+      })
+      .reduce((sum, item) => sum + item.quantity, 0);
+  };
+
+  // ───── GET QUANTITY BY UNIQUE KEY ─────
+  const getQuantityByKey = (uniqueKey) => {
+    const item = cartItems.find((item) => item.uniqueKey === uniqueKey);
+    return item ? item.quantity : 0;
+  };
+
+  // ───── GET ALL QUANTITIES FOR A PRODUCT (all variants) ─────
+  const getAllProductQuantities = (productId) => {
+    return cartItems
+      .filter((item) => item.id === productId)
+      .reduce((sum, item) => sum + item.quantity, 0);
+  };
+
   // Generate unique key for cart items
   const generateCartItemKey = (productId, variantId, extras = []) => {
     const extrasKey = extras
@@ -411,7 +440,10 @@ export const CartProvider = ({ children }) => {
         setShowCartButton,
         orderNote,
         setOrderNote,
-        generateCartItemKey, // Export for use in other components
+        generateCartItemKey,
+        getProductQuantity,
+        getQuantityByKey,
+        getAllProductQuantities,
       }}
     >
       {children}
