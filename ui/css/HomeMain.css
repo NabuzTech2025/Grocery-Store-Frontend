@@ -147,6 +147,7 @@
   overflow: hidden;
   background: #fff;
   height: 100%;
+  cursor: pointer;
 }
 
 .category-card:hover {

@@ -9,7 +9,7 @@ const ITEMS_PER_PAGE = 20;
 // Hook for fetching categories
 export const useCategories = (serverTime) => {
   return useQuery({
-    queryKey: ["categories", STORE_ID, serverTime],
+    queryKey: ["categories", STORE_ID],
     queryFn: async () => {
       const res = await getCategory(STORE_ID);
       const cats = res.data ?? res;
