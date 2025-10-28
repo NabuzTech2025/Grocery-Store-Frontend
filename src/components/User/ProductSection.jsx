@@ -21,7 +21,7 @@ const ProductSection = ({ products, loading = false, loadingMore = false }) => {
 
   return (
     <>
-      <div className="row row-cols-1 row-cols-sm-2">
+      <div className="row row-cols-1 row-cols-sm-4">
         {products.map((product) => (
           <div className="col" key={`prod-${product.id}`}>
             <ProductItem product={product} />

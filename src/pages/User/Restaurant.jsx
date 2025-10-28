@@ -27,15 +27,10 @@ const Restaurant = () => {
     >
       <StoreStatusProvider>
         <CartProvider>
-          <Header status={true} onSearch={setSearchTerm} />
           <Hero />
 
           {/* Main content area that will grow and allow scrolling */}
           <main style={{ flex: 1 }}>
-            <div className="sticky top-0 z-10 bg-white">
-              <StoreTitle />
-            </div>
-
             <ProductsArea
               onAddClick={() => setShowVariantModal(true)}
               searchTerm={searchTerm}
