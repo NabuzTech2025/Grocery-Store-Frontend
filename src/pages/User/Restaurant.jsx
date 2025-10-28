@@ -7,7 +7,7 @@ import Footer from "@/components/User/Footer";
 import CartButton from "../../components/User/CartButton";
 import AddressModal from "@/components/User/modals/AddressModal";
 import VariantModal from "@/components/User/modals/VariantModal";
-import CartModal from "@/components/User/modals/CartModal";
+import CartModal from "../../components/User/modals/CartModal";
 import LoginModal from "@/components/User/modals/LoginModal";
 import ScrollToTopButton from "@/components/User/ScrollToTopButton";
 import { CartProvider } from "@/contexts/CartContext";
@@ -43,17 +43,14 @@ const Restaurant = () => {
           </main>
 
           <Footer />
-          <CartButton onViewCartClick={() => setShowCartModal(true)} />
+          <CartButton />
 
           {/* Modals */}
           <AddressModal
             show={showAddressModal}
             handleClose={() => setShowAddressModal(false)}
           />
-          <CartModal
-            show={showCartModal}
-            handleClose={() => setShowCartModal(false)}
-          />
+          <CartModal />
           <LoginModal
             show={showLoginModal}
             handleClose={() => setShowLoginModal(false)}

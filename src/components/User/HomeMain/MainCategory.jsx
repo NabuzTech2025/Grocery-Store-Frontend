@@ -5,6 +5,8 @@ import { useViewport } from "../../../contexts/ViewportContext";
 import "../../../../ui/css/HomeMain.css";
 import { useCategories } from "../../../Hooks/useProductData.js";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
+import CartButton from "../CartButton.jsx";
+import CartModal from "../modals/CartModal.jsx";
 
 const MainCategory = () => {
   const { translations: currentLanguage } = useLanguage();
@@ -90,6 +92,8 @@ const MainCategory = () => {
           )}
         </div>
       </div>
+      <CartButton />
+      <CartModal />
     </section>
   );
 };

@@ -55,20 +55,6 @@
   text-decoration: none;
 }
 
-/* Category image */
-.category-image {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  margin-bottom: 5px;
-  border-radius: 8px;
-}
-
-/* Mobile circular image */
-.category-image.mobile {
-  border-radius: 50%;
-}
-
 /* Category name heading */
 .category-name {
   margin: 0;
