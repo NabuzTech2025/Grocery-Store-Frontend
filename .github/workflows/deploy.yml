@@ -26,9 +26,9 @@ jobs:
           echo "server_ip=138.199.144.4" >> $GITHUB_OUTPUT
           echo "port=3008" >> $GITHUB_OUTPUT
           echo "VITE_APP_NAME=Citibite" >> $GITHUB_ENV
-          echo "VITE_STORE_ID=13" >> $GITHUB_ENV
+          echo "VITE_STORE_ID=19" >> $GITHUB_ENV
           echo "VITE_APP_BASE_URL=https://citibite.de/" >> $GITHUB_ENV
-          echo "VITE_APP_COPYRIGHT_TEXT=© Citibite Grocery" >> $GITHUB_ENV
+          echo "VITE_APP_COPYRIGHT_TEXT=© 19Citibite Grocery" >> $GITHUB_ENV
           echo "VITE_COUNTRY=GERMANY" >> $GITHUB_ENV
           echo "VITE_APP_BASE_ROUTE=" >> $GITHUB_ENV
           echo "VITE_APP_MODE=PRODUCTION" >> $GITHUB_ENV
