@@ -337,6 +337,7 @@
   padding: 16px;
   transition: box-shadow 0.3s ease;
   overflow: visible;
+  cursor: pointer;
 }
 
 .product-card:hover {
@@ -502,6 +503,17 @@
 
   .section-title {
     font-size: 20px;
+  }
+
+  .product-card {
+    position: relative;
+    min-width: 120px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 7px;
+    transition: box-shadow 0.3s ease;
+    overflow: visible;
   }
 }
 

@@ -95,7 +95,6 @@ export const OrderPlaceWithGustUser = async (payload) => {
     const response = await axiosInstance.post("/orders/guest", payload);
     return response;
   } catch (error) {
-    console.error("OrderPlace API error:", error);
     throw error; // propagate to caller’s catch
   }
 };

@@ -756,9 +756,9 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
         }}
       >
         <div className="container">
-          {isMobileViewport && isbannerShow && !isshowSearchOnMobile && (
+          {/* {isMobileViewport && isbannerShow && !isshowSearchOnMobile && (
             <OrderTypeButtons />
-          )}
+          )} */}
           <div className="row align-items-center header-row-style">
             {isMobileViewport ? (
               <>
@@ -875,7 +875,7 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
                 </div>
               </div>
 
-              {!isMobileViewport && <OrderTypeButtons />}
+              {/* {!isMobileViewport && <OrderTypeButtons />} */}
 
               {!isshowSearchOnMobile && (
                 <a
