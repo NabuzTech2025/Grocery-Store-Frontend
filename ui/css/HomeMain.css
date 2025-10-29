@@ -423,7 +423,14 @@
 .current-price {
   font-size: 22px;
   font-weight: 700;
-  color: #6b46c1;
+  color: #624ba1;
+  line-height: 22px;
+}
+
+.current-price-discount {
+  font-size: 22px;
+  font-weight: 700;
+  color: red;
   line-height: 22px;
 }
 

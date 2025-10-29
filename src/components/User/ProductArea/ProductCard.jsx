@@ -120,7 +120,9 @@ const ProductCard = ({
         {/* Product Footer */}
         <div className="product-footer">
           <div className="price-container">
-            <span className="current-price">
+            <span
+              className={`${hasDiscount ? "current-price-discount" : "current-price"}`}
+            >
               {currency.symbol} {formatPrice(finalPrice || product.price)}
             </span>
             {hasDiscount && originalPrice && (
