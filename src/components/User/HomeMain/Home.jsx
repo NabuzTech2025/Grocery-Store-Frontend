@@ -5,7 +5,7 @@ import "../../../../ui/css/HomeMain.css";
 import Header from "../Header";
 import { useState } from "react";
 import MainCategory from "./MainCategory";
-import ProductSection from "./ProductSection";
+import HomePageProductSection from "./HomePageProductSection";
 
 const Home = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,7 +22,7 @@ const Home = () => {
         <main style={{ flex: 1 }}>
           <BannerSection />
           <MainCategory />
-          <ProductSection />
+          <HomePageProductSection />
         </main>
         <Footer />
       </CartProvider>
