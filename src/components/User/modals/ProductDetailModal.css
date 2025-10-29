@@ -110,6 +110,7 @@
   background: white;
   color: #333;
   transition: all 0.3s ease;
+  padding: 6px;
 }
 
 .quantity-buttons button:hover {
@@ -120,6 +121,14 @@
 .quantity-buttons button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.quantity-icon {
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px;
+  min-height: 24px;
+  color: black;
 }
 
 .add-to-cart-section {

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useCart } from "../../../contexts/CartContext";
 import { currentCurrency } from "../../../utils/helper/currency_type";
-import { currentLanguage } from "../../../utils/helper/lang_translate";
+import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useViewport } from "../../../contexts/ViewportContext";
 import "./ProductDetailModal.css";
+import { Minus, Plus } from "lucide-react";
 
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
   const { addToCart, cartItems } = useCart();
@@ -95,12 +96,13 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop with blur effect */}
-      <div 
-        className="modal-backdrop-blur"
-        onClick={onClose}
-      />
+      <div className="modal-backdrop-blur" onClick={onClose} />
 
-      <div className="modal fade show" style={{ display: "block" }} tabIndex="-1">
+      <div
+        className="modal fade show"
+        style={{ display: "block" }}
+        tabIndex="-1"
+      >
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
@@ -147,11 +149,17 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               const lensSize = 100;
                               const constrainedX = Math.max(
                                 0,
-                                Math.min(x - lensSize / 2, rect.width - lensSize)
+                                Math.min(
+                                  x - lensSize / 2,
+                                  rect.width - lensSize
+                                )
                               );
                               const constrainedY = Math.max(
                                 0,
-                                Math.min(y - lensSize / 2, rect.height - lensSize)
+                                Math.min(
+                                  y - lensSize / 2,
+                                  rect.height - lensSize
+                                )
                               );
 
                               // Update lens position
@@ -169,7 +177,9 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                 zoomedView.style.display = "block";
                                 zoomedView.style.opacity = "1";
                                 // Match zoom image size to 2x of rendered image size for clear movement
-                                zoomedView.style.backgroundSize = `${rect.width * 2}px ${rect.height * 2}px`;
+                                zoomedView.style.backgroundSize = `${
+                                  rect.width * 2
+                                }px ${rect.height * 2}px`;
                                 const xPercent = (x / rect.width) * 100;
                                 const yPercent = (y / rect.height) * 100;
                                 zoomedView.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
@@ -246,12 +256,15 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         style={{
                           position: "absolute",
                           top: "0",
-                          right: window.innerWidth <= 1200 ? "-220px" : "-450px",
+                          right:
+                            window.innerWidth <= 1200 ? "-220px" : "-450px",
                           width: window.innerWidth <= 1200 ? "220px" : "400px",
                           height: window.innerWidth <= 1200 ? "220px" : "400px",
                           backgroundImage: `url(${productImage})`,
                           backgroundSize:
-                            window.innerWidth <= 1200 ? "440px 440px" : "800px 800px",
+                            window.innerWidth <= 1200
+                              ? "440px 440px"
+                              : "800px 800px",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "0% 0%",
                           borderRadius: "8px",
@@ -311,12 +324,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                       <h6>Quantity:</h6>
                       <div className="d-flex align-items-center quantity-buttons">
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                           onClick={() => handleQuantityChange(-1)}
                           disabled={quantity <= 1}
-                          style={{ width: "40px", height: "40px" }}
                         >
-                          -
+                          <Minus className="quantity-icon" />
                         </button>
                         <span
                           className="mx-3"
@@ -325,18 +337,17 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           {quantity}
                         </span>
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                           onClick={() => handleQuantityChange(1)}
-                          style={{ width: "40px", height: "40px" }}
                         >
-                          +
+                          <Plus className="quantity-icon" />
                         </button>
                       </div>
                     </div>
 
                     {/* Add to Cart Button */}
                     <div className="add-to-cart-section">
-                      <button
+                      {/* <button
                         type="button"
                         className="btn-close d-md-none"
                         onClick={onClose}
@@ -355,7 +366,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         >
                           <polyline points="10 14 4 8 10 2"></polyline>
                         </svg>
-                      </button>
+                      </button> */}
                       <button
                         className="btn btn-primary btn-lg w-100"
                         onClick={handleAddToCart}
@@ -368,7 +379,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         }}
                       >
                         <img
-                          src="/assets/user/img/blk-cart-icon.svg"
+                          src={shopTrolley}
                           alt="Cart"
                           style={{
                             width: "16px",

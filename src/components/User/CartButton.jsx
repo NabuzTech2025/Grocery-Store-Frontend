@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useCart } from "../../contexts/CartContext";
-import { getUserMe } from "@/api/UserServices";
+import shopTrolley from "../../../public/assets/user/img/shopTrolley.png";
 import { useAuth } from "@/auth/AuthProvider";
 import { formatCurrencySync } from "../../utils/helper/lang_translate";
 import AddressModal from "./modals/AddressModal";
@@ -70,8 +70,7 @@ const CartButton = () => {
   const handleShowCart = (e) => {
     e.preventDefault();
 
-
- // Check if delivery postcode is needed
+    // Check if delivery postcode is needed
     if (
       !localStorage.getItem("delivery_postcode") &&
       orderType === "delivery"
@@ -97,8 +96,8 @@ const CartButton = () => {
     cartTotal.subtotal - cartTotal.discountAmount + finalDeliveryFee;
 
   return (
-          <>
-          <div
+    <>
+      <div
         onClick={handleShowCart}
         id="caetButton"
         style={{
@@ -109,34 +108,40 @@ const CartButton = () => {
           itemCount > 0 && showcartButton ? "viewcart-area-active" : ""
         }`}
       >
-        
-    
-          <>
-            <div className="cart-totalprice">
-              <img src={`assets/user/img/cart-icon.svg`} alt="Cart" />
-              <h5>
-                <span>
-                  {itemCount}{" "}
-                  {itemCount === 1 ? currentLanguage.item : currentLanguage.items}
-                </span>
-                {formatCurrencySync(grandTotal, language)}
-              </h5>
-            </div>
-
-            <a
-              href="#"
+        <>
+          <div className="cart-totalprice">
+            <img
               style={{
-               pointerEvents: "auto",
-               opacity: 1,
+                width: "40px",
+                height: "40px",
+              }}
+              src={shopTrolley}
+              alt="Cart"
+            />
+            <h5>
+              <span>
+                {itemCount}{" "}
+                {itemCount === 1 ? currentLanguage.item : currentLanguage.items}
+              </span>
+              {formatCurrencySync(grandTotal, language)}
+            </h5>
+          </div>
+
+          <a
+            href="#"
+            style={{
+              pointerEvents: "auto",
+              opacity: 1,
               cursor: "pointer",
-               }}
-            >
-              {/* {currentLanguage.view_cart}{" "} */}
-              {isOpen ? currentLanguage.view_cart : (currentLanguage.pre_order || "Vorbestellung")}{" "} 
-              <img src={`assets/user/img/right-wht-arrow.svg`} alt="Arrow" />
-            </a>
-          </>
-        
+            }}
+          >
+            {/* {currentLanguage.view_cart}{" "} */}
+            {isOpen
+              ? currentLanguage.view_cart
+              : currentLanguage.pre_order || "Vorbestellung"}{" "}
+            <img src={`assets/user/img/right-wht-arrow.svg`} alt="Arrow" />
+          </a>
+        </>
       </div>
 
       <AddressModal
