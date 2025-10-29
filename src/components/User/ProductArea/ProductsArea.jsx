@@ -22,6 +22,7 @@ import {
   useAllCategoryProducts,
   useCategoryProducts,
 } from "../../../Hooks/useProductData.js";
+import Header from "../Header.jsx";
 
 const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
@@ -756,9 +757,7 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
         }}
       >
         <div className="container">
-          {/* {isMobileViewport && isbannerShow && !isshowSearchOnMobile && (
-            <OrderTypeButtons />
-          )} */}
+          <Header status={true} onSearch={setLocalSearchTerm} />
           <div className="row align-items-center header-row-style">
             {isMobileViewport ? (
               <>
@@ -804,17 +803,17 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
                     pointerEvents: !isshowSearchOnMobile ? "auto" : "none",
                   }}
                 >
-                  <StoreTitle isbannerShow={isbannerShow} />
+                  {/* <StoreTitle isbannerShow={isbannerShow} /> */}
                 </div>
               </>
             ) : (
               <div className="col-lg-5 col-sm-4 col-xs-6 col-6 title-hide-mobile">
-                <StoreTitle isbannerShow={isbannerShow} />
+                {/* <StoreTitle isbannerShow={isbannerShow} /> */}
               </div>
             )}
 
             <div className="col-lg-7 col-sm-8 col-xs-6 col-6 d-flex align-items-center justify-content-end gap-2">
-              <div
+              {/* <div
                 className="header-search search-container"
                 style={{
                   transform: isTransitioning
@@ -873,7 +872,7 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
                     }}
                   />
                 </div>
-              </div>
+              </div> */}
 
               {/* {!isMobileViewport && <OrderTypeButtons />} */}
 

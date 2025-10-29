@@ -31,8 +31,6 @@ const Restaurant = () => {
     >
       <StoreStatusProvider>
         <CartProvider>
-          <Hero />
-
           {/* Main content area that will grow and allow scrolling */}
           <main style={{ flex: 1 }}>
             <ProductsArea
