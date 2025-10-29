@@ -94,13 +94,13 @@ const ProductCard = ({
             maxHeight: "100%",
             objectFit: "contain",
             cursor: "pointer",
-            borderRadius: "8px",
-            border: "2px solid #f8f9fa",
+            // borderRadius: "8px",
+            // border: "2px solid #f8f9fa",
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
             e.target.style.transform = "scale(1.05)";
-            e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+            // e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
           }}
           onMouseLeave={(e) => {
             e.target.style.transform = "scale(1)";
@@ -112,7 +112,7 @@ const ProductCard = ({
       {/* Product Info */}
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
-        {product.weight && <p className="product-weight">{product.weight}</p>}
+        {/* {product.weight && <p className="product-weight">{product.weight}</p>} */}
         {product.description && (
           <p className="product-description">{product.description}</p>
         )}

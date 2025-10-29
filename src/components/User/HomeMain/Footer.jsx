@@ -15,7 +15,7 @@ const Footer = () => {
       }`}
       style={{
         backgroundColor: "#f8f9fa",
-        borderTop: "1px solid #e9ecef"
+        borderTop: "1px solid #e9ecef",
       }}
     >
       <div className="container">
@@ -36,7 +36,7 @@ const Footer = () => {
                 </>
               )}
             </p>
-            <div className="footer-links">
+            {/* <div className="footer-links">
               <Link 
                 to="/support" 
                 className="text-decoration-none me-3"
@@ -58,7 +58,7 @@ const Footer = () => {
               >
                 Login
               </Link>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
