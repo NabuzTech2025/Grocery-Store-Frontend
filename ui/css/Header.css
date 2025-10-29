@@ -212,6 +212,12 @@
   background-color: #f6f3fc;
 }
 
+.show-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .search-icon {
   position: absolute;
   right: 12px;
@@ -259,5 +265,9 @@
 
   .header-container {
     padding: 0px 15px;
+  }
+
+  .searchBar {
+    height: 40px;
   }
 }

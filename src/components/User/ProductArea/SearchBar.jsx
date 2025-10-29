@@ -26,6 +26,7 @@ function SearchBar({ onSearch }) {
         placeholder={`${currentLanguage.search_anything}...`}
         value={localSearchTerm}
         onChange={onChangeSearch}
+        autoFocus
         onFocus={(e) => {
           e.target.style.borderColor = "#007bff";
           e.target.style.boxShadow = "0 0 0 0.2rem rgba(0,123,255,.25)";
