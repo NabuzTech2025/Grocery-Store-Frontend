@@ -337,6 +337,7 @@
   transition: box-shadow 0.3s ease;
   overflow: visible;
   cursor: pointer;
+  word-wrap: break-word;
 }
 
 .product-card:hover {
