@@ -93,294 +93,314 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     : "/assets/images/default-product.png";
 
   return (
-    <div className="modal fade show" style={{ display: "block" }} tabIndex="-1">
-      <div className="modal-dialog modal-lg">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{product.name}</h5>
-            <button
-              type="button"
-              className="btn-close"
-              onClick={onClose}
-              aria-label="Close"
-            ></button>
-          </div>
+    <>
+      {/* Backdrop with blur effect */}
+      {/* <div className="modal-backdrop-blur" onClick={onClose} /> */}
 
-          <div className="modal-body">
-            <div className="row">
-              {/* Product Images */}
-              <div className="col-md-6">
-                <div
-                  className="product-image-container"
-                  style={{ position: "relative", overflow: "visible" }}
-                >
-                  {/* Main Product Image */}
-                  <img
-                    src={productImage}
-                    alt={product.name}
-                    className="img-fluid product-zoom-image"
-                    style={{
-                      width: "auto",
-                      height: "400px",
-                      objectFit: "contain",
-                      borderRadius: "8px",
-                      cursor: isMobileViewport ? "default" : "zoom-in",
-                      margin: "auto",
-                      display: "block",
-                    }}
-                    onMouseMove={
-                      !isMobileViewport
-                        ? (e) => {
-                            const rect =
-                              e.currentTarget.getBoundingClientRect();
-                            const x = e.clientX - rect.left;
-                            const y = e.clientY - rect.top;
+      <div
+        className="modal fade show"
+        style={{ display: "block" }}
+        tabIndex="-1"
+      >
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header">
+              {/* <h5 className="modal-title">{product.name}</h5> */}
+              <button
+                type="button"
+                className="btn-close"
+                onClick={onClose}
+                aria-label="Close"
+              ></button>
+            </div>
 
-                            // Constrain lens within image bounds
-                            const lensSize = 100;
-                            const constrainedX = Math.max(
-                              0,
-                              Math.min(x - lensSize / 2, rect.width - lensSize)
-                            );
-                            const constrainedY = Math.max(
-                              0,
-                              Math.min(y - lensSize / 2, rect.height - lensSize)
-                            );
-
-                            // Update lens position
-                            setLensPosition({
-                              x: constrainedX,
-                              y: constrainedY,
-                              visible: true,
-                            });
-
-                            // Update zoomed view with live tracking
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              // Make sure zoom panel is visible while moving
-                              zoomedView.style.display = "block";
-                              zoomedView.style.opacity = "1";
-                              // Match zoom image size to 2x of rendered image size for clear movement
-                              zoomedView.style.backgroundSize = `${rect.width * 2}px ${rect.height * 2}px`;
-                              const xPercent = (x / rect.width) * 100;
-                              const yPercent = (y / rect.height) * 100;
-                              zoomedView.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
-                            }
-                          }
-                        : undefined
-                    }
-                    onMouseEnter={
-                      !isMobileViewport
-                        ? () => {
-                            setIsHovering(true);
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              zoomedView.style.display = "block";
-                              zoomedView.style.opacity = "1";
-                            }
-                            // Hide text content during zoom (match reference behavior)
-                            const productDetails =
-                              document.getElementById("product-details");
-                            if (productDetails) {
-                              productDetails.style.display = "none";
-                            }
-                          }
-                        : undefined
-                    }
-                    onMouseLeave={
-                      !isMobileViewport
-                        ? () => {
-                            setIsHovering(false);
-                            const zoomedView =
-                              document.getElementById("zoomed-view");
-                            if (zoomedView) {
-                              zoomedView.style.display = "none";
-                              zoomedView.style.opacity = "0";
-                            }
-                            setLensPosition({ x: 0, y: 0, visible: false });
-                            // Show text content again (match reference behavior)
-                            const productDetails =
-                              document.getElementById("product-details");
-                            if (productDetails) {
-                              productDetails.style.display = "block";
-                            }
-                          }
-                        : undefined
-                    }
-                  />
-
-                  {/* Blue Transparent Lens - Only on Desktop */}
-                  {lensPosition.visible && !isMobileViewport && (
-                    <div
+            <div className="modal-body">
+              <div className="row">
+                {/* Product Images */}
+                <div className="col-md-6">
+                  <div
+                    className="product-image-container"
+                    style={{ position: "relative", overflow: "visible" }}
+                  >
+                    {/* Main Product Image */}
+                    <img
+                      src={productImage}
+                      alt={product.name}
+                      className="img-fluid product-zoom-image"
                       style={{
-                        position: "absolute",
-                        left: `${lensPosition.x}px`,
-                        top: `${lensPosition.y}px`,
-                        width: "100px",
-                        height: "100px",
-                        border: "2px solid #007bff",
-                        backgroundColor: "rgba(0, 123, 255, 0.15)",
-                        borderRadius: "4px",
-                        pointerEvents: "none",
-                        zIndex: 999,
-                        transition: "all 0.1s ease-out",
-                        boxShadow: "0 0 15px rgba(0, 123, 255, 0.4)",
-                        backdropFilter: "blur(1px)",
-                      }}
-                    />
-                  )}
-
-                  {/* Zoomed View - Only on Desktop */}
-                  {!isMobileViewport && (
-                    <div
-                      id="zoomed-view"
-                      style={{
-                        position: "absolute",
-                        top: "0",
-                        right: window.innerWidth <= 1200 ? "-220px" : "-450px",
-                        width: window.innerWidth <= 1200 ? "220px" : "400px",
-                        height: window.innerWidth <= 1200 ? "220px" : "400px",
-                        backgroundImage: `url(${productImage})`,
-                        backgroundSize:
-                          window.innerWidth <= 1200 ? "440px 440px" : "800px 800px",
-                        backgroundRepeat: "no-repeat",
-                        backgroundPosition: "0% 0%",
+                        width: "auto",
+                        height: "400px",
+                        objectFit: "contain",
                         borderRadius: "8px",
-                        border: "2px solid #007bff",
-                        display: "none",
-                        opacity: "0",
-                        zIndex: 1000,
-                        boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
-                        transition: "opacity 0.2s ease-out",
-                        pointerEvents: "none",
+                        cursor: isMobileViewport ? "default" : "zoom-in",
+                        margin: "auto",
+                        display: "block",
                       }}
+                      onMouseMove={
+                        !isMobileViewport
+                          ? (e) => {
+                              const rect =
+                                e.currentTarget.getBoundingClientRect();
+                              const x = e.clientX - rect.left;
+                              const y = e.clientY - rect.top;
+
+                              // Constrain lens within image bounds
+                              const lensSize = 100;
+                              const constrainedX = Math.max(
+                                0,
+                                Math.min(
+                                  x - lensSize / 2,
+                                  rect.width - lensSize
+                                )
+                              );
+                              const constrainedY = Math.max(
+                                0,
+                                Math.min(
+                                  y - lensSize / 2,
+                                  rect.height - lensSize
+                                )
+                              );
+
+                              // Update lens position
+                              setLensPosition({
+                                x: constrainedX,
+                                y: constrainedY,
+                                visible: true,
+                              });
+
+                              // Update zoomed view with live tracking
+                              const zoomedView =
+                                document.getElementById("zoomed-view");
+                              if (zoomedView) {
+                                // Make sure zoom panel is visible while moving
+                                zoomedView.style.display = "block";
+                                zoomedView.style.opacity = "1";
+                                // Match zoom image size to 2x of rendered image size for clear movement
+                                zoomedView.style.backgroundSize = `${
+                                  rect.width * 2
+                                }px ${rect.height * 2}px`;
+                                const xPercent = (x / rect.width) * 100;
+                                const yPercent = (y / rect.height) * 100;
+                                zoomedView.style.backgroundPosition = `${xPercent}% ${yPercent}%`;
+                              }
+                            }
+                          : undefined
+                      }
+                      onMouseEnter={
+                        !isMobileViewport
+                          ? () => {
+                              setIsHovering(true);
+                              const zoomedView =
+                                document.getElementById("zoomed-view");
+                              if (zoomedView) {
+                                zoomedView.style.display = "block";
+                                zoomedView.style.opacity = "1";
+                              }
+                              // Hide text content during zoom (match reference behavior)
+                              const productDetails =
+                                document.getElementById("product-details");
+                              if (productDetails) {
+                                productDetails.style.display = "none";
+                              }
+                            }
+                          : undefined
+                      }
+                      onMouseLeave={
+                        !isMobileViewport
+                          ? () => {
+                              setIsHovering(false);
+                              const zoomedView =
+                                document.getElementById("zoomed-view");
+                              if (zoomedView) {
+                                zoomedView.style.display = "none";
+                                zoomedView.style.opacity = "0";
+                              }
+                              setLensPosition({ x: 0, y: 0, visible: false });
+                              // Show text content again (match reference behavior)
+                              const productDetails =
+                                document.getElementById("product-details");
+                              if (productDetails) {
+                                productDetails.style.display = "block";
+                              }
+                            }
+                          : undefined
+                      }
                     />
-                  )}
-                </div>
-              </div>
 
-              {/* Product Details */}
-              <div className="col-md-6" id="product-details">
-                <div className="product-details">
-                  <h3 className="product-name">{product.name}</h3>
-
-                  <div className="product-price">
-                    <span
-                      className="price-display"
-                      style={{
-                        fontSize: "24px",
-                        fontWeight: "bold",
-                        color: "#624ba1",
-                      }}
-                    >
-                      {format(getCurrentPrice() * quantity)}
-                    </span>
-                  </div>
-
-                  {/* Size Selection - Only show if variants exist */}
-                  {availableSizes.length > 0 && (
-                    <div className="size-selection">
-                      <h6>Size:</h6>
-                      <div className="size-options">
-                        {availableSizes.map((variant) => (
-                          <button
-                            key={variant.name}
-                            className={`size-option ${
-                              selectedSize === variant.name ? "selected" : ""
-                            }`}
-                            onClick={() => setSelectedSize(variant.name)}
-                          >
-                            {variant.name}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Quantity Selector */}
-                  <div className="quantity-selector">
-                    <h6>Quantity:</h6>
-                    <div className="d-flex align-items-center quantity-buttons">
-                      <button
-                        className="btn btn-outline-secondary"
-                        onClick={() => handleQuantityChange(-1)}
-                        disabled={quantity <= 1}
-                        style={{ width: "40px", height: "40px" }}
-                      >
-                        -
-                      </button>
-                      <span
-                        className="mx-3"
-                        style={{ fontSize: "18px", fontWeight: "bold" }}
-                      >
-                        {quantity}
-                      </span>
-                      <button
-                        className="btn btn-outline-secondary"
-                        onClick={() => handleQuantityChange(1)}
-                        style={{ width: "40px", height: "40px" }}
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Add to Cart Button */}
-                  <div className="add-to-cart-section">
-                    <button
-                      type="button"
-                      className="btn-close d-md-none"
-                      onClick={onClose}
-                      aria-label="Close"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="10 14 4 8 10 2"></polyline>
-                      </svg>
-                    </button>
-                    <button
-                      className="btn btn-primary btn-lg w-100"
-                      onClick={handleAddToCart}
-                      style={{
-                        backgroundColor: "#624ba1",
-                        borderColor: "#624ba1",
-                        padding: "12px 24px",
-                        fontSize: "16px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      <img
-                        src="/assets/user/img/blk-cart-icon.svg"
-                        alt="Cart"
+                    {/* Blue Transparent Lens - Only on Desktop */}
+                    {lensPosition.visible && !isMobileViewport && (
+                      <div
                         style={{
-                          width: "16px",
-                          height: "16px",
-                          marginRight: "8px",
-                        }}
-                        onError={(e) => {
-                          e.target.style.display = "none";
+                          position: "absolute",
+                          left: `${lensPosition.x}px`,
+                          top: `${lensPosition.y}px`,
+                          width: "100px",
+                          height: "100px",
+                          border: "2px solid #007bff",
+                          backgroundColor: "rgba(0, 123, 255, 0.15)",
+                          borderRadius: "4px",
+                          pointerEvents: "none",
+                          zIndex: 999,
+                          transition: "all 0.1s ease-out",
+                          boxShadow: "0 0 15px rgba(0, 123, 255, 0.4)",
+                          backdropFilter: "blur(1px)",
                         }}
                       />
-                      Add to Cart
-                    </button>
+                    )}
+
+                    {/* Zoomed View - Only on Desktop */}
+                    {!isMobileViewport && (
+                      <div
+                        id="zoomed-view"
+                        style={{
+                          position: "absolute",
+                          top: "0",
+                          right:
+                            window.innerWidth <= 1200 ? "-220px" : "-450px",
+                          width: window.innerWidth <= 1200 ? "220px" : "400px",
+                          height: window.innerWidth <= 1200 ? "220px" : "400px",
+                          backgroundImage: `url(${productImage})`,
+                          backgroundSize:
+                            window.innerWidth <= 1200
+                              ? "440px 440px"
+                              : "800px 800px",
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "0% 0%",
+                          borderRadius: "8px",
+                          border: "2px solid #007bff",
+                          display: "none",
+                          opacity: "0",
+                          zIndex: 1000,
+                          boxShadow: "0 8px 25px rgba(0,0,0,0.15)",
+                          transition: "opacity 0.2s ease-out",
+                          pointerEvents: "none",
+                        }}
+                      />
+                    )}
                   </div>
-                  <div className="product-description">
-                    <h6>Description:</h6>
-                    <p className="text-muted">
-                      {product.description ||
-                        "No description available for this product."}
-                    </p>
+                </div>
+
+                {/* Product Details */}
+                <div className="col-md-6" id="product-details">
+                  <div className="product-details">
+                    <h3 className="product-name">{product.name}</h3>
+
+                    <div className="product-price">
+                      <span
+                        className="price-display"
+                        style={{
+                          fontSize: "24px",
+                          fontWeight: "bold",
+                          color: "#624ba1",
+                        }}
+                      >
+                        {format(getCurrentPrice() * quantity)}
+                      </span>
+                    </div>
+
+                    {/* Size Selection - Only show if variants exist */}
+                    {availableSizes.length > 0 && (
+                      <div className="size-selection">
+                        <h6>Size:</h6>
+                        <div className="size-options">
+                          {availableSizes.map((variant) => (
+                            <button
+                              key={variant.name}
+                              className={`size-option ${
+                                selectedSize === variant.name ? "selected" : ""
+                              }`}
+                              onClick={() => setSelectedSize(variant.name)}
+                            >
+                              {variant.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Quantity Selector */}
+                    <div className="quantity-selector">
+                      <h6>Quantity:</h6>
+                      <div className="d-flex align-items-center quantity-buttons">
+                        <button
+                          className="btn btn-outline-secondary"
+                          onClick={() => handleQuantityChange(-1)}
+                          disabled={quantity <= 1}
+                          style={{ width: "40px", height: "40px" }}
+                        >
+                          -
+                        </button>
+                        <span
+                          className="mx-3"
+                          style={{ fontSize: "18px", fontWeight: "bold" }}
+                        >
+                          {quantity}
+                        </span>
+                        <button
+                          className="btn btn-outline-secondary"
+                          onClick={() => handleQuantityChange(1)}
+                          style={{ width: "40px", height: "40px" }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <div className="add-to-cart-section">
+                      <button
+                        type="button"
+                        className="btn-close d-md-none"
+                        onClick={onClose}
+                        aria-label="Close"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 16 16"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="10 14 4 8 10 2"></polyline>
+                        </svg>
+                      </button>
+                      <button
+                        className="btn btn-primary btn-lg w-100"
+                        onClick={handleAddToCart}
+                        style={{
+                          backgroundColor: "#624ba1",
+                          borderColor: "#624ba1",
+                          padding: "12px 24px",
+                          fontSize: "16px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        <img
+                          src="/assets/user/img/blk-cart-icon.svg"
+                          alt="Cart"
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            marginRight: "8px",
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
+                        />
+                        Add to Cart
+                      </button>
+                    </div>
+                    <div className="product-description">
+                      <h6>Description:</h6>
+                      <p className="text-muted">
+                        {product.description ||
+                          "No description available for this product."}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -388,7 +408,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

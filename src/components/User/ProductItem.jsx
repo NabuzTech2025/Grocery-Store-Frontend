@@ -165,7 +165,7 @@ const ProductItem = ({ product, onOpenDetail }) => {
   };
 
   return (
-    <div className="col">
+    <div className="col-lg-3">
       {/* Product Info Button (if has allergy items) */}
       {product.allergy_items.length > 0 && (
         <button
