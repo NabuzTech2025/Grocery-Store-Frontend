@@ -748,7 +748,7 @@ form.delivery-address-form button.btn-address-submit:focus {
   justify-content: space-between;
   align-items: center;
   max-width: 460px;
-  background: green;
+  background: #624BA1;
   padding: 15px;
   border-radius: 8px;
   position: fixed;
