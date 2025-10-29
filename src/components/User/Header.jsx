@@ -13,9 +13,9 @@ import { useStoreStatus } from "../../contexts/StoreStatusContext";
 import "./../../../ui/css/Header.css";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { LuMapPin } from "react-icons/lu";
-import DesktopSearch from "./ProductArea/DesktopSearch";
 import { RiUserLine } from "react-icons/ri";
 import { IoIosSearch } from "react-icons/io";
+import SearchBar from "./ProductArea/SearchBar";
 const Header = ({ status, onSearch }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -141,11 +141,13 @@ const Header = ({ status, onSearch }) => {
                           </div>
                         </div>
                       )}
-                      <DesktopSearch
-                        onSearch={() => {
-                          console.log("Desktop Search");
-                        }}
-                      />
+                      {!isMobileViewport && (
+                        <SearchBar
+                          onSearch={() => {
+                            console.log("Desktop Search");
+                          }}
+                        />
+                      )}
                     </div>
 
                     {/* Mobile */}
@@ -178,9 +180,6 @@ const Header = ({ status, onSearch }) => {
             {/* Right Side */}
             <div className="col-lg-2 col-sm-2 col-6">
               <div className="header-login">
-                {isMobileViewport && (
-                  <IoIosSearch size={35} className="right-side-icons" />
-                )}
                 {/* Account/Login */}
                 <div className="account-container">
                   {isAuthenticated ? (
@@ -211,70 +210,6 @@ const Header = ({ status, onSearch }) => {
                       </span>
                     </a>
                   )}
-                  {/* <div
-                    className="language-dropdown"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div
-                      className="language-trigger"
-                      onClick={() => setShowLangDropdown(!showLangDropdown)}
-                    >
-                      <img
-                        src={language === "de" ? german_flag : english_flag}
-                        alt={language === "de" ? "German" : "English"}
-                        className="language-flag"
-                      />
-                      {!isMobileViewport && (
-                        <span className="language-text">
-                          {language === "de" ? "GER" : "ENG"}
-                        </span>
-                      )}
-                      <i
-                        className={`bi bi-chevron-down language-chevron ${
-                          showLangDropdown ? "open" : ""
-                        }`}
-                      ></i>
-                    </div> */}
-
-                  {/* Language Options Dropdown */}
-                  {/* {showLangDropdown && (
-                      <div className="language-options">
-                        <div
-                          className={`language-option ${
-                            language === "de" ? "active" : ""
-                          }`}
-                          onClick={() => handleLanguageChange("de")}
-                        >
-                          <img
-                            src={german_flag}
-                            alt="German"
-                            className="language-option-flag"
-                          />
-                          <span>German</span>
-                          {language === "de" && (
-                            <i className="bi bi-check language-option-check"></i>
-                          )}
-                        </div>
-
-                        <div
-                          className={`language-option ${
-                            language === "en" ? "active" : ""
-                          }`}
-                          onClick={() => handleLanguageChange("en")}
-                        >
-                          <img
-                            src={english_flag}
-                            alt="English"
-                            className="language-option-flag english"
-                          />
-                          <span>English</span>
-                          {language === "en" && (
-                            <i className="bi bi-check language-option-check"></i>
-                          )}
-                        </div>
-                      </div>
-                    )} */}
-                  {/* </div> */}
                 </div>
 
                 {/* Account Dropdown Menu */}
@@ -290,6 +225,19 @@ const Header = ({ status, onSearch }) => {
                 )}
               </div>
             </div>
+            {isMobileViewport && (
+              <div
+                style={{
+                  marginTop: "10px",
+                }}
+              >
+                <SearchBar
+                  onSearch={() => {
+                    console.log("Desktop Search");
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </header>

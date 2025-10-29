@@ -3,7 +3,7 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import { Search } from "lucide-react";
 import { IoIosSearch } from "react-icons/io";
 
-function DesktopSearch({ onSearch }) {
+function SearchBar({ onSearch }) {
   const { translations: currentLanguage } = useLanguage();
   const [localSearchTerm, setLocalSearchTerm] = useState("");
 
@@ -22,7 +22,7 @@ function DesktopSearch({ onSearch }) {
     >
       <input
         type="text"
-        className="form-control form-input desktopSearch"
+        className="form-control form-input searchBar"
         placeholder={`${currentLanguage.search_anything}...`}
         value={localSearchTerm}
         onChange={onChangeSearch}
@@ -40,4 +40,4 @@ function DesktopSearch({ onSearch }) {
   );
 }
 
-export default DesktopSearch;
+export default SearchBar;
