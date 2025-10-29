@@ -95,7 +95,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop with blur effect */}
-      <div className="modal-backdrop-blur" onClick={onClose} />
+      {/* <div className="modal-backdrop-blur" onClick={onClose} /> */}
 
       <div
         className="modal fade show"
