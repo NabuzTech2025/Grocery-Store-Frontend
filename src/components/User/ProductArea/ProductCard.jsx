@@ -114,14 +114,18 @@ const ProductCard = ({
         <h3 className="product-name">{product.name}</h3>
         {/* {product.weight && <p className="product-weight">{product.weight}</p>} */}
         {product.description && (
-          <p className="product-description">{product.description}</p>
+          <p className="product-description">
+            {String(product.description).slice(0, 20) + "..."}
+          </p>
         )}
 
         {/* Product Footer */}
         <div className="product-footer">
           <div className="price-container">
             <span
-              className={`${hasDiscount ? "current-price-discount" : "current-price"}`}
+              className={`${
+                hasDiscount ? "current-price-discount" : "current-price"
+              }`}
             >
               {currency.symbol} {formatPrice(finalPrice || product.price)}
             </span>
