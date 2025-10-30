@@ -186,7 +186,7 @@ const ProductCategory = ({
                 height: "60px",
                 objectFit: "cover",
                 marginBottom: "5px",
-                borderRadius: isMobileViewport ? "50%" : "8px", // Circular on mobile
+                // borderRadius: isMobileViewport ? "50%" : "8px", // Circular on mobile
               }}
             />
             <h6

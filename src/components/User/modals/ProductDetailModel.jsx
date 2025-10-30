@@ -263,8 +263,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           backgroundImage: `url(${productImage})`,
                           backgroundSize:
                             window.innerWidth <= 1200
-                              ? "440px 440px"
-                              : "800px 800px",
+                           ? "440px 440px"
+                           : "800px 800px",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "0% 0%",
                           borderRadius: "8px",
