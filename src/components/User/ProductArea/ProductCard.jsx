@@ -1,7 +1,8 @@
-import React from "react";
+import React, { use } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import "../../../../ui/css/HomeMain.css";
 import { useCart } from "../../../contexts/CartContext";
+import { useLocation } from "react-router-dom";
 
 const ProductCard = ({
   product,
@@ -9,6 +10,7 @@ const ProductCard = ({
   onAddToCart,
   currency = { symbol: "€", locale: "de-DE" },
 }) => {
+  const location = useLocation();
   // Calculate discount info
   const getDiscountInfo = () => {
     if (product.discount) {
@@ -74,7 +76,12 @@ const ProductCard = ({
   };
 
   return (
-    <div className="product-card" onClick={handleImageClick}>
+    <div
+      className={`${
+        location.pathname === "/" ? "product-card-main-page" : "product-card"
+      }`}
+      onClick={handleImageClick}
+    >
       {/* Discount Badge */}
       {hasDiscount && discountLabel && (
         <div className="discount-badge">{discountLabel}</div>

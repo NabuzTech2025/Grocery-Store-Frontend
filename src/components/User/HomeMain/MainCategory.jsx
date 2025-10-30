@@ -60,7 +60,7 @@ const MainCategory = () => {
               <div key={category.id} className="col-lg-8per mb-3">
                 <div
                   onClick={() => {
-                    navigate("/restaurant", {
+                    navigate("/store", {
                       state: { selectedCategoryId: category.id },
                     });
                   }}
