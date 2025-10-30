@@ -7,15 +7,13 @@ import { useViewport } from "../../contexts/ViewportContext";
 import { payload_url } from "../../utils/common_urls";
 import brandLogo from "../../../public/assets/user/img/brand-logo.png";
 import userLogo from "../../../public/assets/user/img/login-icon.svg";
-import german_flag from "../../../public/assets/user/img/german-flag.jpg";
-import english_flag from "../../../public/assets/user/img/english-flag.jpg";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
 import "./../../../ui/css/Header.css";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { LuMapPin } from "react-icons/lu";
-import DesktopSearch from "./ProductArea/DesktopSearch";
 import { RiUserLine } from "react-icons/ri";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdClose } from "react-icons/io";
+import SearchBar from "./ProductArea/SearchBar";
 const Header = ({ status, onSearch }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -93,204 +91,163 @@ const Header = ({ status, onSearch }) => {
     <>
       <header id="header">
         <div className="header-container">
-          <div className="row">
-            {/* Left Side */}
-            <div className="col-lg-10 col-sm-10 col-6">
-              <div className="header-left-area">
-                <div
-                  className={`brand-logo-container ${
-                    isMobileViewport ? "mobile" : ""
-                  }`}
-                >
-                  <a
-                    href={payload_url}
-                    onClick={(e) => {
-                      if (localStorage.getItem("order_placed") === "true") {
-                        clearCart();
-                        localStorage.removeItem("order_placed");
-                      }
-                    }}
-                  >
-                    <img
-                      src={brandLogo}
-                      alt="Brand Logo"
-                      className={isMobileViewport ? "mobile" : ""}
-                    />
-                  </a>
-                </div>
-
-                {status && (
-                  <>
-                    {/* Desktop */}
-                    <div className="header-middle-area d-none d-sm-flex">
-                      {order_type === "delivery" && (
-                        <div
-                          className="header-postcode-col"
-                          onClick={() => setShowAddressModal(true)}
-                        >
-                          <div className="postcode-icon">
-                            <LuMapPin size={25} style={{ color: "#624BA1" }} />
-                          </div>
-                          <div className="header-postcode-cnt">
-                            <h3>
-                              {selectedPostcode === "" || !selectedPostcode
-                                ? currentLanguage.postCode
-                                : selectedPostcode}
-                            </h3>
-                            <i className="bi bi-chevron-down"></i>
-                          </div>
-                        </div>
-                      )}
-                      <DesktopSearch
-                        onSearch={() => {
-                          console.log("Desktop Search");
-                        }}
-                      />
-                    </div>
-
-                    {/* Mobile */}
-                    <div className="d-sm-none mt-2">
-                      {order_type === "delivery" && (
-                        <div
-                          className="header-postcode-col"
-                          onClick={() => setShowAddressModal(true)}
-                        >
-                          <div className="postcode-icon">
-                            <LuMapPin size={15} style={{ color: "#624BA1" }} />
-                          </div>
-                          <h3
-                            className={`header-postcode-cnt mobile  ${
-                              isSmallestViewport ? "smallest" : "small"
-                            }`}
-                          >
-                            {selectedPostcode === "" || !selectedPostcode
-                              ? currentLanguage.postCode
-                              : selectedPostcode.slice(0, 14) + "..."}
-                          </h3>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-              </div>
+          {showSearchModal && isMobileViewport ? (
+            <div className="show-search-bar">
+              <SearchBar onSearch={onChangeSearch} />
+              <IoMdClose
+                onClick={() => setShowSearchModal(false)}
+                size={35}
+                className="right-side-icons"
+              />
             </div>
-
-            {/* Right Side */}
-            <div className="col-lg-2 col-sm-2 col-6">
-              <div className="header-login">
-                {isMobileViewport && (
-                  <IoIosSearch size={35} className="right-side-icons" />
-                )}
-                {/* Account/Login */}
-                <div className="account-container">
-                  {isAuthenticated ? (
-                    <div
-                      className="account-menu-trigger"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowAccountMenu((v) => !v);
-                      }}
-                    >
-                      <img src={userLogo} alt="Account" />
-                    </div>
-                  ) : (
-                    <a
-                      href="#"
-                      className="account-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        setShowLoginModal(true);
-                      }}
-                    >
-                      <RiUserLine
-                        size={isMobileViewport ? 35 : 40}
-                        className="right-side-icons"
-                      />
-                      <span className="account-text">
-                        {currentLanguage.login}
-                      </span>
-                    </a>
-                  )}
-                  {/* <div
-                    className="language-dropdown"
-                    onClick={(e) => e.stopPropagation()}
+          ) : (
+            <div className="row">
+              {/* Left Side */}
+              <div className="col-lg-10 col-sm-10 col-6">
+                <div className="header-left-area">
+                  <div
+                    className={`brand-logo-container ${
+                      isMobileViewport ? "mobile" : ""
+                    }`}
                   >
-                    <div
-                      className="language-trigger"
-                      onClick={() => setShowLangDropdown(!showLangDropdown)}
+                    <a
+                      href={payload_url}
+                      onClick={(e) => {
+                        if (localStorage.getItem("order_placed") === "true") {
+                          clearCart();
+                          localStorage.removeItem("order_placed");
+                        }
+                      }}
                     >
                       <img
-                        src={language === "de" ? german_flag : english_flag}
-                        alt={language === "de" ? "German" : "English"}
-                        className="language-flag"
+                        src={brandLogo}
+                        alt="Brand Logo"
+                        className={isMobileViewport ? "mobile" : ""}
                       />
-                      {!isMobileViewport && (
-                        <span className="language-text">
-                          {language === "de" ? "GER" : "ENG"}
-                        </span>
-                      )}
-                      <i
-                        className={`bi bi-chevron-down language-chevron ${
-                          showLangDropdown ? "open" : ""
-                        }`}
-                      ></i>
-                    </div> */}
-
-                  {/* Language Options Dropdown */}
-                  {/* {showLangDropdown && (
-                      <div className="language-options">
-                        <div
-                          className={`language-option ${
-                            language === "de" ? "active" : ""
-                          }`}
-                          onClick={() => handleLanguageChange("de")}
-                        >
-                          <img
-                            src={german_flag}
-                            alt="German"
-                            className="language-option-flag"
-                          />
-                          <span>German</span>
-                          {language === "de" && (
-                            <i className="bi bi-check language-option-check"></i>
-                          )}
-                        </div>
-
-                        <div
-                          className={`language-option ${
-                            language === "en" ? "active" : ""
-                          }`}
-                          onClick={() => handleLanguageChange("en")}
-                        >
-                          <img
-                            src={english_flag}
-                            alt="English"
-                            className="language-option-flag english"
-                          />
-                          <span>English</span>
-                          {language === "en" && (
-                            <i className="bi bi-check language-option-check"></i>
-                          )}
-                        </div>
-                      </div>
-                    )} */}
-                  {/* </div> */}
-                </div>
-
-                {/* Account Dropdown Menu */}
-                {isAuthenticated && showAccountMenu && (
-                  <div className="account-dropdown">
-                    <button
-                      onClick={logoutUser}
-                      className="btn btn-sm btn-danger logout-btn"
-                    >
-                      {currentLanguage.logout}
-                    </button>
+                    </a>
                   </div>
-                )}
+
+                  {status && (
+                    <>
+                      {/* Desktop */}
+                      <div className="header-middle-area d-none d-sm-flex">
+                        {order_type === "delivery" && (
+                          <div
+                            className="header-postcode-col"
+                            onClick={() => setShowAddressModal(true)}
+                          >
+                            <div className="postcode-icon">
+                              <LuMapPin
+                                size={25}
+                                style={{ color: "#624BA1" }}
+                              />
+                            </div>
+                            <div className="header-postcode-cnt">
+                              <h3>
+                                {selectedPostcode === "" || !selectedPostcode
+                                  ? currentLanguage.postCode
+                                  : selectedPostcode}
+                              </h3>
+                              <i className="bi bi-chevron-down"></i>
+                            </div>
+                          </div>
+                        )}
+                        <SearchBar
+                          onSearch={() => {
+                            console.log("Desktop Search");
+                          }}
+                        />
+                      </div>
+
+                      {/* Mobile */}
+                      <div className="d-sm-none mt-2">
+                        {order_type === "delivery" && (
+                          <div
+                            className="header-postcode-col"
+                            onClick={() => setShowAddressModal(true)}
+                          >
+                            <div className="postcode-icon">
+                              <LuMapPin
+                                size={15}
+                                style={{ color: "#624BA1" }}
+                              />
+                            </div>
+                            <h3
+                              className={`header-postcode-cnt mobile  ${
+                                isSmallestViewport ? "smallest" : "small"
+                              }`}
+                            >
+                              {selectedPostcode === "" || !selectedPostcode
+                                ? currentLanguage.postCode
+                                : selectedPostcode.slice(0, 14) + "..."}
+                            </h3>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Side */}
+              <div className="col-lg-2 col-sm-2 col-6">
+                <div className="header-login">
+                  {isMobileViewport && (
+                    <IoIosSearch
+                      onClick={() => {
+                        setShowSearchModal(true);
+                      }}
+                      size={35}
+                      className="right-side-icons"
+                    />
+                  )}
+                  {/* Account/Login */}
+                  <div className="account-container">
+                    {isAuthenticated ? (
+                      <div
+                        className="account-menu-trigger"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowAccountMenu((v) => !v);
+                        }}
+                      >
+                        <img src={userLogo} alt="Account" />
+                      </div>
+                    ) : (
+                      <a
+                        href="#"
+                        className="account-link"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowLoginModal(true);
+                        }}
+                      >
+                        <RiUserLine
+                          size={isMobileViewport ? 35 : 40}
+                          className="right-side-icons"
+                        />
+                        <span className="account-text">
+                          {currentLanguage.login}
+                        </span>
+                      </a>
+                    )}
+                  </div>
+
+                  {/* Account Dropdown Menu */}
+                  {isAuthenticated && showAccountMenu && (
+                    <div className="account-dropdown">
+                      <button
+                        onClick={logoutUser}
+                        className="btn btn-sm btn-danger logout-btn"
+                      >
+                        {currentLanguage.logout}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </header>
 
@@ -306,44 +263,6 @@ const Header = ({ status, onSearch }) => {
         show={showLoginModal}
         handleClose={() => setShowLoginModal(false)}
       />
-
-      {showSearchModal && (
-        <div
-          className="modal mobile-search-col fade show d-block mobile-search-modal"
-          id="mobile-search-Modal"
-          tabIndex="-1"
-          aria-modal="true"
-          role="dialog"
-        >
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-body">
-                <form
-                  className="mobile-search-form"
-                  onSubmit={(e) => e.preventDefault()}
-                >
-                  <img
-                    src="/assets/user/img/close-icon.svg"
-                    className="btn-close mobile-search-close"
-                    alt="Close"
-                    onClick={() => setShowSearchModal(false)}
-                  />
-                  <input
-                    type="search"
-                    placeholder={`${currentLanguage.search_anything}...`}
-                    value={localSearch}
-                    onChange={onChangeSearch}
-                    className="form-control mt-2"
-                  />
-                  <button type="submit" className="btn-search">
-                    <img src={`assets/user/img/search-icon.svg`} alt="Search" />
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };

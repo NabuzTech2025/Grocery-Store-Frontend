@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { useCart } from "../../../contexts/CartContext";
 import { currentCurrency } from "../../../utils/helper/currency_type";
-import { currentLanguage } from "../../../utils/helper/lang_translate";
+import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useViewport } from "../../../contexts/ViewportContext";
 import "./ProductDetailModal.css";
+import { Minus, Plus } from "lucide-react";
 
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
   const { addToCart, cartItems } = useCart();
@@ -95,7 +96,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop with blur effect */}
-      {/* <div className="modal-backdrop-blur" onClick={onClose} /> */}
+      <div className="modal-backdrop-blur" onClick={onClose} />
 
       <div
         className="modal fade show"
@@ -323,12 +324,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                       <h6>Quantity:</h6>
                       <div className="d-flex align-items-center quantity-buttons">
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                           onClick={() => handleQuantityChange(-1)}
                           disabled={quantity <= 1}
-                          style={{ width: "40px", height: "40px" }}
                         >
-                          -
+                          <Minus className="quantity-icon" />
                         </button>
                         <span
                           className="mx-3"
@@ -337,18 +337,17 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           {quantity}
                         </span>
                         <button
-                          className="btn btn-outline-secondary"
+                          className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                           onClick={() => handleQuantityChange(1)}
-                          style={{ width: "40px", height: "40px" }}
                         >
-                          +
+                          <Plus className="quantity-icon" />
                         </button>
                       </div>
                     </div>
 
                     {/* Add to Cart Button */}
                     <div className="add-to-cart-section">
-                      <button
+                      {/* <button
                         type="button"
                         className="btn-close d-md-none"
                         onClick={onClose}
@@ -367,7 +366,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         >
                           <polyline points="10 14 4 8 10 2"></polyline>
                         </svg>
-                      </button>
+                      </button> */}
                       <button
                         className="btn btn-primary btn-lg w-100"
                         onClick={handleAddToCart}
@@ -380,7 +379,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         }}
                       >
                         <img
-                          src="/assets/user/img/blk-cart-icon.svg"
+                          src={shopTrolley}
                           alt="Cart"
                           style={{
                             width: "16px",

@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from "react";
 import "../../../../ui/css/HomeMain.css";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
-import { useStoreStatus } from "../../../contexts/StoreStatusContext";
-import ProductDetailModal from "../modals/ProductDetailModel";
-import { useCategoriesWithProducts } from "../../../Hooks/useProductData.js";
+import { useStoreStatus } from "../../../contexts/StoreStatusContext.jsx";
+import ProductDetailModal from "../modals/ProductDetailModel.jsx";
+import { useCategoriesWithProducts } from "../../../Hooks/useProductData.js.js";
 import ProductCard from "../ProductArea/ProductCard.jsx";
 
-function ProductSection() {
+function HomePageProductSection() {
   const { serverTime } = useStoreStatus();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
@@ -195,4 +195,4 @@ function ProductSection() {
   );
 }
 
-export default ProductSection;
+export default HomePageProductSection;

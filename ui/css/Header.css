@@ -202,7 +202,7 @@
   color: #624ba1;
 }
 
-.desktopSearch {
+.searchBar {
   width: 100%;
   padding-right: 50px;
   border: none;
@@ -210,6 +210,12 @@
   height: 50px;
   transition: all 0.2s ease-in-out;
   background-color: #f6f3fc;
+}
+
+.show-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .search-icon {
@@ -259,5 +265,9 @@
 
   .header-container {
     padding: 0px 15px;
+  }
+
+  .searchBar {
+    height: 40px;
   }
 }

@@ -125,10 +125,7 @@ function App() {
 
                             {/* Front end routes */}
                             <Route path="/" element={<HomeMain />} />
-                            <Route
-                              path="/restaurant"
-                              element={<Restaurant />}
-                            />
+                            <Route path="/store" element={<Restaurant />} />
 
                             {/* User-protected routes */}
                             <Route element={<UserRoute />}>

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { use } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import "../../../../ui/css/HomeMain.css";
 import { useCart } from "../../../contexts/CartContext";
+import { useLocation } from "react-router-dom";
 
 const ProductCard = ({
   product,
@@ -9,6 +10,7 @@ const ProductCard = ({
   onAddToCart,
   currency = { symbol: "€", locale: "de-DE" },
 }) => {
+  const location = useLocation();
   // Calculate discount info
   const getDiscountInfo = () => {
     if (product.discount) {
@@ -74,7 +76,12 @@ const ProductCard = ({
   };
 
   return (
-    <div className="product-card" onClick={handleImageClick}>
+    <div
+      className={`${
+        location.pathname === "/" ? "product-card-main-page" : "product-card"
+      }`}
+      onClick={handleImageClick}
+    >
       {/* Discount Badge */}
       {hasDiscount && discountLabel && (
         <div className="discount-badge">{discountLabel}</div>
@@ -114,13 +121,19 @@ const ProductCard = ({
         <h3 className="product-name">{product.name}</h3>
         {/* {product.weight && <p className="product-weight">{product.weight}</p>} */}
         {product.description && (
-          <p className="product-description">{product.description}</p>
+          <p className="product-description">
+            {String(product.description).slice(0, 20) + "..."}
+          </p>
         )}
 
         {/* Product Footer */}
         <div className="product-footer">
           <div className="price-container">
-            <span className="current-price">
+            <span
+              className={`${
+                hasDiscount ? "current-price-discount" : "current-price"
+              }`}
+            >
               {currency.symbol} {formatPrice(finalPrice || product.price)}
             </span>
             {hasDiscount && originalPrice && (

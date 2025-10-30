@@ -430,7 +430,7 @@ ul.hm-category-list li a h6 {
   /* Override existing sidebar styles for mobile horizontal layout */
   .sidebar.hm-category-list.mobile-horizontal {
     position: sticky !important;
-    top: 0px !important;
+    top: 42px !important;
     z-index: 998 !important;
     height: auto !important;
     width: 100% !important;
@@ -748,7 +748,7 @@ form.delivery-address-form button.btn-address-submit:focus {
   justify-content: space-between;
   align-items: center;
   max-width: 460px;
-  background: green;
+  background: #624ba1;
   padding: 15px;
   border-radius: 8px;
   position: fixed;
@@ -1273,7 +1273,7 @@ button.btn.variant-submit {
   height: 52px;
   border-radius: 5px;
   padding: 15px;
-  background: #0c831f;
+  background: #624ba1;
   color: white;
   transition: 0.3s ease-in-out;
   border: 0;
@@ -1379,7 +1379,7 @@ section#footer-section {
   height: 52px;
   border-radius: 5px;
   padding: 15px;
-  background: #0c831f;
+  background: #624ba1;
   color: white;
   transition: 0.3s ease-in-out;
   border: 0;
@@ -1604,7 +1604,7 @@ section.checkout-area {
   height: 52px;
   border-radius: 5px;
   padding: 15px;
-  background: #0c831f;
+  background: #624ba1;
   color: white;
   transition: 0.3s ease-in-out;
   border: 0;
