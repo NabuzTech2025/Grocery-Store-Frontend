@@ -516,7 +516,6 @@ ul.hm-category-list li a h6 {
   .sidebar.hm-category-list.mobile-horizontal li a img {
     width: 40px !important;
     height: 40px !important;
-    border-radius: 50% !important;
     object-fit: cover;
     margin-bottom: 5px;
   }

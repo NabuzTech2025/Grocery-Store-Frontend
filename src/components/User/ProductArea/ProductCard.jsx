@@ -77,9 +77,10 @@ const ProductCard = ({
 
   return (
     <div
-      className={`${
-        location.pathname === "/" ? "product-card-main-page" : "product-card"
-      }`}
+      className="product-card"
+      // className={`${
+      //   location.pathname === "/" ? "product-card-main-page" : "product-card"
+      // }`}
       onClick={handleImageClick}
     >
       {/* Discount Badge */}

@@ -525,15 +525,9 @@
     overflow: visible;
   }
 
-  .product-card-main-page {
-    position: relative;
+  /* Override for main page */
+  .product-card.main-page {
     min-width: 200px;
-    background: white;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 7px;
-    transition: box-shadow 0.3s ease;
-    overflow: visible;
   }
 
   .add-to-cart {
