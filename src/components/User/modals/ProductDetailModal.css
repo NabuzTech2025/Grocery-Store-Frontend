@@ -37,6 +37,10 @@
   line-height: 24px;
 }
 
+.product-info p {
+  color: #696969;
+}
+
 .product-price {
   margin-bottom: 20px;
 }
@@ -44,7 +48,7 @@
 .price-display {
   font-size: 24px;
   font-weight: bold;
-  color: #624ba1;
+  color: red;
 }
 
 .size-selection {
@@ -177,7 +181,7 @@
   }
 
   .product-name {
-    font-size: 22px;
+    font-size: 16px;
   }
 
   .price-display {

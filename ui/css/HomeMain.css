@@ -327,7 +327,7 @@
   border-radius: 3px;
 }
 
-.product-card {
+/* .product-card {
   position: relative;
   min-width: 250px;
   background: white;
@@ -338,6 +338,124 @@
   overflow: visible;
   cursor: pointer;
   word-wrap: break-word;
+} */
+.product-card {
+  position: relative;
+  min-width: 232px;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px 10px 0px 10px;
+  transition: box-shadow 0.3s ease;
+  overflow: visible;
+  cursor: pointer;
+  word-wrap: break-word;
+
+  /* Essential responsive properties */
+  max-width: 100%;
+  box-sizing: border-box;
+
+  /* Smooth touch interactions for mobile */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Small Mobile (iPhone SE, small Android phones) - 320px to 374px */
+@media screen and (max-width: 374px) {
+  .product-card {
+    min-width: 140px;
+    padding: 6px 6px 0px 6px;
+    border-radius: 6px;
+    font-size: 0.9em;
+  }
+}
+
+/* Standard Mobile (iPhone 12/13/14, Android phones) - 375px to 479px */
+@media screen and (min-width: 375px) and (max-width: 479px) {
+  .product-card {
+    min-width: 160px;
+    padding: 8px 8px 0px 8px;
+    border-radius: 6px;
+  }
+}
+
+/* Large Mobile (iPhone Pro Max, large Android) - 480px to 599px */
+@media screen and (min-width: 480px) and (max-width: 599px) {
+  .product-card {
+    min-width: 180px;
+    padding: 8px 8px 0px 8px;
+  }
+}
+
+/* Small Tablets & Phablets - 600px to 767px */
+@media screen and (min-width: 600px) and (max-width: 767px) {
+  .product-card {
+    min-width: 200px;
+    padding: 9px 9px 0px 9px;
+  }
+}
+
+/* iPad Mini, iPad (portrait) - 768px to 834px */
+@media screen and (min-width: 768px) and (max-width: 834px) {
+  .product-card {
+    min-width: 220px;
+    padding: 10px 10px 0px 10px;
+  }
+}
+
+/* iPad Air, iPad Pro 11" (portrait) - 835px to 1023px */
+@media screen and (min-width: 835px) and (max-width: 1023px) {
+  .product-card {
+    min-width: 232px;
+    padding: 10px 10px 0px 10px;
+  }
+}
+
+/* iPad (landscape), Small Desktop - 1024px to 1199px */
+@media screen and (min-width: 1024px) and (max-width: 1199px) {
+  .product-card {
+    min-width: 208px;
+    padding: 10px 10px 0px 10px;
+  }
+}
+
+/* iPad Pro 12.9" & Standard Desktop - 1200px to 1439px */
+@media screen and (min-width: 1200px) and (max-width: 1439px) {
+  .product-card {
+    min-width: 250px;
+    padding: 12px 12px 0px 12px;
+  }
+}
+
+/* Large Desktop - 1440px to 1919px */
+@media screen and (min-width: 1440px) and (max-width: 1919px) {
+  .product-card {
+    min-width: 260px;
+    padding: 12px 12px 0px 12px;
+  }
+}
+
+/* Extra Large Desktop & 4K - 1920px and above */
+@media screen and (min-width: 1920px) {
+  .product-card {
+    min-width: 280px;
+    padding: 14px 14px 0px 14px;
+  }
+}
+
+/* iOS specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .product-card {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* High DPI displays (Retina, high-res Android) */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .product-card {
+    border-width: 0.5px;
+  }
 }
 
 .product-card:hover {
@@ -366,8 +484,8 @@
   position: absolute;
   right: -14px;
   top: 0;
-  width: 0;
-  height: 0;
+  width: 15px;
+  height: 28px;
   border-top: 14px solid #178b1a;
   border-bottom: 14px solid #178b1a;
   border-right: 14px solid transparent;
@@ -390,7 +508,7 @@
 .product-info {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0px;
 }
 
 .product-name {
@@ -412,24 +530,24 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 20px;
 }
 
 .price-container {
   display: flex;
   flex-direction: column;
-  padding-bottom: 7px;
+  padding-bottom: 10px;
 }
 
 .current-price {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: #624ba1;
   line-height: 22px;
 }
 
 .current-price-discount {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
   color: red;
   line-height: 22px;
@@ -506,6 +624,25 @@
 }
 
 @media (max-width: 768px) {
+  .discount-badge {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 4px 0 7px;
+    font-size: 10px;
+  }
+  .current-price-discount {
+    font-size: 16px;
+  }
+  .original-price {
+    font-size: 14px;
+  }
+  .product-info p {
+    font-size: 12px;
+  }
+  .product-footer {
+    margin-top: 10px;
+  }
+
   .product-section {
     padding: 20px 10px;
   }

@@ -28,9 +28,9 @@ const ProductSection = ({
     <>
       <div className="row row-cols-2 row-cols-sm-4">
         {products.map((product) => (
-          <div key={`prod-${product.id}`}>
+          // <div key={`prod-${product.id}`}>
             <ProductItem product={product} onOpenDetail={onOpenDetail} />
-          </div>
+          // </div>//</>
         ))}
       </div>
 
