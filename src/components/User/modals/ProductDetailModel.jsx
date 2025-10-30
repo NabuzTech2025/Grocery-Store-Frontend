@@ -18,6 +18,10 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   });
   const [isHovering, setIsHovering] = useState(false);
 
+  const actualprice =
+    product?.discount_price > 0
+      ? product?.price - product?.discount_price
+      : product?.price;
   // Use actual variants from API only - guard against null product
   const availableSizes =
     product?.variants?.length > 0
@@ -263,8 +267,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           backgroundImage: `url(${productImage})`,
                           backgroundSize:
                             window.innerWidth <= 1200
-                           ? "440px 440px"
-                           : "800px 800px",
+                              ? "440px 440px"
+                              : "800px 800px",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "0% 0%",
                           borderRadius: "8px",
@@ -287,15 +291,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     <h3 className="product-name">{product.name}</h3>
 
                     <div className="product-price">
-                      <span
-                        className="price-display"
-                        style={{
-                          fontSize: "24px",
-                          fontWeight: "bold",
-                          color: "#624ba1",
-                        }}
-                      >
-                        {format(getCurrentPrice() * quantity)}
+                      <h6 className="price-display">
+                        {Number(actualprice) * quantity},00
+                      </h6>
+                      <span className="original-price">
+                        {product.discount_price}
                       </span>
                     </div>
 
