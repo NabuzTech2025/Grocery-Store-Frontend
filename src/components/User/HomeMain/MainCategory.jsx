@@ -2,7 +2,6 @@ import React, { use, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { useViewport } from "../../../contexts/ViewportContext";
-import "../../../../ui/css/HomeMain.css";
 import { useCategories } from "../../../Hooks/useProductData.js";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 import CartButton from "../CartButton.jsx";

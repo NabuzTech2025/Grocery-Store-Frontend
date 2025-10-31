@@ -1,6 +1,4 @@
-import React from "react";
 import loaderBombay from "../public/assets/images/loader-bombay.png";
-import "./Suspense_Loader.css";
 
 function Suspense_Loader() {
   return (

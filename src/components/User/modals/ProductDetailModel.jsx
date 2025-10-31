@@ -3,7 +3,6 @@ import { useCart } from "../../../contexts/CartContext";
 import { currentCurrency } from "../../../utils/helper/currency_type";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useViewport } from "../../../contexts/ViewportContext";
-import "./ProductDetailModal.css";
 import { Minus, Plus } from "lucide-react";
 
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
@@ -34,7 +33,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
   const actualprice = getActualPrice();
 
   const displayOriginalPrice = product?.originalPrice || product?.price;
-  const displayDiscount = product?.discount_price;
+  const hasDiscount = product?.discount_price > 0;
 
   // Use actual variants from API only - guard against null product
   const availableSizes =
@@ -305,12 +304,20 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     <h3 className="product-name">{product.name}</h3>
 
                     <div className="product-price">
-                      <h6 className="price-display">
+                      <h6
+                        className={`${
+                          hasDiscount
+                            ? "current-price-discount"
+                            : "current-price"
+                        }`}
+                      >
                         {Number(actualprice) * quantity},00
                       </h6>
-                      <span className="original-price">
-                        {format(displayOriginalPrice)}
-                      </span>
+                      {hasDiscount && (
+                        <span className="original-price">
+                          {format(displayOriginalPrice)}
+                        </span>
+                      )}
                     </div>
 
                     {/* Size Selection - Only show if variants exist */}

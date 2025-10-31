@@ -1,18 +1,13 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import ProductCategory from "../ProductCategory";
 import ProductSection from "../ProductSection";
 import ProductDetailModal from "../modals/ProductDetailModel";
 import { debounce } from "lodash";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
-import Footer from "@/components/User/Footer";
 import { StoreStatusSkeleton } from "../../../../ui/Loader/StoreStatusSkeleton";
 import sortCategoriesByDisplayOrder from "../../../utils/helper/User/sortCategoriesByDisplayOrder";
 import { BiLoader } from "react-icons/bi";
 import { useViewport } from "../../../contexts/ViewportContext";
-import OrderTypeButtons from "./OrderTypeButtons";
-import "../../../../ui/css/product_area.css";
-import StoreTitle from "./StoreTitle";
-import MobileSearchBar from "./MobileSearchBar";
 import { isCategoryAvailable } from "../../../utils/categoryAvailability";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
@@ -20,7 +15,6 @@ import { useLanguage } from "../../../contexts/LanguageContext";
 import {
   useCategories,
   useAllCategoryProducts,
-  useCategoryProducts,
 } from "../../../Hooks/useProductData.js";
 import Header from "../Header.jsx";
 

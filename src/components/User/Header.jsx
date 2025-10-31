@@ -8,7 +8,6 @@ import { payload_url } from "../../utils/common_urls";
 import brandLogo from "../../../public/assets/user/img/brand-logo.png";
 import userLogo from "../../../public/assets/user/img/login-icon.svg";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
-import "./../../../ui/css/Header.css";
 import { useLanguage } from "../../contexts/LanguageContext";
 import { LuMapPin } from "react-icons/lu";
 import { RiUserLine } from "react-icons/ri";

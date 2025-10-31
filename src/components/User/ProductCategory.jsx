@@ -3,7 +3,6 @@ import { ProductCategorySkeleton } from "../../../ui/Loader/ProductCategorySkele
 import { useViewport } from "../../contexts/ViewportContext";
 import { useCart } from "../../contexts/CartContext";
 import { useLanguage } from "../../contexts/LanguageContext";
-import "../../../ui/css/ProductCategory.css";
 
 const ProductCategory = ({
   categories,

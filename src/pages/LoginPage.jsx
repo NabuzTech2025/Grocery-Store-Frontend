@@ -10,7 +10,6 @@ import {
   registerLink,
 } from "../utils/common_urls";
 import brandLogo from "../../public/assets/user/img/brand-logo.png";
-import "../../ui/css/login_Page.css";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const LoginPage = () => {

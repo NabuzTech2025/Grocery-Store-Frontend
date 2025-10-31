@@ -1,6 +1,5 @@
 import { DateTime } from "luxon";
 import { useMemo, useState, useEffect } from "react";
-import "../../../ui/css/TimeSelector.css";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
 import ScrollableTimeSelector from "../../../ui/ScrollableTimeSelector";
 import { useLanguage } from "../../contexts/LanguageContext";
