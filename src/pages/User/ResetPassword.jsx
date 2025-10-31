@@ -73,7 +73,7 @@ const ResetPassword = () => {
                   <div className="lgin-header">
                     <img
                       className="img-fluid"
-                      src={`assets/user/img/brand-logo.png`}
+                      src={`assets/user/img/brand-logo.svg`}
                       alt="Brand Logo"
                     />
                     <h4>{currentLanguage.reset_password_heading}</h4>

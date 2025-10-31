@@ -9,7 +9,7 @@ import {
   forgotPasswordLink,
   registerLink,
 } from "../utils/common_urls";
-import brandLogo from "../../public/assets/user/img/brand-logo.png";
+import brandLogo from "../../public/assets/user/img/brand-logo.svg";
 import { useLanguage } from "../contexts/LanguageContext";
 
 const LoginPage = () => {
