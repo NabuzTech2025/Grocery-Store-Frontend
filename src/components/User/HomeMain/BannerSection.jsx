@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import "../../../../ui/css/BannerSection.css";
 import { useViewport } from "../../../contexts/ViewportContext";
 
 const BannerSection = () => {

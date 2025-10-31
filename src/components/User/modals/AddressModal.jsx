@@ -3,7 +3,6 @@ import { Modal } from "react-bootstrap";
 import { useCommonData } from "../../../contexts/CommonContext";
 import { currentCurrency } from "../../../utils/helper/currency_type";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
-import "../../../../ui/css/AddressModal.css";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { useCart } from "../../../contexts/CartContext";
 

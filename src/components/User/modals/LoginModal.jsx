@@ -10,7 +10,6 @@ import {
 
 import close_icon from "../../../../public/assets/user/img/close-icon.svg";
 import { useNavigate } from "react-router-dom";
-import "../../../../ui/css/login_Page.css";
 import { useLanguage } from "../../../contexts/LanguageContext";
 
 const LoginModal = ({ show, handleClose }) => {

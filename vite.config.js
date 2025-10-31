@@ -12,6 +12,9 @@ if (env.VITE_APP_BASE_ROUTE && env.VITE_APP_BASE_ROUTE.trim() !== "") {
 export default defineConfig({
   base: basePath,
   plugins: [react(), tailwindcss()],
+  css: {
+    devSourcemap: true,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

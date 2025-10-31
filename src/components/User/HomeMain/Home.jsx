@@ -1,7 +1,6 @@
 import BannerSection from "./BannerSection";
 import Footer from "./Footer";
 import { CartProvider } from "../../../contexts/CartContext";
-import "../../../../ui/css/HomeMain.css";
 import Header from "../Header";
 import { useState } from "react";
 import MainCategory from "./MainCategory";

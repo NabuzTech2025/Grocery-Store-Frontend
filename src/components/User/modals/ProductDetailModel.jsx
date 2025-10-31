@@ -3,7 +3,6 @@ import { useCart } from "../../../contexts/CartContext";
 import { currentCurrency } from "../../../utils/helper/currency_type";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useViewport } from "../../../contexts/ViewportContext";
-import "./ProductDetailModal.css";
 import { Minus, Plus } from "lucide-react";
 
 const ProductDetailModal = ({ product, isOpen, onClose }) => {
@@ -17,6 +16,24 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     visible: false,
   });
   const [isHovering, setIsHovering] = useState(false);
+
+  //Handle both data structures
+  const getActualPrice = () => {
+    // If originalPrice exists, price is already the final price
+    if (product?.originalPrice) {
+      return product.price;
+    }
+
+    // Otherwise, calculate final price from raw data
+    const discountAmount = Number(product?.discount_price) || 0;
+    const originalPrice = Number(product?.price) || 0;
+    return discountAmount > 0 ? originalPrice - discountAmount : originalPrice;
+  };
+
+  const actualprice = getActualPrice();
+
+  const displayOriginalPrice = product?.originalPrice || product?.price;
+  const hasDiscount = product?.discount_price > 0;
 
   // Use actual variants from API only - guard against null product
   const availableSizes =
@@ -263,8 +280,8 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                           backgroundImage: `url(${productImage})`,
                           backgroundSize:
                             window.innerWidth <= 1200
-                           ? "440px 440px"
-                           : "800px 800px",
+                              ? "440px 440px"
+                              : "800px 800px",
                           backgroundRepeat: "no-repeat",
                           backgroundPosition: "0% 0%",
                           borderRadius: "8px",
@@ -287,16 +304,20 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     <h3 className="product-name">{product.name}</h3>
 
                     <div className="product-price">
-                      <span
-                        className="price-display"
-                        style={{
-                          fontSize: "24px",
-                          fontWeight: "bold",
-                          color: "#624ba1",
-                        }}
+                      <h6
+                        className={`${
+                          hasDiscount
+                            ? "current-price-discount"
+                            : "current-price"
+                        }`}
                       >
-                        {format(getCurrentPrice() * quantity)}
-                      </span>
+                        {Number(actualprice) * quantity},00
+                      </h6>
+                      {hasDiscount && (
+                        <span className="original-price">
+                          {format(displayOriginalPrice)}
+                        </span>
+                      )}
                     </div>
 
                     {/* Size Selection - Only show if variants exist */}
@@ -347,26 +368,6 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
 
                     {/* Add to Cart Button */}
                     <div className="add-to-cart-section">
-                      {/* <button
-                        type="button"
-                        className="btn-close d-md-none"
-                        onClick={onClose}
-                        aria-label="Close"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 16 16"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="1"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <polyline points="10 14 4 8 10 2"></polyline>
-                        </svg>
-                      </button> */}
                       <button
                         className="btn btn-primary btn-lg w-100"
                         onClick={handleAddToCart}

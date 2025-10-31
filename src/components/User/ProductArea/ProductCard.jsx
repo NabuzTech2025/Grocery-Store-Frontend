@@ -1,6 +1,5 @@
 import React, { use } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
-import "../../../../ui/css/HomeMain.css";
 import { useCart } from "../../../contexts/CartContext";
 import { useLocation } from "react-router-dom";
 
@@ -58,7 +57,7 @@ const ProductCard = ({
   // overlay - check if product is out of stock (only if stock field exists and is 0)
   // Helper to safely convert and check stock value
   const getStockNum = (val) => {
-    if (val === undefined || val === null || val === '') return null;
+    if (val === undefined || val === null || val === "") return null;
     const num = Number(val);
     return isNaN(num) ? null : num;
   };
@@ -67,13 +66,11 @@ const ProductCard = ({
   // We now ONLY consider quantity on hand fields for out-of-stock logic
   const variantQoh = getStockNum(
     product?.selectedVariant?.quantity_on_hand ??
-    product?.selectedVariant?.quantityOnHand ??
-    product?.selectedVariant?.qty_on_hand
+      product?.selectedVariant?.quantityOnHand ??
+      product?.selectedVariant?.qty_on_hand
   );
   const productQoh = getStockNum(
-    product?.quantity_on_hand ??
-    product?.quantityOnHand ??
-    product?.qty_on_hand
+    product?.quantity_on_hand ?? product?.quantityOnHand ?? product?.qty_on_hand
   );
 
   // Determine if out of stock - strictly by qty_on_hand
@@ -91,7 +88,7 @@ const ProductCard = ({
       variantQoh,
       productQoh,
       isOutOfStock,
-      product: product
+      product: product,
     });
   }
 
@@ -148,13 +145,15 @@ const ProductCard = ({
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
-            if (!isOutOfStock) { // overlay
+            if (!isOutOfStock) {
+              // overlay
               e.target.style.transform = "scale(1.05)";
               // e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
             }
           }}
           onMouseLeave={(e) => {
-            if (!isOutOfStock) { // overlay
+            if (!isOutOfStock) {
+              // overlay
               e.target.style.transform = "scale(1)";
               e.target.style.boxShadow = "none";
             }
@@ -169,7 +168,6 @@ const ProductCard = ({
       {/* Product Info */}
       <div className="product-info">
         <h3 className="product-name">{product.name}</h3>
-        {/* {product.weight && <p className="product-weight">{product.weight}</p>} */}
         {product.description && (
           <p className="product-description">
             {String(product.description).slice(0, 20) + "..."}
@@ -180,8 +178,9 @@ const ProductCard = ({
         <div className="product-footer">
           <div className="price-container">
             <span
-              className={`${hasDiscount ? "current-price-discount" : "current-price"
-                }`}
+              className={`${
+                hasDiscount ? "current-price-discount" : "current-price"
+              }`}
             >
               {currency.symbol} {formatPrice(finalPrice || product.price)}
             </span>

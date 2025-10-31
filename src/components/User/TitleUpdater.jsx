@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 
 const APP_NAME = `${capitalize(
   import.meta.env.VITE_APP_NAME || ""
-)} Restaurant`;
+)} Grocery Store`;
 
 const routeTitles = {
   "/": "",

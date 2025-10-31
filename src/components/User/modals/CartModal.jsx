@@ -12,7 +12,6 @@ import AddNoteModal from "./AddNote";
 import OrderTypeButtons from "../ProductArea/OrderTypeButtons";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { Edit, Edit2 } from "lucide-react";
-import "./../../../../ui/css/CartModal.css";
 import { IoIosArrowBack } from "react-icons/io";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext";
 const CartModal = () => {

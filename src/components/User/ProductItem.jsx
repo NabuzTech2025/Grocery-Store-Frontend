@@ -6,7 +6,6 @@ import { currentCurrency } from "../../utils/helper/currency_type";
 import { getProduct } from "@/api/UserServices";
 import { useLanguage } from "../../contexts/LanguageContext";
 import ProductDetailModal from "./modals/ProductDetailModel";
-import "../../../ui/css/HomeMain.css";
 import ProductCard from "./ProductArea/ProductCard";
 
 const ProductInfoModal = ({ show, handleClose, product, data }) => {
@@ -156,6 +155,7 @@ const ProductItem = ({ product, onOpenDetail }) => {
   const data = productDetails || product;
 
   // Prepare product data for ProductCard
+
   const productCardData = {
     ...product,
     price: discountInfo.finalPrice,
