@@ -55,8 +55,48 @@ const ProductCard = ({
     product.type
   );
 
+  // overlay - check if product is out of stock (only if stock field exists and is 0)
+  // Helper to safely convert and check stock value
+  const getStockNum = (val) => {
+    if (val === undefined || val === null || val === '') return null;
+    const num = Number(val);
+    return isNaN(num) ? null : num;
+  };
+
+  // Check all possible stock locations
+  // We now ONLY consider quantity on hand fields for out-of-stock logic
+  const variantQoh = getStockNum(
+    product?.selectedVariant?.quantity_on_hand ??
+    product?.selectedVariant?.quantityOnHand ??
+    product?.selectedVariant?.qty_on_hand
+  );
+  const productQoh = getStockNum(
+    product?.quantity_on_hand ??
+    product?.quantityOnHand ??
+    product?.qty_on_hand
+  );
+
+  // Determine if out of stock - strictly by qty_on_hand
+  let isOutOfStock = false;
+
+  if (variantQoh !== null) {
+    isOutOfStock = variantQoh === 0;
+  } else if (productQoh !== null) {
+    isOutOfStock = productQoh === 0;
+  }
+
+  // Temporary debug - remove after checking
+  if (product.name === "Limca") {
+    console.log("Limca stock check (QOH only):", {
+      variantQoh,
+      productQoh,
+      isOutOfStock,
+      product: product
+    });
+  }
+
   const handleImageClick = () => {
-    if (onImageClick) {
+    if (onImageClick && !isOutOfStock) {
       onImageClick(product);
     }
   };
@@ -77,7 +117,8 @@ const ProductCard = ({
 
   return (
     <div
-      className="product-card"
+      className={`product-card${isOutOfStock ? " out-of-stock" : ""}`}
+      // overlay
       // className={`${
       //   location.pathname === "/" ? "product-card-main-page" : "product-card"
       // }`}
@@ -101,20 +142,28 @@ const ProductCard = ({
             maxWidth: "100%",
             maxHeight: "100%",
             objectFit: "contain",
-            cursor: "pointer",
+            cursor: isOutOfStock ? "not-allowed" : "pointer", // overlay
             // borderRadius: "8px",
             // border: "2px solid #f8f9fa",
             transition: "all 0.3s ease",
           }}
           onMouseEnter={(e) => {
-            e.target.style.transform = "scale(1.05)";
-            // e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+            if (!isOutOfStock) { // overlay
+              e.target.style.transform = "scale(1.05)";
+              // e.target.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+            }
           }}
           onMouseLeave={(e) => {
-            e.target.style.transform = "scale(1)";
-            e.target.style.boxShadow = "none";
+            if (!isOutOfStock) { // overlay
+              e.target.style.transform = "scale(1)";
+              e.target.style.boxShadow = "none";
+            }
           }}
         />
+        {/* overlay */}
+        {isOutOfStock && (
+          <div className="out-of-stock-overlay">Out of Stock</div>
+        )}
       </div>
 
       {/* Product Info */}
@@ -131,9 +180,8 @@ const ProductCard = ({
         <div className="product-footer">
           <div className="price-container">
             <span
-              className={`${
-                hasDiscount ? "current-price-discount" : "current-price"
-              }`}
+              className={`${hasDiscount ? "current-price-discount" : "current-price"
+                }`}
             >
               {currency.symbol} {formatPrice(finalPrice || product.price)}
             </span>
@@ -144,7 +192,8 @@ const ProductCard = ({
             )}
           </div>
 
-          <button className="add-to-cart">
+          {/* overlay */}
+          <button className="add-to-cart" disabled={isOutOfStock}>
             {quantity > 0 && (
               <span className="product-quantity">{quantity}</span>
             )}

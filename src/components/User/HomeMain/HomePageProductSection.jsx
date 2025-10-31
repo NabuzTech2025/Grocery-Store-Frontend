@@ -15,6 +15,8 @@ function HomePageProductSection() {
   const { categories, allProducts, isLoading, error } =
     useCategoriesWithProducts(serverTime);
 
+    console.log('all products',allProducts)
+
   // Transform data using useMemo
   const categoryProducts = useMemo(() => {
     if (categories.length === 0 || allProducts.length === 0) return [];
@@ -66,6 +68,13 @@ function HomePageProductSection() {
                 type: product.type,
                 taxPercentage: product.tax?.percentage || 0,
                 taxName: product.tax?.name || "",
+                // overlay - pass stock/quantity only if it exists from backend (don't default to 0)
+                stock: product.stock !== undefined && product.stock !== null ? Number(product.stock) : (product.quantity !== undefined && product.quantity !== null ? Number(product.quantity) : undefined),
+                quantity: product.quantity !== undefined && product.quantity !== null ? Number(product.quantity) : (product.stock !== undefined && product.stock !== null ? Number(product.stock) : undefined),
+                // overlay - pass quantity_on_hand / qty_on_hand if present
+                quantity_on_hand: product.quantity_on_hand !== undefined && product.quantity_on_hand !== null ? Number(product.quantity_on_hand) : (product.quantityOnHand !== undefined && product.quantityOnHand !== null ? Number(product.quantityOnHand) : (product.qty_on_hand !== undefined && product.qty_on_hand !== null ? Number(product.qty_on_hand) : undefined)),
+                // also keep raw qty_on_hand for direct access if needed
+                qty_on_hand: product.qty_on_hand !== undefined && product.qty_on_hand !== null ? Number(product.qty_on_hand) : undefined,
 
                 variants:
                   product.variants?.map((variant) => {
@@ -83,7 +92,10 @@ function HomePageProductSection() {
                       price: variantFinalPrice,
                       originalPrice: variantOriginalPrice,
                       discountAmount: variantDiscountAmount,
-                      stock: variant.stock || 0,
+                      stock: variant.stock !== undefined && variant.stock !== null ? Number(variant.stock) : undefined,
+                      // overlay - pass variant qty on hand if present
+                      quantity_on_hand: variant.quantity_on_hand !== undefined && variant.quantity_on_hand !== null ? Number(variant.quantity_on_hand) : (variant.quantityOnHand !== undefined && variant.quantityOnHand !== null ? Number(variant.quantityOnHand) : (variant.qty_on_hand !== undefined && variant.qty_on_hand !== null ? Number(variant.qty_on_hand) : undefined)),
+                      qty_on_hand: variant.qty_on_hand !== undefined && variant.qty_on_hand !== null ? Number(variant.qty_on_hand) : undefined,
                       sku: variant.sku || "",
                       isAvailable: variant.isAvailable !== false,
                       image: variant.image_url || product.image_url || "",
@@ -120,7 +132,24 @@ function HomePageProductSection() {
 
                 selectedVariant:
                   product.variants && product.variants.length > 0
-                    ? product.variants[0]
+                    ? {
+                        ...product.variants[0],
+                        // overlay - only set stock if it exists from backend
+                        stock: product.variants[0].stock !== undefined && product.variants[0].stock !== null
+                          ? Number(product.variants[0].stock)
+                          : (product.variants[0].quantity !== undefined && product.variants[0].quantity !== null
+                            ? Number(product.variants[0].quantity)
+                            : undefined),
+                        // include quantity_on_hand and qty_on_hand if exists
+                        quantity_on_hand: product.variants[0].quantity_on_hand !== undefined && product.variants[0].quantity_on_hand !== null
+                          ? Number(product.variants[0].quantity_on_hand)
+                          : (product.variants[0].quantityOnHand !== undefined && product.variants[0].quantityOnHand !== null
+                            ? Number(product.variants[0].quantityOnHand)
+                            : (product.variants[0].qty_on_hand !== undefined && product.variants[0].qty_on_hand !== null
+                              ? Number(product.variants[0].qty_on_hand)
+                              : undefined)),
+                        qty_on_hand: product.variants[0].qty_on_hand !== undefined && product.variants[0].qty_on_hand !== null ? Number(product.variants[0].qty_on_hand) : undefined,
+                      }
                     : null,
               };
             })
