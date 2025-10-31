@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { store } from "./redux/store";
 import { AuthProvider } from "./auth/AuthProvider";
 import { CartProvider } from "@/contexts/CartContext";
-
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 // Lazy-loaded Admin Imports
