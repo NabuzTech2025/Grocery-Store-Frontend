@@ -1,7 +1,3 @@
-// components/Hero.js
-import React, { useEffect, useState } from "react";
-import "../../../ui/css/hero_section.css";
-
 const Hero = () => {
   return (
     <section id="hero-section">

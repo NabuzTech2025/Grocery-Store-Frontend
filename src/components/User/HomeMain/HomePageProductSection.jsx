@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import "../../../../ui/css/HomeMain.css";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext.jsx";
 import ProductDetailModal from "../modals/ProductDetailModel.jsx";

@@ -1,6 +1,5 @@
 import React, { use } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
-import "../../../../ui/css/HomeMain.css";
 import { useCart } from "../../../contexts/CartContext";
 import { useLocation } from "react-router-dom";
 
