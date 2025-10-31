@@ -161,7 +161,17 @@ const ProductItem = ({ product, onOpenDetail }) => {
     price: discountInfo.finalPrice,
     originalPrice: discountInfo.originalPrice,
     discount_price: discountInfo.discount_price,
-    selectedVariant: selectedVariant,
+    // overlay - only set stock if it exists from backend (don't default to 0)
+    selectedVariant: selectedVariant
+      ? {
+          ...selectedVariant,
+          stock: selectedVariant.stock !== undefined && selectedVariant.stock !== null
+            ? Number(selectedVariant.stock)
+            : (selectedVariant.quantity !== undefined && selectedVariant.quantity !== null
+              ? Number(selectedVariant.quantity)
+              : undefined),
+        }
+      : null,
   };
 
   return (
