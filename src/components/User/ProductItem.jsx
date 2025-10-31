@@ -156,6 +156,7 @@ const ProductItem = ({ product, onOpenDetail }) => {
   const data = productDetails || product;
 
   // Prepare product data for ProductCard
+
   const productCardData = {
     ...product,
     price: discountInfo.finalPrice,
