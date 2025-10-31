@@ -58,6 +58,7 @@ function HomePageProductSection() {
                 image_url: String(product.image_url || "").split("?")[0],
                 price: finalPrice,
                 originalPrice: originalPrice,
+                discount_price: discountAmount,
                 discount: hasDiscount
                   ? `${Math.round((discountAmount / originalPrice) * 100)}% OFF`
                   : null,
