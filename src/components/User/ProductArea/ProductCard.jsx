@@ -114,7 +114,9 @@ const ProductCard = ({
 
   return (
     <div
-      className={`product-card${isOutOfStock ? " out-of-stock" : ""}`}
+      className={`product-card ${
+        location.pathname === "/" ? "main-page" : ""
+      } product-card${isOutOfStock ? " out-of-stock" : ""}`}
       // overlay
       // className={`${
       //   location.pathname === "/" ? "product-card-main-page" : "product-card"
