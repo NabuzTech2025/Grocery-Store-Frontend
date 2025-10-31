@@ -304,11 +304,17 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                     <h3 className="product-name">{product.name}</h3>
 
                     <div className="product-price">
-                      <h6 className="price-display">
+                      <h6
+                        className={`${
+                          hasDiscount
+                            ? "current-price-discount"
+                            : "current-price"
+                        }`}
+                      >
                         {Number(actualprice) * quantity},00
                       </h6>
                       {hasDiscount && (
-                        <span className="original-price-display">
+                        <span className="original-price">
                           {format(displayOriginalPrice)}
                         </span>
                       )}
