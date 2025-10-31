@@ -1,44 +1,64 @@
-/* src/components/Loader.css */
-.loader-container {
-  height: 100vh;
+:root {
+  --primary-color: #111330;
+  --white-color: #ffffff;
+}
+
+/* Bombay Preloader Styles */
+.preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: var(--primary-color);
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  background-color: #fff7f0; /* warm food background */
-  color: #ff6600; /* appetizing orange */
-  font-family: "Poppins", sans-serif;
-  animation: fadeIn 0.4s ease-in-out;
+  justify-content: center;
 }
 
-.loader-icon {
-  font-size: 3rem;
-  margin-bottom: 10px;
+.loading-container,
+.loading {
+  height: 100px;
+  position: relative;
+  width: 100px;
+  border-radius: 100%;
 }
 
-.icon-spin {
-  animation: spin 1.5s linear infinite;
+.loading-container {
+  margin: 40px auto;
 }
 
-.loader-text {
-  font-size: 1.2rem;
-  font-weight: 500;
+.loading {
+  border: 1px solid transparent;
+  border-color: transparent var(--white-color) transparent var(--white-color);
+  animation: rotate-loading 1.5s linear 0s infinite normal;
+  transform-origin: 50% 50%;
 }
 
-@keyframes spin {
+.loading-container:hover .loading,
+.loading-container .loading {
+  transition: all 0.5s ease-in-out;
+}
+
+#loading-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  max-width: 66px;
+  transform: translate(-50%, -50%);
+}
+
+#loading-icon img {
+  width: 100%;
+  height: auto;
+}
+
+@keyframes rotate-loading {
   0% {
     transform: rotate(0deg);
   }
   100% {
     transform: rotate(360deg);
-  }
-}
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
   }
 }
