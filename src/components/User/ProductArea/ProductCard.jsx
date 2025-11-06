@@ -2,6 +2,7 @@ import React, { use } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useCart } from "../../../contexts/CartContext";
 import { useLocation } from "react-router-dom";
+import { formatPrice } from "../../../utils/helper/currency_type";
 
 const ProductCard = ({
   product,
@@ -105,13 +106,6 @@ const ProductCard = ({
     }
   };
 
-  const formatPrice = (price) => {
-    return (price ?? 0).toLocaleString(currency.locale, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    });
-  };
-
   return (
     <div
       className={`product-card ${
@@ -184,11 +178,12 @@ const ProductCard = ({
                 hasDiscount ? "current-price-discount" : "current-price"
               }`}
             >
-              {currency.symbol} {formatPrice(finalPrice || product.price)}
+              {currency.symbol}{" "}
+              {formatPrice(finalPrice || product.price, currency.locale)}
             </span>
             {hasDiscount && originalPrice && (
               <span className="original-price">
-                {currency.symbol} {formatPrice(originalPrice)}
+                {currency.symbol} {formatPrice(originalPrice, currency.locale)}
               </span>
             )}
           </div>

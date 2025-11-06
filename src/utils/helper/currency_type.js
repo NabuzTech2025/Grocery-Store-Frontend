@@ -39,3 +39,10 @@ const selectedCountry = import.meta.env.VITE_COUNTRY || "GERMANY";
 /** @type {Currency} */
 export const currentCurrency =
   currencyConfig[selectedCountry] || currencyConfig.GERMANY;
+
+export const formatPrice = (price, locale) => {
+  return (price ?? 0).toLocaleString(locale, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
