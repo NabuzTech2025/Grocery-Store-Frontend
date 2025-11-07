@@ -9,21 +9,8 @@ const BannerSection = () => {
   const banners = [
     {
       id: 1,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2Fgrocery-banner-1.jpg?alt=media&token=f02180e6-c15b-4e83-9dd4-938e3b2c2433",
+      image: "../../../../public/assets/user/img/banner-1.jpg",
       alt: "Banner 1",
-    },
-    {
-      id: 2,
-      image:
-        "https://firebasestorage.googleapis.com/v0/b/simclinixe-1.firebasestorage.app/o/Test%2Fgrocery-banner-2.jpg?alt=media&token=dd275a0f-086f-438f-9066-556c86ecc769",
-      alt: "Banner 2",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200&h=400&fit=crop",
-      alt: "Banner 3",
     },
   ];
 
@@ -70,18 +57,20 @@ const BannerSection = () => {
       </div>
 
       {/* Pagination Dots */}
-      <div className="banner-pagination">
-        {banners.map((banner, index) => (
-          <button
-            key={banner.id}
-            className={`pagination-dot ${
-              currentSlide === index ? "active" : ""
-            }`}
-            onClick={() => scrollToSlide(index)}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {banners.length > 1 && (
+        <div className="banner-pagination">
+          {banners.map((banner, index) => (
+            <button
+              key={banner.id}
+              className={`pagination-dot ${
+                currentSlide === index ? "active" : ""
+              }`}
+              onClick={() => scrollToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 };

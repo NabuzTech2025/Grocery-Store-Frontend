@@ -127,6 +127,10 @@
 }
 
 @media (max-width: 767px) {
+  .product-list-cnt {
+    min-height: 64px;
+  }
+
   .brand-logo a img {
     max-height: 52px;
   }

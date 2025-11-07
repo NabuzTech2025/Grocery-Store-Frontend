@@ -593,6 +593,9 @@ ul.hm-category-list li a h6 {
   margin-bottom: 0px;
   box-shadow: 1px 2px 4px rgba(0, 0, 0, 8%);
 }
+.product-list-cnt {
+  min-height: 72px;
+}
 
 .prdct-text {
   padding: 10px 10px 0 10px;
