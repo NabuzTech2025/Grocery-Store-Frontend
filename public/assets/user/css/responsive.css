@@ -127,6 +127,10 @@
 }
 
 @media (max-width: 767px) {
+  .product-list-cnt {
+    min-height: 64px;
+  }
+
   .brand-logo a img {
     max-height: 52px;
   }
@@ -468,6 +472,12 @@
   }
   .header-login img {
     margin-right: 0px;
+  }
+
+  .prdct-dialog .modal-content {
+    height: 100vh;
+    padding-bottom: 80px;
+    border-radius: 0;
   }
 }
 

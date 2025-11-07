@@ -163,12 +163,14 @@ const ProductCard = ({
 
       {/* Product Info */}
       <div className="product-info">
-        <h3 className="product-name">{product.name}</h3>
-        {product.description && (
-          <p className="product-description">
-            {String(product.description).slice(0, 20) + "..."}
-          </p>
-        )}
+        <div className="product-list-cnt">
+          <h3 className="product-name">{product.name}</h3>
+          {product.description && (
+            <p className="product-description">
+              {String(product.description).slice(0, 20) + "..."}
+            </p>
+          )}
+        </div>
 
         {/* Product Footer */}
         <div className="product-footer">

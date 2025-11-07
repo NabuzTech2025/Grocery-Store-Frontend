@@ -10,7 +10,7 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: #f8f9fa;
+  background: transparent;
   border-radius: 8px;
   overflow: hidden;
 }
@@ -172,8 +172,8 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .modal-dialog.modal-lg {
-    max-width: 95%;
-    margin: 10px auto;
+    max-width: 100%;
+    margin: 0px auto;
   }
 
   .product-image-container {

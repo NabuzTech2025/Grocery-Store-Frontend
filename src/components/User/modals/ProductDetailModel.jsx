@@ -123,7 +123,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
         style={{ display: "block" }}
         tabIndex="-1"
       >
-        <div className="modal-dialog modal-lg">
+        <div className="modal-dialog prdct-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
               {/* <h5 className="modal-title">{product.name}</h5> */}
@@ -395,7 +395,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                         className="btn btn-primary btn-lg w-100"
                         onClick={handleAddToCart}
                         style={{
-                          backgroundColor: "#624ba1",
+                          backgroundColor: "#027f3d",
                           borderColor: "#624ba1",
                           padding: "12px 24px",
                           fontSize: "16px",

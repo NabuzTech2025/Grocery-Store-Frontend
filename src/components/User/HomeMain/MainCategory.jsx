@@ -56,7 +56,10 @@ const MainCategory = () => {
         <div className="row g-2">
           {categories.length > 0 ? (
             categories.map((category) => (
-              <div key={category.id} className="col-lg-8per mb-3">
+              <div
+                key={category.id}
+                className="col-lg-2 col-md-3 col-sm-3 col-xs-4 col-4 mb-3"
+              >
                 <div
                   onClick={() => {
                     navigate("/store", {

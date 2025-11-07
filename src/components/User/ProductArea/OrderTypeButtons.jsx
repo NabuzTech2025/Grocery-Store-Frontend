@@ -58,7 +58,7 @@ const OrderTypeButtons = ({ overrideClassName = "" }) => {
         className={`select-type pickup ${
           orderType === "pickup" ? "active" : ""
         }`}
-        onClick={() => handleOrderTypeChange("pickup")}
+        onClick={() => handleOrderTypeChange("delivery")}
         style={buttonStyle}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
