@@ -1,4 +1,4 @@
-import loaderBombay from "../public/assets/images/loader-bombay.png";
+import loaderBombay from "../public/assets/images/favicon.png";
 
 function Suspense_Loader() {
   return (

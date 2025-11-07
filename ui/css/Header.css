@@ -6,7 +6,7 @@
 
 .header-left-area .brand-logo-container {
   margin-right: 40px;
-  width: 21%;
+  width: 54%;
 }
 
 .header-left-area .brand-logo-container.mobile {
@@ -14,9 +14,9 @@
   width: 5%;
 }
 
-.header-left-area .brand-logo-container img {
+/* .header-left-area .brand-logo-container img {
   width: 100%;
-}
+} */
 
 .header-left-area .brand-logo-container.mobile img {
   width: 80px;
