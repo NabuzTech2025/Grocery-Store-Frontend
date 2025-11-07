@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useViewport } from "../../../contexts/ViewportContext";
+import bannerImage1 from "../../../../public/assets/user/img/banner-1.jpg";
 
 const BannerSection = () => {
   const { isMobileViewport } = useViewport();
@@ -9,7 +10,7 @@ const BannerSection = () => {
   const banners = [
     {
       id: 1,
-      image: "../../../../public/assets/user/img/banner-1.jpg",
+      image: bannerImage1,
       alt: "Banner 1",
     },
   ];
