@@ -4,12 +4,13 @@ import { useStoreStatus } from "../../../contexts/StoreStatusContext.jsx";
 import ProductDetailModal from "../modals/ProductDetailModel.jsx";
 import { useCategoriesWithProducts } from "../../../Hooks/useProductData.js.js";
 import ProductCard from "../ProductArea/ProductCard.jsx";
+import { useNavigate } from "react-router-dom";
 
 function HomePageProductSection() {
   const { serverTime } = useStoreStatus();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
-
+  const navigate = useNavigate();
   // Use custom hook to fetch categories and products
   const { categories, allProducts, isLoading, error } =
     useCategoriesWithProducts(serverTime);
@@ -212,12 +213,14 @@ function HomePageProductSection() {
   }, [categories, allProducts]);
 
   const handleAddToCart = (product) => {
-    console.log("Adding to cart:", product);
+    setSelectedProduct(product);
+    setShowProductModal(true);
   };
 
   const handleProductImageClick = (product) => {
-    setSelectedProduct(product);
-    setShowProductModal(true);
+    navigate("/store", {
+      state: { selectedCategoryId: product.categoryId },
+    });
   };
 
   if (error) {

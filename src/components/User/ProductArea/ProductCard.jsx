@@ -115,7 +115,6 @@ const ProductCard = ({
       // className={`${
       //   location.pathname === "/" ? "product-card-main-page" : "product-card"
       // }`}
-      onClick={handleImageClick}
     >
       {/* Discount Badge */}
       {hasDiscount && discountLabel && (
@@ -123,7 +122,7 @@ const ProductCard = ({
       )}
 
       {/* Product Image */}
-      <div className="product-image">
+      <div onClick={handleImageClick} className="product-image">
         <img
           src={
             product.image_url
@@ -191,7 +190,11 @@ const ProductCard = ({
           </div>
 
           {/* overlay */}
-          <button className="add-to-cart" disabled={isOutOfStock}>
+          <button
+            onClick={handleAddToCart}
+            className="add-to-cart"
+            disabled={isOutOfStock}
+          >
             {quantity > 0 && (
               <span className="product-quantity">{quantity}</span>
             )}

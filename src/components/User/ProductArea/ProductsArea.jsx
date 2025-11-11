@@ -874,6 +874,7 @@ const ProductsArea = ({ searchTerm, selectedCategory_id }) => {
       {/* Single shared Product Detail Modal for all categories */}
       <ProductDetailModal
         product={activeProduct}
+        key={activeProduct?.id || "no-product"}
         isOpen={showDetail && !!activeProduct}
         onClose={() => setShowDetail(false)}
       />
