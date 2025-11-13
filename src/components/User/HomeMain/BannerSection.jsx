@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import bannerImage1 from "../../../../public/assets/user/img/banner-1.jpg";
+import mobilebanner from "../../../../public/assets/user/img/mobile-banner.jpg";
 
 const BannerSection = () => {
   const [isMobileViewport, setIsMobileViewport] = useState(
@@ -21,8 +22,8 @@ const BannerSection = () => {
   const mobileBanners = [
     {
       id: 1,
-      image: "../../../../public/assets/user/img/mobile-banner.jpg",
-      alt: "Banner 1",
+      image: mobilebanner,
+      alt: "Mobile Banner 1",
     },
   ];
 
