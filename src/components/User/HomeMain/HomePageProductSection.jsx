@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useStoreStatus } from "../../../contexts/StoreStatusContext.jsx";
 import ProductDetailModal from "../modals/ProductDetailModel.jsx";
@@ -11,6 +11,10 @@ function HomePageProductSection() {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
   const navigate = useNavigate();
+
+  // Create refs for each scroll container
+  const scrollRefs = useRef({});
+
   // Use custom hook to fetch categories and products
   const { categories, allProducts, isLoading, error } =
     useCategoriesWithProducts(serverTime);
@@ -67,7 +71,6 @@ function HomePageProductSection() {
                 type: product.type,
                 taxPercentage: product.tax?.percentage || 0,
                 taxName: product.tax?.name || "",
-                // overlay - pass stock/quantity only if it exists from backend (don't default to 0)
                 stock:
                   product.stock !== undefined && product.stock !== null
                     ? Number(product.stock)
@@ -81,7 +84,6 @@ function HomePageProductSection() {
                     : product.stock !== undefined && product.stock !== null
                     ? Number(product.stock)
                     : undefined,
-                // overlay - pass quantity_on_hand / qty_on_hand if present
                 quantity_on_hand:
                   product.quantity_on_hand !== undefined &&
                   product.quantity_on_hand !== null
@@ -93,7 +95,6 @@ function HomePageProductSection() {
                       product.qty_on_hand !== null
                     ? Number(product.qty_on_hand)
                     : undefined,
-                // also keep raw qty_on_hand for direct access if needed
                 qty_on_hand:
                   product.qty_on_hand !== undefined &&
                   product.qty_on_hand !== null
@@ -120,7 +121,6 @@ function HomePageProductSection() {
                         variant.stock !== undefined && variant.stock !== null
                           ? Number(variant.stock)
                           : undefined,
-                      // overlay - pass variant qty on hand if present
                       quantity_on_hand:
                         variant.quantity_on_hand !== undefined &&
                         variant.quantity_on_hand !== null
@@ -175,7 +175,6 @@ function HomePageProductSection() {
                   product.variants && product.variants.length > 0
                     ? {
                         ...product.variants[0],
-                        // overlay - only set stock if it exists from backend
                         stock:
                           product.variants[0].stock !== undefined &&
                           product.variants[0].stock !== null
@@ -184,7 +183,6 @@ function HomePageProductSection() {
                               product.variants[0].quantity !== null
                             ? Number(product.variants[0].quantity)
                             : undefined,
-                        // include quantity_on_hand and qty_on_hand if exists
                         quantity_on_hand:
                           product.variants[0].quantity_on_hand !== undefined &&
                           product.variants[0].quantity_on_hand !== null
@@ -212,6 +210,22 @@ function HomePageProductSection() {
       .filter((categoryData) => categoryData.products.length > 0);
   }, [categories, allProducts]);
 
+  // Scroll function
+  const handleScroll = (categoryIndex, direction) => {
+    const scrollContainer = scrollRefs.current[categoryIndex];
+    if (scrollContainer) {
+      const scrollAmount = 300; // Adjust scroll distance as needed
+      const newScrollPosition =
+        scrollContainer.scrollLeft +
+        (direction === "right" ? scrollAmount : -scrollAmount);
+
+      scrollContainer.scrollTo({
+        left: newScrollPosition,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const handleAddToCart = (product) => {
     setSelectedProduct(product);
     setShowProductModal(true);
@@ -238,7 +252,25 @@ function HomePageProductSection() {
           <h2 className="section-title">{categoryData.category}</h2>
 
           <div className="products-container">
-            <div className="products-scroll">
+            <button
+              className="scroll-arrow scroll-arrow-left"
+              onClick={() => handleScroll(categoryIndex, "left")}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M15 18L9 12L15 6"
+                  stroke="#333"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+
+            <div
+              className="products-scroll"
+              ref={(el) => (scrollRefs.current[categoryIndex] = el)}
+            >
               {categoryData.products.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -250,7 +282,10 @@ function HomePageProductSection() {
               ))}
             </div>
 
-            <button className="scroll-arrow scroll-arrow-right">
+            <button
+              className="scroll-arrow scroll-arrow-right"
+              onClick={() => handleScroll(categoryIndex, "right")}
+            >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                 <path
                   d="M9 18L15 12L9 6"

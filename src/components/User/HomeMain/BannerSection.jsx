@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { useViewport } from "../../../contexts/ViewportContext";
 
 const BannerSection = () => {
-  const { isMobileViewport } = useViewport();
+  const [isMobileViewport, setIsMobileViewport] = useState(
+    window.innerWidth <= 768
+  );
   const [currentSlide, setCurrentSlide] = useState(0);
   const scrollRef = useRef(null);
 
-  const banners = [
+  // Desktop banners
+  const desktopBanners = [
     {
       id: 1,
       image: "../../../../public/assets/user/img/banner-1.jpg",
@@ -14,35 +16,62 @@ const BannerSection = () => {
     },
   ];
 
+  // Mobile banners
+  const mobileBanners = [
+    {
+      id: 1,
+      image: "../../../../public/assets/user/img/mobile-banner.jpg",
+      alt: "Banner 1",
+    },
+  ];
+
+  // Select banners based on viewport
+  const banners = isMobileViewport ? mobileBanners : desktopBanners;
+
+  // Handle viewport resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileViewport(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle scroll detection
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     const handleScroll = () => {
       const scrollPosition = container.scrollLeft;
-      const slideWidth = container.clientWidth; // Use clientWidth instead of offsetWidth
+      const slideWidth = container.clientWidth;
       const currentIndex = Math.round(scrollPosition / slideWidth);
-      // Add bounds checking
       const safeIndex = Math.max(0, Math.min(currentIndex, banners.length - 1));
       setCurrentSlide(safeIndex);
     };
 
-    // Attach event listener
     container.addEventListener("scroll", handleScroll, { passive: true });
 
-    // Cleanup
     return () => {
       container.removeEventListener("scroll", handleScroll);
     };
-  }, [banners.length]); // Add banners.length as dependency
+  }, [banners.length]);
+
+  // Reset current slide when viewport changes
+  useEffect(() => {
+    setCurrentSlide(0);
+    if (scrollRef.current) {
+      scrollRef.current.scrollLeft = 0;
+    }
+  }, [isMobileViewport]);
 
   const scrollToSlide = (index) => {
     const container = scrollRef.current;
     if (!container) return;
 
     const slideWidth = container.clientWidth;
-
-    // Optionally set state immediately for instant feedback
+    container.scrollLeft = slideWidth * index;
     setCurrentSlide(index);
   };
 
