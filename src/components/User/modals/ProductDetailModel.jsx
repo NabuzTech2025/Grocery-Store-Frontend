@@ -7,8 +7,14 @@ import {
 import shopTrolley from "../../../../public/assets/user/img/shopTrolley.png";
 import { useViewport } from "../../../contexts/ViewportContext";
 import { Minus, Plus } from "lucide-react";
+import {
+  normalizeProductData,
+  getProductActualPrice,
+  getProductOriginalPrice,
+  hasProductDiscount,
+} from "../../../utils/productDataNormalizer";
 
-const ProductDetailModal = ({ product, isOpen, onClose }) => {
+const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
   const { addToCart, cartItems } = useCart();
   const { isMobileViewport } = useViewport();
   const [quantity, setQuantity] = useState(1);
@@ -19,31 +25,27 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     visible: false,
   });
   const [isHovering, setIsHovering] = useState(false);
+  
 
-  //Handle both data structures
-  const getActualPrice = () => {
-    // If originalPrice exists, price is already the final price
-    if (product?.originalPrice) {
-      return product.price * quantity;
-    }
+  // Normalize product data to handle both formats
+  const product = normalizeProductData(rawProduct);
 
-    // Otherwise, calculate final price from raw data
-    const discountAmount = Number(product?.discount_price) || 0;
-    const originalPrice = Number(product?.price) || 0;
-    return discountAmount > 0 ? originalPrice - discountAmount : originalPrice;
-  };
+  // Get prices using helper functions
+  const actualPrice = getProductActualPrice(product, selectedSize, quantity);
+  const displayOriginalPrice = getProductOriginalPrice(product, selectedSize);
+  const hasDiscount = hasProductDiscount(product, selectedSize);
 
-  const actualprice = getActualPrice();
+  console.log("Product Info ======>", product);
+  console.log("Actual Price:", actualPrice);
+  console.log("Original Price:", displayOriginalPrice);
+  console.log("Has Discount:", hasDiscount);
 
-  const displayOriginalPrice = product?.originalPrice || product?.price;
-  const hasDiscount = product?.discount_price > 0;
-
-  // Use actual variants from API only - guard against null product
+  // Use actual variants from normalized data
   const availableSizes =
     product?.variants?.length > 0
       ? product.variants.map((variant) => ({
           id: variant.id,
-          name: variant.name,
+          name: variant.name || variant.size,
           price: variant.price,
         }))
       : [];
@@ -55,7 +57,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     }
   }, [availableSizes]);
 
-  // Get current price based on selected size from API variants
+  // Get current price based on selected size
   const getCurrentPrice = () => {
     if (!product) return 0;
     if (selectedSize && availableSizes.length > 0) {
@@ -108,7 +110,7 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
     }
   };
 
-  // Since backend sends single image URL as string
+  // Get product image
   const productImage = product?.image_url
     ? product.image_url.split("?")[0]
     : "/assets/images/default-product.png";
@@ -126,7 +128,6 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
         <div className="modal-dialog prdct-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
-              {/* <h5 className="modal-title">{product.name}</h5> */}
               <button
                 type="button"
                 className="btn-close"
@@ -165,7 +166,6 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                               const x = e.clientX - rect.left;
                               const y = e.clientY - rect.top;
 
-                              // Constrain lens within image bounds
                               const lensSize = 100;
                               const constrainedX = Math.max(
                                 0,
@@ -182,21 +182,17 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                 )
                               );
 
-                              // Update lens position
                               setLensPosition({
                                 x: constrainedX,
                                 y: constrainedY,
                                 visible: true,
                               });
 
-                              // Update zoomed view with live tracking
                               const zoomedView =
                                 document.getElementById("zoomed-view");
                               if (zoomedView) {
-                                // Make sure zoom panel is visible while moving
                                 zoomedView.style.display = "block";
                                 zoomedView.style.opacity = "1";
-                                // Match zoom image size to 2x of rendered image size for clear movement
                                 zoomedView.style.backgroundSize = `${
                                   rect.width * 2
                                 }px ${rect.height * 2}px`;
@@ -217,7 +213,6 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                 zoomedView.style.display = "block";
                                 zoomedView.style.opacity = "1";
                               }
-                              // Hide text content during zoom (match reference behavior)
                               const productDetails =
                                 document.getElementById("product-details");
                               if (productDetails) {
@@ -237,7 +232,6 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                                 zoomedView.style.opacity = "0";
                               }
                               setLensPosition({ x: 0, y: 0, visible: false });
-                              // Show text content again (match reference behavior)
                               const productDetails =
                                 document.getElementById("product-details");
                               if (productDetails) {
@@ -314,11 +308,11 @@ const ProductDetailModal = ({ product, isOpen, onClose }) => {
                             : "current-price"
                         }`}
                       >
-                        {formatPrice(actualprice, currentCurrency.locale)}
+                        {formatPrice(actualPrice, currentCurrency.locale)}
                       </h6>
                       {hasDiscount && (
                         <span className="original-price">
-                          {format(displayOriginalPrice)}
+                          {format(displayOriginalPrice * quantity)}
                         </span>
                       )}
                     </div>

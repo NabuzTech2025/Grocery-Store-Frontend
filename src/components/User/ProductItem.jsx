@@ -5,7 +5,7 @@ import { useCart } from "../../contexts/CartContext";
 import { currentCurrency } from "../../utils/helper/currency_type";
 import { getProduct } from "@/api/UserServices";
 import { useLanguage } from "../../contexts/LanguageContext";
-import ProductDetailModal from "./modals/ProductDetailModel";
+
 import ProductCard from "./ProductArea/ProductCard";
 
 const ProductInfoModal = ({ show, handleClose, product, data }) => {
