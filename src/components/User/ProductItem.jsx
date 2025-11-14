@@ -119,11 +119,9 @@ const ProductItem = ({ product, onOpenDetail }) => {
 
   // ─── EVENT HANDLERS ──────────────────────────────────
   const handleAddToCart = () => {
-    if (product.enriched_topping_groups.length > 0) {
-      setSelectedProduct(product);
-      setShowVariantModal(true);
-    } else {
-      addToCart(product, selectedVariant ? selectedVariant.id : null, 1, []);
+    // Open the ProductDetailModal
+    if (onOpenDetail) {
+      onOpenDetail(product);
     }
   };
 
@@ -165,11 +163,14 @@ const ProductItem = ({ product, onOpenDetail }) => {
     selectedVariant: selectedVariant
       ? {
           ...selectedVariant,
-          stock: selectedVariant.stock !== undefined && selectedVariant.stock !== null
-            ? Number(selectedVariant.stock)
-            : (selectedVariant.quantity !== undefined && selectedVariant.quantity !== null
+          stock:
+            selectedVariant.stock !== undefined &&
+            selectedVariant.stock !== null
+              ? Number(selectedVariant.stock)
+              : selectedVariant.quantity !== undefined &&
+                selectedVariant.quantity !== null
               ? Number(selectedVariant.quantity)
-              : undefined),
+              : undefined,
         }
       : null,
   };
