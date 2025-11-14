@@ -211,6 +211,11 @@ const Header = ({ status, onSearch }) => {
                         }}
                       >
                         <img src={userLogo} alt="Account" />
+                        {!isMobileViewport && user?.customer_name && (
+                          <span className="account-text">
+                            {user.customer_name}
+                          </span>
+                        )}
                       </div>
                     ) : (
                       <a
