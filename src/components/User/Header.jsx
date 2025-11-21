@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import AddressModal from "../User/modals/AddressModal";
 import LoginModal from "@/components/User/modals/LoginModal";
 import { useAuth } from "@/auth/AuthProvider";
 import { useCart } from "../../contexts/CartContext";
 import { useViewport } from "../../contexts/ViewportContext";
 import { payload_url } from "../../utils/common_urls";
+import { searchProducts } from "../../api/UserServices";
 import brandLogo from "../../../public/assets/user/img/brand-logo.svg";
 import userLogo from "../../../public/assets/user/img/login-icon.svg";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
@@ -13,6 +15,7 @@ import { LuMapPin } from "react-icons/lu";
 import { RiUserLine } from "react-icons/ri";
 import { IoIosSearch, IoMdClose } from "react-icons/io";
 import SearchBar from "./ProductArea/SearchBar";
+
 const Header = ({ status, onSearch }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -21,6 +24,11 @@ const Header = ({ status, onSearch }) => {
   const [selectedPostcode, setSelectedPostcode] = useState("");
   const [localSearch, setLocalSearch] = useState("");
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
+  const [searchTimeout, setSearchTimeout] = useState(null);
+  const searchDropdownRef = useRef(null);
 
   const { isSmallestViewport } = useViewport();
   const { isAuthenticated, logout, user } = useAuth();
@@ -32,6 +40,7 @@ const Header = ({ status, onSearch }) => {
     translations: currentLanguage,
     changeLanguage,
   } = useLanguage();
+  const navigate = useNavigate();
 
   const logoutUser = () => {
     logout();
@@ -50,7 +59,6 @@ const Header = ({ status, onSearch }) => {
     }
   }, [postCode, setPostCode]);
 
-  // Updated language change handler - no window reload needed
   const handleLanguageChange = (lang) => {
     changeLanguage(lang);
     setShowLangDropdown(false);
@@ -63,15 +71,98 @@ const Header = ({ status, onSearch }) => {
     setPostCode(data.postcode);
   };
 
-  const onChangeSearch = (e) => {
-    const val = e.target.value;
+  // ✅ API-BASED SEARCH WITH DEBOUNCING (NO UI FILTERING)
+  const onChangeSearch = (valueOrEvent) => {
+    const val =
+      typeof valueOrEvent === "string"
+        ? valueOrEvent
+        : valueOrEvent?.target?.value || "";
+
+    console.log("🔥 Search input:", val);
+
     setLocalSearch(val);
-    onSearch(val);
+
+    // Clear previous timeout
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+    }
+
+    // Clear suggestions if search is empty
+    if (!val.trim()) {
+      console.log("🔥 Empty search - clearing");
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
+      setIsLoadingSuggestions(false);
+      return;
+    }
+
+    // Don't show dropdown or loading immediately - wait for debounce
+    setIsLoadingSuggestions(false);
+    setShowSuggestions(false); // Hide dropdown until API response
+
+    // API call with 500ms debounce
+    const timeoutId = setTimeout(async () => {
+      try {
+        console.log("🔍 Calling searchProducts API...");
+
+        const response = await searchProducts({
+          query: val,
+          storeId: import.meta.env.VITE_STORE_ID,
+          limit: 10,
+        });
+
+        console.log("📦 API Response:", response);
+
+        // Handle different response structures
+        let products = [];
+        if (response?.data) {
+          products = Array.isArray(response.data) ? response.data : [];
+        } else if (Array.isArray(response)) {
+          products = response;
+        }
+
+        console.log("✅ Products found:", products.length);
+        console.log("🔍 Products array:", products);
+
+        // Always show dropdown with results or "No products found"
+        const finalProducts = products.slice(0, 10);
+        setSearchSuggestions(finalProducts);
+        setShowSuggestions(true);
+        
+        console.log("📋 Final suggestions set:", finalProducts.length);
+      } catch (error) {
+        console.error("❌ Search API error:", error);
+        setSearchSuggestions([]);
+        setShowSuggestions(true); // Show dropdown with "No products found" message
+      }
+    }, 500); // 500ms debounce
+
+    setSearchTimeout(timeoutId);
   };
 
-  // Close dropdown when clicking outside
+  // Handle suggestion click - navigate to search page
+  const handleSuggestionClick = (product) => {
+    const productName = product.name || product.title || "";
+
+    // Navigate to search page with product name
+    navigate(`/search?q=${encodeURIComponent(productName)}`);
+    
+    // Clear search state
+    setLocalSearch("");
+    setShowSuggestions(false);
+    setSearchSuggestions([]);
+    setShowSearchModal(false); // Close mobile search modal
+  };
+
+  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
+      if (
+        searchDropdownRef.current &&
+        !searchDropdownRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
       if (showLangDropdown) {
         setShowLangDropdown(false);
       }
@@ -80,11 +171,20 @@ const Header = ({ status, onSearch }) => {
       }
     };
 
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener("click", handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showLangDropdown, showAccountMenu]);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
+    };
+  }, [searchTimeout]);
 
   return (
     <>
@@ -92,9 +192,51 @@ const Header = ({ status, onSearch }) => {
         <div className="header-container">
           {showSearchModal && isMobileViewport ? (
             <div className="show-search-bar">
-              <SearchBar onSearch={onChangeSearch} />
+              <div ref={searchDropdownRef} className="search-wrapper">
+                <SearchBar 
+                  onSearch={onChangeSearch} 
+                  value={localSearch}
+                  onEnterPress={(searchValue) => {
+                    if (searchValue.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+                      setLocalSearch("");
+                      setShowSuggestions(false);
+                      setSearchSuggestions([]);
+                      setShowSearchModal(false);
+                    }
+                  }}
+                />
+
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && (
+                  <div className="search-suggestions-dropdown">
+                    {searchSuggestions.length > 0 ? (
+                      searchSuggestions.map((product, index) => (
+                        <div
+                          key={product.id || index}
+                          className="suggestion-item"
+                          onClick={() => handleSuggestionClick(product)}
+                        >
+                          <IoIosSearch size={20} />
+                          <span>{product.name || product.title}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="suggestion-item no-results">
+                        <span>No products found</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <IoMdClose
-                onClick={() => setShowSearchModal(false)}
+                onClick={() => {
+                  setShowSearchModal(false);
+                  setSearchSuggestions([]);
+                  setShowSuggestions(false);
+                  setLocalSearch("");
+                }}
                 size={35}
                 className="right-side-icons"
               />
@@ -151,11 +293,45 @@ const Header = ({ status, onSearch }) => {
                             </div>
                           </div>
                         )}
-                        <SearchBar
-                          onSearch={() => {
-                            console.log("Desktop Search");
-                          }}
-                        />
+
+                        <div ref={searchDropdownRef} className="search-wrapper">
+                          <SearchBar
+                            onSearch={onChangeSearch}
+                            value={localSearch}
+                            onEnterPress={(searchValue) => {
+                              if (searchValue.trim()) {
+                                navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
+                                setLocalSearch("");
+                                setShowSuggestions(false);
+                                setSearchSuggestions([]);
+                              }
+                            }}
+                          />
+
+                          {/* Search Suggestions Dropdown - Desktop */}
+                          {showSuggestions && (
+                            <div className="search-suggestions-dropdown">
+                              {searchSuggestions.length > 0 ? (
+                                searchSuggestions.map((product, index) => (
+                                  <div
+                                    key={product.id || index}
+                                    className="suggestion-item"
+                                    onClick={() =>
+                                      handleSuggestionClick(product)
+                                    }
+                                  >
+                                    <IoIosSearch size={20} />
+                                    <span>{product.name || product.title}</span>
+                                  </div>
+                                ))
+                              ) : (
+                                <div className="suggestion-item no-results">
+                                  <span>No products found</span>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
 
                       {/* Mobile */}

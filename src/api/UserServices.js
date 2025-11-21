@@ -162,3 +162,54 @@ export const getStoreDisscount = async (store_id = null) => {
     throw error; // propagate to caller's catch
   }
 };
+
+export const adjustInventory = async ({ productId, variantId, delta }) => {
+  try {
+    const payload = {
+      product_id: productId,
+      variant_id: variantId ?? null,
+      delta,
+      store_id: import.meta.env.VITE_STORE_ID,
+    };
+
+    return await axiosInstance.post(
+      "https://magskr.com/inventory/adjust",
+      payload
+    );
+  } catch (error) {
+    console.error("Adjust inventory API error:", error);
+    throw error;
+  }
+};
+
+     export const searchProducts = async ({ query, storeId, limit = 20, _t }) => {
+       if (!query?.trim()) return [];
+       const params = {
+         q: query,
+         store_id: storeId ?? import.meta.env.VITE_STORE_ID,
+         limit,
+       };
+       
+       // Add timestamp to prevent caching
+       if (_t) {
+         params._t = _t;
+       }
+       
+       try {
+         const response = await axiosInstance.get(
+           "https://magskr.com/search/products",
+           { 
+             params,
+             // Disable axios caching
+             headers: {
+               'Cache-Control': 'no-cache',
+               'Pragma': 'no-cache'
+             }
+           }
+         );
+         return response.data; // structure confirm कर लो
+       } catch (error) {
+         console.error("Search products API error:", error);
+         throw error;
+       }
+     };

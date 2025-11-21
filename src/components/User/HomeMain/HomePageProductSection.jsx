@@ -6,7 +6,7 @@ import { useCategoriesWithProducts } from "../../../Hooks/useProductData.js.js";
 import ProductCard from "../ProductArea/ProductCard.jsx";
 import { useNavigate } from "react-router-dom";
 
-function HomePageProductSection() {
+function HomePageProductSection({ searchTerm = "" }) {
   const { serverTime } = useStoreStatus();
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
@@ -237,6 +237,23 @@ function HomePageProductSection() {
     });
   };
 
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+
+  const filteredCategoryProducts = useMemo(() => {
+    if (!normalizedSearchTerm) {
+      return categoryProducts;
+    }
+
+    return categoryProducts
+      .map((category) => ({
+        ...category,
+        products: category.products.filter((product) =>
+          product.name.toLowerCase().includes(normalizedSearchTerm)
+        ),
+      }))
+      .filter((category) => category.products.length > 0);
+  }, [categoryProducts, normalizedSearchTerm]);
+
   if (error) {
     return <div className="error-message">Error: {error.message}</div>;
   }
@@ -247,7 +264,13 @@ function HomePageProductSection() {
 
   return (
     <div className="all-categories-container">
-      {categoryProducts.map((categoryData, categoryIndex) => (
+      {filteredCategoryProducts.length === 0 && normalizedSearchTerm && (
+        <div className="no-results-message">
+          No products found for “{searchTerm}”
+        </div>
+      )}
+
+      {filteredCategoryProducts.map((categoryData, categoryIndex) => (
         <div key={categoryIndex} className="product-section">
           <h2 className="section-title">{categoryData.category}</h2>
 
