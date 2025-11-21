@@ -7,6 +7,7 @@ import {
   OrderPlace,
   getUserAddresses,
   OrderPlaceWithGustUser,
+  adjustInventory,
 } from "../../api/UserServices";
 import AddressModal from "@/components/User/modals/AddressModal";
 import Header from "@/components/User/Header";
@@ -228,6 +229,34 @@ const CheckoutPage = () => {
   const discountAmount = (discountPercent / 100) * subtotal;
   const grandTotal = subtotal - discountAmount + deliveryFee;
 
+  const updateInventoryForOrder = async (cartItems) => {
+    try {
+      await Promise.all(
+        cartItems.map(async (item) => {
+          try {
+            const response = await adjustInventory({
+              productId: item.id,
+              variantId: item.selectedVariant?.id || null,
+              delta: -item.quantity,
+            });
+
+            console.log(
+              `Successfully updated inventory for product ${item.id}:`,
+              response.data
+            );
+          } catch (error) {
+            console.error(
+              `Failed to update inventory for product ${item.id}:`,
+              error?.response?.data || error
+            );
+          }
+        })
+      );
+    } catch (error) {
+      console.error("Error in batch inventory update:", error);
+    }
+  };
+
   const handlePlaceOrder = async () => {
     setPlacing(true);
     localStorage.setItem("order_placed", "true");
@@ -312,6 +341,11 @@ const CheckoutPage = () => {
         resp = await OrderPlaceWithGustUser(body);
       } else {
         resp = await OrderPlace(body);
+      }
+      // Order success ke baad inventory update
+      if (resp && resp.data && resp.data.id) {
+        // Update inventory for each cart item
+        await updateInventoryForOrder(cartItems);
       }
       setOrderId(resp.data.id);
       setOrderSuccess(true);

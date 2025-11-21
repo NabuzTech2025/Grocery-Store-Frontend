@@ -25,7 +25,6 @@ const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
     visible: false,
   });
   const [isHovering, setIsHovering] = useState(false);
-  
 
   // Normalize product data to handle both formats
   const product = normalizeProductData(rawProduct);
@@ -36,9 +35,6 @@ const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
   const hasDiscount = hasProductDiscount(product, selectedSize);
 
   console.log("Product Info ======>", product);
-  console.log("Actual Price:", actualPrice);
-  console.log("Original Price:", displayOriginalPrice);
-  console.log("Has Discount:", hasDiscount);
 
   // Use actual variants from normalized data
   const availableSizes =
@@ -74,6 +70,13 @@ const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
   };
 
   const handleAddToCart = () => {
+    const availableStock =
+      product?.quantity_on_hand || product?.qty_on_hand || 0;
+
+    if (quantity > availableStock) {
+      alert(`Only $ {availableStock} items available in stock`);
+      return;
+    }
     if (availableSizes.length > 0 && !selectedSize) {
       alert("Please select a size before adding to cart");
       return;
@@ -105,7 +108,9 @@ const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
-    if (newQuantity >= 1) {
+    const availableStock =
+      product?.quantity_on_hand || product?.qty_on_hand || 0;
+    if (newQuantity >= 1 && newQuantity <= availableStock) {
       setQuantity(newQuantity);
     }
   };
@@ -357,11 +362,26 @@ const ProductDetailModal = ({ product: rawProduct, isOpen, onClose }) => {
                         <button
                           className="btn btn-outline-secondary d-flex align-items-center justify-content-center"
                           onClick={() => handleQuantityChange(1)}
+                          disabled={
+                            quantity >=
+                            (product?.quantity_on_hand ||
+                              product?.qty_on_hand ||
+                              0)
+                          }
                         >
                           <Plus className="quantity-icon" />
                         </button>
                       </div>
                     </div>
+                    {(product?.quantity_on_hand || product?.qty_on_hand) && (
+                      <p
+                        className="text-muted mt-2"
+                        style={{ fontSize: "14px" }}
+                      >
+                        Available stock:{" "}
+                        {product?.quantity_on_hand || product?.qty_on_hand}
+                      </p>
+                    )}
 
                     {/* Add to Cart Button */}
                     <div className="add-to-cart-section">

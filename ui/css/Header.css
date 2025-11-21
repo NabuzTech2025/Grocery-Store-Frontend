@@ -271,3 +271,134 @@
     height: 40px;
   }
 }
+
+/* Search Wrapper */
+.search-wrapper {
+  position: relative;
+  width: 100%;
+  flex: 1;
+}
+
+/* Search Suggestions Dropdown */
+.search-suggestions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: -1px;
+}
+
+/* Suggestion Item */
+.suggestion-item {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+
+
+/* Loading & No Results States */
+.suggestion-item.loading,
+.suggestion-item.no-results {
+  cursor: default;
+  color: #666;
+  justify-content: center;
+}
+
+.suggestion-item.no-results:hover {
+  background-color: #ffffff;
+}
+
+/* Icon Styling */
+.suggestion-item svg {
+  flex-shrink: 0;
+  color: #666;
+}
+
+/* Text Styling */
+.suggestion-item span {
+  flex: 1;
+  font-size: 14px;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Scrollbar Styling for Dropdown */
+.search-suggestions-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0 0 8px 0;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.search-suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .search-suggestions-dropdown {
+    max-height: 300px;
+    font-size: 13px;
+  }
+
+  .suggestion-item {
+    padding: 10px 14px;
+  }
+
+  .suggestion-item span {
+    font-size: 13px;
+  }
+}
+
+/* Animation for Dropdown Appearance */
+/* @keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} */
+
+/* .search-suggestions-dropdown {
+  animation: slideDown 0.2s ease-out;
+} */
+
+/* Active/Focus State */
+/* .suggestion-item:active {
+  background-color: #e0e0e0;
+} */
+
+/* Highlight Search Term (Optional - Add this if needed) */
+/* .suggestion-item .highlight {
+  font-weight: 600;
+  color: #624ba1;
+} */

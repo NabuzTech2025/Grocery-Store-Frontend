@@ -48,6 +48,7 @@ const ForgotPassword = lazy(() => import("./pages/User/ForgotPassword"));
 const ResetPassword = lazy(() => import("./pages/User/ResetPassword"));
 const SupportPage = lazy(() => import("./pages/SupportPage"));
 const PrivacypolicyPage = lazy(() => import("./pages/PrivacypolicyPage"));
+const SearchProductPage = lazy(() => import("./pages/User/SearchProductPage"));
 
 // Common imports (keep normal imports since they are always needed)
 import TitleUpdater from "./components/User/TitleUpdater";
@@ -125,6 +126,7 @@ function App() {
                             {/* Front end routes */}
                             <Route path="/" element={<HomeMain />} />
                             <Route path="/store" element={<Restaurant />} />
+                            <Route path="/search" element={<SearchProductPage />} />
 
                             {/* User-protected routes */}
                             <Route element={<UserRoute />}>

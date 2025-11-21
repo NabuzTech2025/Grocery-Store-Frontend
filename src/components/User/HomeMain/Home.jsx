@@ -21,7 +21,7 @@ const Home = () => {
         <main style={{ flex: 1 }}>
           <BannerSection />
           <MainCategory />
-          <HomePageProductSection />
+          <HomePageProductSection searchTerm={searchTerm} />
         </main>
         <Footer />
       </CartProvider>

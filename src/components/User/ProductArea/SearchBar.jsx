@@ -1,17 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLanguage } from "../../../contexts/LanguageContext";
-import { Search } from "lucide-react";
 import { IoIosSearch } from "react-icons/io";
 
-function SearchBar({ onSearch }) {
+function SearchBar({ onSearch, value, onEnterPress }) {
   const { translations: currentLanguage } = useLanguage();
-  const [localSearchTerm, setLocalSearchTerm] = useState("");
 
   const onChangeSearch = (e) => {
     const val = e.target.value;
-    setLocalSearchTerm(val);
-    onSearch(val);
+    onSearch(val); // Parent component ko pass karo
   };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && onEnterPress) {
+      onEnterPress(e.target.value);
+    }
+  };
+
   return (
     <div
       className="form"
@@ -24,8 +28,9 @@ function SearchBar({ onSearch }) {
         type="text"
         className="form-control form-input searchBar"
         placeholder={`${currentLanguage.search_anything}...`}
-        value={localSearchTerm}
+        value={value || ""} // Header se aaya hua value use karo
         onChange={onChangeSearch}
+        onKeyPress={handleKeyPress}
         autoFocus
         onFocus={(e) => {
           e.target.style.borderColor = "#007bff";
