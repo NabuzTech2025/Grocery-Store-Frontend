@@ -1,10 +1,10 @@
 import React from "react";
 import Header from "../../components/User/Header";
-import SearchResults from "../../components/User/SearchProduct/SearchResults";
 import { useStoreStatus } from "../../contexts/StoreStatusContext";
 import { CartProvider } from "../../contexts/CartContext";
 import CartButton from "../../components/User/CartButton";
 import CartModal from "../../components/User/modals/CartModal";
+import SearchResults from "../../components/User/Searchproduct/SearchResults";
 
 const SearchProductPage = () => {
   const { store } = useStoreStatus();

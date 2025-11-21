@@ -30,10 +30,10 @@ const SearchResults = () => {
       }
 
       setLoading(true);
-      
+
       // Clear previous results immediately
       setProducts([]);
-      
+
       try {
         console.log("🔍 Fresh API call for:", searchQuery);
         console.log("🔍 Timestamp:", new Date().toISOString());
@@ -43,7 +43,7 @@ const SearchResults = () => {
           storeId: import.meta.env.VITE_STORE_ID,
           limit: 10,
           // Add timestamp to prevent caching
-          _t: Date.now()
+          _t: Date.now(),
         });
 
         console.log("📦 Fresh API Response:", response);
@@ -52,7 +52,7 @@ const SearchResults = () => {
         const allResults = response || [];
 
         console.log("🔍 Raw API results:", allResults.length);
-        
+
         // Debug stock values for first few products
         allResults.slice(0, 3).forEach((product, index) => {
           console.log(`🔍 Product ${index + 1} (${product.name}) stock info:`, {
@@ -60,23 +60,27 @@ const SearchResults = () => {
             quantity_on_hand: product.quantity_on_hand,
             stock: product.stock,
             variants: product.variants?.length || 0,
-            variant_stock: product.variants?.[0]?.qty_on_hand
+            variant_stock: product.variants?.[0]?.qty_on_hand,
           });
         });
 
         // Override API stock values to show products as available
-        const inStockProducts = allResults.map(product => {
+        const inStockProducts = allResults.map((product) => {
           return {
             ...product,
             qty_on_hand: 5, // Force stock to 5 (override API's 0)
             quantity_on_hand: 5,
-            stock: 5
+            stock: 5,
           };
         });
-        
-        console.log(`🔍 Overrode stock values for ${inStockProducts.length} products (API had qty_on_hand: 0)`);
 
-        console.log(`🔍 Filtered: ${allResults.length} → ${inStockProducts.length} products (in stock only)`);
+        console.log(
+          `🔍 Overrode stock values for ${inStockProducts.length} products (API had qty_on_hand: 0)`
+        );
+
+        console.log(
+          `🔍 Filtered: ${allResults.length} → ${inStockProducts.length} products (in stock only)`
+        );
         setProducts(inStockProducts);
       } catch (error) {
         console.error("❌ Search API error:", error);
@@ -94,7 +98,10 @@ const SearchResults = () => {
     console.log("🔍 Cart button clicked, product:", product);
     setActiveProduct(product);
     setShowDetail(true);
-    console.log("🔍 Modal state set - showDetail: true, activeProduct:", product.name);
+    console.log(
+      "🔍 Modal state set - showDetail: true, activeProduct:",
+      product.name
+    );
   };
 
   const handleCloseDetail = () => {
@@ -136,11 +143,14 @@ const SearchResults = () => {
       {products.length > 0 ? (
         <div className="row">
           {products.map((product) => (
-            <ProductItem 
-              key={product.id} 
-              product={product} 
+            <ProductItem
+              key={product.id}
+              product={product}
               onOpenDetail={(prod) => {
-                console.log("🔍 ProductItem onOpenDetail called for:", prod.name);
+                console.log(
+                  "🔍 ProductItem onOpenDetail called for:",
+                  prod.name
+                );
                 handleProductClick(prod);
               }}
             />
@@ -162,7 +172,10 @@ const SearchResults = () => {
       )}
 
       {/* Product Detail Modal */}
-      {console.log("🔍 Modal render check:", { showDetail, activeProduct: activeProduct?.name })}
+      {console.log("🔍 Modal render check:", {
+        showDetail,
+        activeProduct: activeProduct?.name,
+      })}
       {showDetail && activeProduct && (
         <ProductDetailModal
           product={activeProduct}
