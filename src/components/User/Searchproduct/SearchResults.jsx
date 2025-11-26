@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductItem from "../ProductItem";
 import ProductDetailModal from "../modals/ProductDetailModel";
@@ -11,6 +11,11 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [activeProduct, setActiveProduct] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const abortControllerRef = useRef(null);
+  const isFetchingRef = useRef(false);
+  const lastFetchedQueryRef = useRef("");
+  const lastFetchTimeRef = useRef(0);
+  const mountedRef = useRef(true);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -20,22 +25,58 @@ const SearchResults = () => {
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("q") || "";
 
-  // Fetch search results - Force fresh API call every time
+  // Fetch search results - Prevent double calls
   useEffect(() => {
-    const fetchSearchResults = async () => {
-      if (!searchQuery.trim()) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
+    // Skip if empty query
+    if (!searchQuery.trim()) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
 
+    // Prevent rapid duplicate calls (React StrictMode protection)
+    const now = Date.now();
+    const timeSinceLastFetch = now - lastFetchTimeRef.current;
+    
+    if (searchQuery === lastFetchedQueryRef.current && timeSinceLastFetch < 200) {
+      console.log("🔍 Same query fetched recently, skipping duplicate (StrictMode protection):", searchQuery);
+      return;
+    }
+
+    // Skip if same query already fetching
+    if (searchQuery === lastFetchedQueryRef.current && isFetchingRef.current) {
+      console.log("🔍 Same query already fetching, skipping duplicate:", searchQuery);
+      return;
+    }
+
+    // Prevent double calls
+    if (isFetchingRef.current) {
+      console.log("🔍 Already fetching, skipping duplicate call");
+      return;
+    }
+
+    // Mark as fetching and update last fetched query and time
+    isFetchingRef.current = true;
+    lastFetchedQueryRef.current = searchQuery;
+    lastFetchTimeRef.current = Date.now();
+
+    const fetchSearchResults = async () => {
+      // Flag already set above
       setLoading(true);
       
       // Clear previous results immediately
       setProducts([]);
       
+      // Abort previous request if exists
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      
+      // Create new abort controller
+      abortControllerRef.current = new AbortController();
+      
       try {
-        console.log("🔍 Fresh API call for:", searchQuery);
+        console.log("🔍 Single API call for:", searchQuery);
         console.log("🔍 Timestamp:", new Date().toISOString());
 
         const response = await searchProducts({
@@ -77,18 +118,55 @@ const SearchResults = () => {
         console.log(`🔍 Overrode stock values for ${inStockProducts.length} products (API had qty_on_hand: 0)`);
 
         console.log(`🔍 Filtered: ${allResults.length} → ${inStockProducts.length} products (in stock only)`);
-        setProducts(inStockProducts);
+        
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setProducts(inStockProducts);
+        }
       } catch (error) {
+        // Ignore abort errors
+        if (error.name === 'AbortError' || error.message === 'canceled') {
+          console.log("🔍 Request aborted");
+          return;
+        }
         console.error("❌ Search API error:", error);
-        setProducts([]);
+        
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setProducts([]);
+        }
       } finally {
-        setLoading(false);
+        if (mountedRef.current) {
+          setLoading(false);
+        }
+        isFetchingRef.current = false; // Reset fetching flag
       }
     };
 
     // Always fetch fresh data when searchQuery changes
     fetchSearchResults();
+
+    // Cleanup function
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      isFetchingRef.current = false;
+      mountedRef.current = false;
+    };
   }, [searchQuery]); // This will trigger on every searchQuery change
+
+  // Component mount/unmount tracking
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      isFetchingRef.current = false;
+    };
+  }, []);
 
   const handleProductClick = (product) => {
     console.log("🔍 Cart button clicked, product:", product);

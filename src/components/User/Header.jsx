@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import AddressModal from "../User/modals/AddressModal";
 import LoginModal from "@/components/User/modals/LoginModal";
 import { useAuth } from "@/auth/AuthProvider";
@@ -29,6 +29,7 @@ const Header = ({ status, onSearch }) => {
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [searchTimeout, setSearchTimeout] = useState(null);
   const searchDropdownRef = useRef(null);
+  const headerApiCallRef = useRef(false);
 
   const { isSmallestViewport } = useViewport();
   const { isAuthenticated, logout, user } = useAuth();
@@ -41,6 +42,10 @@ const Header = ({ status, onSearch }) => {
     changeLanguage,
   } = useLanguage();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check if we're on search page
+  const isOnSearchPage = location.pathname === '/search';
 
   const logoutUser = () => {
     logout();
@@ -102,8 +107,22 @@ const Header = ({ status, onSearch }) => {
 
     // API call with 500ms debounce
     const timeoutId = setTimeout(async () => {
+      // Prevent duplicate calls
+      if (headerApiCallRef.current) {
+        console.log("🔍 Header: Already fetching, skipping duplicate call");
+        return;
+      }
+
+      // Skip API call if already on search page (SearchResults will handle it)
+      if (isOnSearchPage) {
+        console.log("🔍 Header: Skipping API call - already on search page");
+        return;
+      }
+
+      headerApiCallRef.current = true;
+
       try {
-        console.log("🔍 Calling searchProducts API...");
+        console.log("🔍 Header: Calling searchProducts API for suggestions...");
 
         const response = await searchProducts({
           query: val,
@@ -131,9 +150,11 @@ const Header = ({ status, onSearch }) => {
         
         console.log("📋 Final suggestions set:", finalProducts.length);
       } catch (error) {
-        console.error("❌ Search API error:", error);
+        console.error("❌ Header Search API error:", error);
         setSearchSuggestions([]);
         setShowSuggestions(true); // Show dropdown with "No products found" message
+      } finally {
+        headerApiCallRef.current = false; // Reset flag
       }
     }, 500); // 500ms debounce
 
@@ -144,14 +165,23 @@ const Header = ({ status, onSearch }) => {
   const handleSuggestionClick = (product) => {
     const productName = product.name || product.title || "";
 
-    // Navigate to search page with product name
-    navigate(`/search?q=${encodeURIComponent(productName)}`);
+    // Clear any pending API calls
+    if (searchTimeout) {
+      clearTimeout(searchTimeout);
+      setSearchTimeout(null);
+    }
+    
+    // Reset API call flag
+    headerApiCallRef.current = false;
     
     // Clear search state
     setLocalSearch("");
     setShowSuggestions(false);
     setSearchSuggestions([]);
     setShowSearchModal(false); // Close mobile search modal
+    
+    // Navigate to search page with product name (this will trigger SearchResults API)
+    navigate(`/search?q=${encodeURIComponent(productName)}`);
   };
 
   // Close suggestions when clicking outside
