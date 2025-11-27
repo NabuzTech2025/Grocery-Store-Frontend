@@ -2,7 +2,7 @@ import React from "react";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { IoIosSearch } from "react-icons/io";
 
-function SearchBar({ onSearch, value, onEnterPress }) {
+function SearchBar({ onSearch, value, onEnterPress, onIconClick }) {
   const { translations: currentLanguage } = useLanguage();
 
   const onChangeSearch = (e) => {
@@ -12,7 +12,7 @@ function SearchBar({ onSearch, value, onEnterPress }) {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && onEnterPress) {
-      onEnterPress(e.target.value);
+      onEnterPress(value);
     }
   };
 
@@ -41,7 +41,18 @@ function SearchBar({ onSearch, value, onEnterPress }) {
           e.target.style.boxShadow = "none";
         }}
       />
-      <IoIosSearch size={30} className="search-icon" />
+      <IoIosSearch
+        size={30}
+        className="search-icon"
+        onClick={() => {
+          if (onIconClick) {
+            onIconClick();
+          } else if (onEnterPress) {
+            onEnterPress(value);
+          }
+        }}
+        style={{ cursor: "pointer" }}
+      />
     </div>
   );
 }

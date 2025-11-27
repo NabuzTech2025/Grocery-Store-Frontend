@@ -23,13 +23,11 @@ const Header = ({ status, onSearch }) => {
   const [showSearchModal, setShowSearchModal] = useState(false);
   const [selectedPostcode, setSelectedPostcode] = useState("");
   const [localSearch, setLocalSearch] = useState("");
-  const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
-  const [searchTimeout, setSearchTimeout] = useState(null);
   const searchDropdownRef = useRef(null);
-  const headerApiCallRef = useRef(false);
+  const [lastQueryResults, setLastQueryResults] = useState([]);
+  const [lastQuery, setLastQuery] = useState("");
 
   const { isSmallestViewport } = useViewport();
   const { isAuthenticated, logout, user } = useAuth();
@@ -43,9 +41,6 @@ const Header = ({ status, onSearch }) => {
   } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
-  
-  // Check if we're on search page
-  const isOnSearchPage = location.pathname === '/search';
 
   const logoutUser = () => {
     logout();
@@ -66,7 +61,6 @@ const Header = ({ status, onSearch }) => {
 
   const handleLanguageChange = (lang) => {
     changeLanguage(lang);
-    setShowLangDropdown(false);
   };
 
   const handlePostcodeSelect = (data) => {
@@ -76,115 +70,93 @@ const Header = ({ status, onSearch }) => {
     setPostCode(data.postcode);
   };
 
-  // ✅ API-BASED SEARCH WITH DEBOUNCING (NO UI FILTERING)
+  // ✅ Simple input change - NO API call (removed all searchProducts API calls)
   const onChangeSearch = (valueOrEvent) => {
     const val =
       typeof valueOrEvent === "string"
         ? valueOrEvent
         : valueOrEvent?.target?.value || "";
-
-    console.log("🔥 Search input:", val);
-
+    
     setLocalSearch(val);
-
-    // Clear previous timeout
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-    }
-
-    // Clear suggestions if search is empty
-    if (!val.trim()) {
-      console.log("🔥 Empty search - clearing");
-      setSearchSuggestions([]);
-      setShowSuggestions(false);
-      setIsLoadingSuggestions(false);
-      return;
-    }
-
-    // Don't show dropdown or loading immediately - wait for debounce
-    setIsLoadingSuggestions(false);
-    setShowSuggestions(false); // Hide dropdown until API response
-
-    // API call with 500ms debounce
-    const timeoutId = setTimeout(async () => {
-      // Prevent duplicate calls
-      if (headerApiCallRef.current) {
-        console.log("🔍 Header: Already fetching, skipping duplicate call");
-        return;
-      }
-
-      // Skip API call if already on search page (SearchResults will handle it)
-      if (isOnSearchPage) {
-        console.log("🔍 Header: Skipping API call - already on search page");
-        return;
-      }
-
-      headerApiCallRef.current = true;
-
-      try {
-        console.log("🔍 Header: Calling searchProducts API for suggestions...");
-
-        const response = await searchProducts({
-          query: val,
-          storeId: import.meta.env.VITE_STORE_ID,
-          limit: 10,
-        });
-
-        console.log("📦 API Response:", response);
-
-        // Handle different response structures
-        let products = [];
-        if (response?.data) {
-          products = Array.isArray(response.data) ? response.data : [];
-        } else if (Array.isArray(response)) {
-          products = response;
-        }
-
-        console.log("✅ Products found:", products.length);
-        console.log("🔍 Products array:", products);
-
-        // Always show dropdown with results or "No products found"
-        const finalProducts = products.slice(0, 10);
-        setSearchSuggestions(finalProducts);
-        setShowSuggestions(true);
-        
-        console.log("📋 Final suggestions set:", finalProducts.length);
-      } catch (error) {
-        console.error("❌ Header Search API error:", error);
-        setSearchSuggestions([]);
-        setShowSuggestions(true); // Show dropdown with "No products found" message
-      } finally {
-        headerApiCallRef.current = false; // Reset flag
-      }
-    }, 500); // 500ms debounce
-
-    setSearchTimeout(timeoutId);
+    // That's it - bas value update karo, API call nahi
   };
 
-  // Handle suggestion click - navigate to search page
-  const handleSuggestionClick = (product) => {
-    const productName = product.name || product.title || "";
+  // ✅ Search trigger - Only on Enter or button click - API call + show suggestions
+  const handleSearch = async () => {
+    const query = localSearch.trim();
+    if (!query) return;
 
-    // Clear any pending API calls
-    if (searchTimeout) {
-      clearTimeout(searchTimeout);
-      setSearchTimeout(null);
+    try {
+      console.log("🔍 Header: Calling searchProducts API for suggestions...");
+      
+      const response = await searchProducts({
+        query: query,
+        storeId: import.meta.env.VITE_STORE_ID,
+        limit: 10,
+      });
+
+      // Handle different response structures
+      let products = [];
+      if (response?.data) {
+        products = Array.isArray(response.data) ? response.data : [];
+      } else if (Array.isArray(response)) {
+        products = response;
+      }
+
+      console.log("✅ Header: Products found:", products.length);
+
+      // Cache data in localStorage for SearchResults to use
+      const cacheKey = `search_cache_${query.toLowerCase()}`;
+      localStorage.setItem(cacheKey, JSON.stringify({
+        query: query,
+        products: products,
+        timestamp: Date.now()
+      }));
+
+      // Remember last successful query/results in state
+      setLastQuery(query);
+      setLastQueryResults(products);
+
+      // Show suggestions dropdown
+      setSearchSuggestions(products.slice(0, 10));
+      setShowSuggestions(true);
+      
+    } catch (error) {
+      console.error("❌ Header Search API error:", error);
+      setSearchSuggestions([]);
+      setShowSuggestions(false);
     }
-    
-    // Reset API call flag
-    headerApiCallRef.current = false;
-    
-    // Clear search state
+  };
+
+  const openSearchPage = (query, products, selectedProductId = null) => {
+    if (!query) return;
+
+    navigate(`/search?q=${encodeURIComponent(query)}`, {
+      state: {
+        cachedProducts: products,
+        cachedQuery: query,
+        selectedProductId,
+        timestamp: Date.now(),
+      },
+    });
+
+    // Clear local input + dropdown
     setLocalSearch("");
     setShowSuggestions(false);
     setSearchSuggestions([]);
-    setShowSearchModal(false); // Close mobile search modal
-    
-    // Navigate to search page with product name (this will trigger SearchResults API)
-    navigate(`/search?q=${encodeURIComponent(productName)}`);
+    setShowSearchModal(false);
   };
 
-  // Close suggestions when clicking outside
+  // Handle suggestion click - navigate to search page with cached data
+  const handleSuggestionClick = (product) => {
+    const query = lastQuery || localSearch.trim() || product.name || product.title || "";
+    const productsToSend =
+      lastQueryResults.length > 0 ? lastQueryResults : searchSuggestions;
+
+    openSearchPage(query, productsToSend, product.id);
+  };
+
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -192,9 +164,6 @@ const Header = ({ status, onSearch }) => {
         !searchDropdownRef.current.contains(event.target)
       ) {
         setShowSuggestions(false);
-      }
-      if (showLangDropdown) {
-        setShowLangDropdown(false);
       }
       if (showAccountMenu) {
         setShowAccountMenu(false);
@@ -205,16 +174,7 @@ const Header = ({ status, onSearch }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showLangDropdown, showAccountMenu]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (searchTimeout) {
-        clearTimeout(searchTimeout);
-      }
-    };
-  }, [searchTimeout]);
+  }, [showAccountMenu, showSuggestions]);
 
   return (
     <>
@@ -226,18 +186,11 @@ const Header = ({ status, onSearch }) => {
                 <SearchBar 
                   onSearch={onChangeSearch} 
                   value={localSearch}
-                  onEnterPress={(searchValue) => {
-                    if (searchValue.trim()) {
-                      navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
-                      setLocalSearch("");
-                      setShowSuggestions(false);
-                      setSearchSuggestions([]);
-                      setShowSearchModal(false);
-                    }
-                  }}
+                  onEnterPress={handleSearch} // ✅ Enter key press
+                  onIconClick={handleSearch}
                 />
 
-                {/* Search Suggestions Dropdown */}
+                {/* Search Suggestions Dropdown - Mobile */}
                 {showSuggestions && (
                   <div className="search-suggestions-dropdown">
                     {searchSuggestions.length > 0 ? (
@@ -263,9 +216,9 @@ const Header = ({ status, onSearch }) => {
               <IoMdClose
                 onClick={() => {
                   setShowSearchModal(false);
-                  setSearchSuggestions([]);
-                  setShowSuggestions(false);
                   setLocalSearch("");
+                  setShowSuggestions(false);
+                  setSearchSuggestions([]);
                 }}
                 size={35}
                 className="right-side-icons"
@@ -273,148 +226,90 @@ const Header = ({ status, onSearch }) => {
             </div>
           ) : (
             <div className="row">
-              {/* Left Side */}
               <div className="col-lg-10 col-sm-10 col-6">
                 <div className="header-left-area">
-                  <div
-                    className={`brand-logo-container ${
-                      isMobileViewport ? "mobile" : ""
-                    }`}
-                  >
-                    <a
-                      href={payload_url}
-                      onClick={(e) => {
-                        if (localStorage.getItem("order_placed") === "true") {
-                          clearCart();
-                          localStorage.removeItem("order_placed");
-                        }
-                      }}
-                    >
-                      <img
-                        src={brandLogo}
-                        alt="Brand Logo"
-                        className={isMobileViewport ? "mobile" : ""}
-                      />
+                  {/* Brand logo */}
+                  <div className="brand-logo-container">
+                    <a href={payload_url}>
+                      <img src={brandLogo} alt="Brand Logo" />
                     </a>
                   </div>
 
                   {status && (
-                    <>
-                      {/* Desktop */}
-                      <div className="header-middle-area d-none d-sm-flex">
-                        {order_type === "delivery" && (
-                          <div
-                            className="header-postcode-col"
-                            onClick={() => setShowAddressModal(true)}
-                          >
-                            <div className="postcode-icon">
-                              <LuMapPin
-                                size={25}
-                                style={{ color: "#624BA1" }}
-                              />
-                            </div>
-                            <div className="header-postcode-cnt">
-                              <h3>
-                                {selectedPostcode === "" || !selectedPostcode
-                                  ? currentLanguage.postCode
-                                  : selectedPostcode}
-                              </h3>
-                              <i className="bi bi-chevron-down"></i>
-                            </div>
+                    <div className="header-middle-area d-none d-sm-flex">
+                      {/* Postcode */}
+                      {order_type === "delivery" && (
+                        <div
+                          className="header-postcode-col"
+                          onClick={() => setShowAddressModal(true)}
+                        >
+                          <div className="postcode-icon">
+                            <LuMapPin size={25} style={{ color: "#624BA1" }} />
                           </div>
-                        )}
-
-                        <div ref={searchDropdownRef} className="search-wrapper">
-                          <SearchBar
-                            onSearch={onChangeSearch}
-                            value={localSearch}
-                            onEnterPress={(searchValue) => {
-                              if (searchValue.trim()) {
-                                navigate(`/search?q=${encodeURIComponent(searchValue.trim())}`);
-                                setLocalSearch("");
-                                setShowSuggestions(false);
-                                setSearchSuggestions([]);
-                              }
-                            }}
-                          />
-
-                          {/* Search Suggestions Dropdown - Desktop */}
-                          {showSuggestions && (
-                            <div className="search-suggestions-dropdown">
-                              {searchSuggestions.length > 0 ? (
-                                searchSuggestions.map((product, index) => (
-                                  <div
-                                    key={product.id || index}
-                                    className="suggestion-item"
-                                    onClick={() =>
-                                      handleSuggestionClick(product)
-                                    }
-                                  >
-                                    <IoIosSearch size={20} />
-                                    <span>{product.name || product.title}</span>
-                                  </div>
-                                ))
-                              ) : (
-                                <div className="suggestion-item no-results">
-                                  <span>No products found</span>
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Mobile */}
-                      <div className="d-sm-none mt-2">
-                        {order_type === "delivery" && (
-                          <div
-                            className="header-postcode-col"
-                            onClick={() => setShowAddressModal(true)}
-                          >
-                            <div className="postcode-icon">
-                              <LuMapPin
-                                size={15}
-                                style={{ color: "#624BA1" }}
-                              />
-                            </div>
-                            <h3
-                              className={`header-postcode-cnt mobile  ${
-                                isSmallestViewport ? "smallest" : "small"
-                              }`}
-                            >
+                          <div className="header-postcode-cnt">
+                            <h3>
                               {selectedPostcode === "" || !selectedPostcode
                                 ? currentLanguage.postCode
-                                : selectedPostcode.slice(0, 14) + "..."}
+                                : selectedPostcode}
                             </h3>
+                            <i className="bi bi-chevron-down"></i>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* ✅ Search bar with suggestions */}
+                      <div ref={searchDropdownRef} className="search-wrapper">
+                        <SearchBar
+                          onSearch={onChangeSearch}
+                          value={localSearch}
+                          onEnterPress={handleSearch} // ✅ Enter triggers search
+                          onIconClick={handleSearch}
+                        />
+
+                        {/* Search Suggestions Dropdown - Desktop */}
+                        {showSuggestions && (
+                          <div className="search-suggestions-dropdown">
+                            {searchSuggestions.length > 0 ? (
+                              searchSuggestions.map((product, index) => (
+                                <div
+                                  key={product.id || index}
+                                  className="suggestion-item"
+                                  onClick={() => handleSuggestionClick(product)}
+                                >
+                                  <IoIosSearch size={20} />
+                                  <span>{product.name || product.title}</span>
+                                </div>
+                              ))
+                            ) : (
+                              <div className="suggestion-item no-results">
+                                <span>No products found</span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               </div>
 
-              {/* Right Side */}
+              {/* Right side - Login/Account */}
               <div className="col-lg-2 col-sm-2 col-6">
                 <div className="header-login">
                   {isMobileViewport && (
                     <IoIosSearch
-                      onClick={() => {
-                        setShowSearchModal(true);
-                      }}
+                      onClick={() => setShowSearchModal(true)}
                       size={35}
                       className="right-side-icons"
                     />
                   )}
-                  {/* Account/Login */}
+                  
+                  {/* Account/Login button */}
                   <div className="account-container">
                     {isAuthenticated ? (
                       <div
                         className="account-menu-trigger"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setShowAccountMenu((v) => !v);
-                        }}
+                        onClick={() => setShowAccountMenu((v) => !v)}
                       >
                         <img src={userLogo} alt="Account" />
                         {!isMobileViewport && user?.customer_name && (
@@ -443,7 +338,6 @@ const Header = ({ status, onSearch }) => {
                     )}
                   </div>
 
-                  {/* Account Dropdown Menu */}
                   {isAuthenticated && showAccountMenu && (
                     <div className="account-dropdown">
                       <button

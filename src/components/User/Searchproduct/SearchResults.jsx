@@ -20,18 +20,81 @@ const SearchResults = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { translations: currentLanguage } = useLanguage();
+  const navigationState = location.state;
 
   // Get search query from URL params
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("q") || "";
 
-  // Fetch search results - Prevent double calls
+  // Fetch search results - Use cached data if available
   useEffect(() => {
     // Skip if empty query
     if (!searchQuery.trim()) {
       setProducts([]);
       setLoading(false);
       return;
+    }
+
+    // Highest priority: data coming from navigation state (Header suggestions)
+    if (
+      navigationState?.cachedProducts &&
+      navigationState.cachedProducts.length > 0 &&
+      navigationState.cachedQuery?.toLowerCase() === searchQuery.toLowerCase()
+    ) {
+      console.log("🔍 Using navigation state cache for:", searchQuery);
+
+      const inStockProducts = navigationState.cachedProducts.map((product) => ({
+        ...product,
+        qty_on_hand: 5,
+        quantity_on_hand: 5,
+        stock: 5,
+      }));
+
+      setProducts(inStockProducts);
+      setLoading(false);
+
+      // Persist to localStorage for subsequent visits/refresh
+      const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          query: searchQuery,
+          products: navigationState.cachedProducts,
+          timestamp: navigationState.timestamp || Date.now(),
+        })
+      );
+
+      return;
+    }
+
+    // Check for cached data first
+    const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+    const cachedData = localStorage.getItem(cacheKey);
+    
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData);
+        const cacheAge = Date.now() - parsed.timestamp;
+        
+        // Use cached data if less than 5 minutes old
+        if (cacheAge < 5 * 60 * 1000 && parsed.query.toLowerCase() === searchQuery.toLowerCase()) {
+          console.log("🔍 Using cached data for:", searchQuery);
+          
+          // Override stock values
+          const inStockProducts = parsed.products.map(product => ({
+            ...product,
+            qty_on_hand: 5,
+            quantity_on_hand: 5,
+            stock: 5
+          }));
+          
+          setProducts(inStockProducts);
+          setLoading(false);
+          return; // Don't make API call
+        }
+      } catch (e) {
+        console.log("🔍 Cache parse error, fetching fresh data");
+      }
     }
 
     // Prevent rapid duplicate calls (React StrictMode protection)
@@ -119,6 +182,14 @@ const SearchResults = () => {
 
         console.log(`🔍 Filtered: ${allResults.length} → ${inStockProducts.length} products (in stock only)`);
         
+        // Cache the results for future use
+        const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+        localStorage.setItem(cacheKey, JSON.stringify({
+          query: searchQuery,
+          products: allResults, // Store original API data
+          timestamp: Date.now()
+        }));
+        
         // Only update state if component is still mounted
         if (mountedRef.current) {
           setProducts(inStockProducts);
@@ -152,9 +223,8 @@ const SearchResults = () => {
         abortControllerRef.current.abort();
       }
       isFetchingRef.current = false;
-      mountedRef.current = false;
     };
-  }, [searchQuery]); // This will trigger on every searchQuery change
+  }, [searchQuery, navigationState]); // This will trigger on every searchQuery change
 
   // Component mount/unmount tracking
   useEffect(() => {
