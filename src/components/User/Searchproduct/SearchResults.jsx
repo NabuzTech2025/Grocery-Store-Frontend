@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import ProductItem from "../ProductItem";
 import ProductDetailModal from "../modals/ProductDetailModel";
@@ -11,31 +11,147 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(true);
   const [activeProduct, setActiveProduct] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
+  const abortControllerRef = useRef(null);
+  const isFetchingRef = useRef(false);
+  const lastFetchedQueryRef = useRef("");
+  const lastFetchTimeRef = useRef(0);
+  const mountedRef = useRef(true);
 
   const location = useLocation();
   const navigate = useNavigate();
   const { translations: currentLanguage } = useLanguage();
+  const navigationState = location.state;
 
   // Get search query from URL params
   const searchParams = new URLSearchParams(location.search);
   const searchQuery = searchParams.get("q") || "";
 
-  // Fetch search results - Force fresh API call every time
+  // Fetch search results - Use cached data if available
   useEffect(() => {
-    const fetchSearchResults = async () => {
-      if (!searchQuery.trim()) {
-        setProducts([]);
-        setLoading(false);
-        return;
-      }
+    // Skip if empty query
+    if (!searchQuery.trim()) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
 
+    // Highest priority: data coming from navigation state (Header suggestions)
+    if (
+      navigationState?.cachedProducts &&
+      navigationState.cachedProducts.length > 0 &&
+      navigationState.cachedQuery?.toLowerCase() === searchQuery.toLowerCase()
+    ) {
+      console.log("🔍 Using navigation state cache for:", searchQuery);
+
+      const inStockProducts = navigationState.cachedProducts.map((product) => ({
+        ...product,
+        qty_on_hand: 5,
+        quantity_on_hand: 5,
+        stock: 5,
+      }));
+
+      setProducts(inStockProducts);
+      setLoading(false);
+
+      // Persist to localStorage for subsequent visits/refresh
+      const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          query: searchQuery,
+          products: navigationState.cachedProducts,
+          timestamp: navigationState.timestamp || Date.now(),
+        })
+      );
+
+      return;
+    }
+
+    // Check for cached data first
+    const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+    const cachedData = localStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      try {
+        const parsed = JSON.parse(cachedData);
+        const cacheAge = Date.now() - parsed.timestamp;
+
+        // Use cached data if less than 5 minutes old
+        if (
+          cacheAge < 5 * 60 * 1000 &&
+          parsed.query.toLowerCase() === searchQuery.toLowerCase()
+        ) {
+          console.log("🔍 Using cached data for:", searchQuery);
+
+          // Override stock values
+          const inStockProducts = parsed.products.map((product) => ({
+            ...product,
+            qty_on_hand: 5,
+            quantity_on_hand: 5,
+            stock: 5,
+          }));
+
+          setProducts(inStockProducts);
+          setLoading(false);
+          return; // Don't make API call
+        }
+      } catch (e) {
+        console.log("🔍 Cache parse error, fetching fresh data");
+      }
+    }
+
+    // Prevent rapid duplicate calls (React StrictMode protection)
+    const now = Date.now();
+    const timeSinceLastFetch = now - lastFetchTimeRef.current;
+
+    if (
+      searchQuery === lastFetchedQueryRef.current &&
+      timeSinceLastFetch < 200
+    ) {
+      console.log(
+        "🔍 Same query fetched recently, skipping duplicate (StrictMode protection):",
+        searchQuery
+      );
+      return;
+    }
+
+    // Skip if same query already fetching
+    if (searchQuery === lastFetchedQueryRef.current && isFetchingRef.current) {
+      console.log(
+        "🔍 Same query already fetching, skipping duplicate:",
+        searchQuery
+      );
+      return;
+    }
+
+    // Prevent double calls
+    if (isFetchingRef.current) {
+      console.log("🔍 Already fetching, skipping duplicate call");
+      return;
+    }
+
+    // Mark as fetching and update last fetched query and time
+    isFetchingRef.current = true;
+    lastFetchedQueryRef.current = searchQuery;
+    lastFetchTimeRef.current = Date.now();
+
+    const fetchSearchResults = async () => {
+      // Flag already set above
       setLoading(true);
 
       // Clear previous results immediately
       setProducts([]);
 
+      // Abort previous request if exists
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller
+      abortControllerRef.current = new AbortController();
+
       try {
-        console.log("🔍 Fresh API call for:", searchQuery);
+        console.log("🔍 Single API call for:", searchQuery);
         console.log("🔍 Timestamp:", new Date().toISOString());
 
         const response = await searchProducts({
@@ -75,24 +191,67 @@ const SearchResults = () => {
         });
 
         console.log(
-          `🔍 Overrode stock values for ${inStockProducts.length} products (API had qty_on_hand: 0)`
-        );
-
-        console.log(
           `🔍 Filtered: ${allResults.length} → ${inStockProducts.length} products (in stock only)`
         );
-        setProducts(inStockProducts);
+
+        // Cache the results for future use
+        const cacheKey = `search_cache_${searchQuery.toLowerCase()}`;
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({
+            query: searchQuery,
+            products: allResults, // Store original API data
+            timestamp: Date.now(),
+          })
+        );
+
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setProducts(inStockProducts);
+        }
       } catch (error) {
+        // Ignore abort errors
+        if (error.name === "AbortError" || error.message === "canceled") {
+          console.log("🔍 Request aborted");
+          return;
+        }
         console.error("❌ Search API error:", error);
-        setProducts([]);
+
+        // Only update state if component is still mounted
+        if (mountedRef.current) {
+          setProducts([]);
+        }
       } finally {
-        setLoading(false);
+        if (mountedRef.current) {
+          setLoading(false);
+        }
+        isFetchingRef.current = false; // Reset fetching flag
       }
     };
 
     // Always fetch fresh data when searchQuery changes
     fetchSearchResults();
-  }, [searchQuery]); // This will trigger on every searchQuery change
+
+    // Cleanup function
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      isFetchingRef.current = false;
+    };
+  }, [searchQuery, navigationState]); // This will trigger on every searchQuery change
+
+  // Component mount/unmount tracking
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      isFetchingRef.current = false;
+    };
+  }, []);
 
   const handleProductClick = (product) => {
     console.log("🔍 Cart button clicked, product:", product);
