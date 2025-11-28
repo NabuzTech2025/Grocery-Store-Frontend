@@ -76,7 +76,7 @@ const Header = ({ status, onSearch }) => {
       typeof valueOrEvent === "string"
         ? valueOrEvent
         : valueOrEvent?.target?.value || "";
-    
+
     setLocalSearch(val);
     // That's it - bas value update karo, API call nahi
   };
@@ -88,7 +88,7 @@ const Header = ({ status, onSearch }) => {
 
     try {
       console.log("🔍 Header: Calling searchProducts API for suggestions...");
-      
+
       const response = await searchProducts({
         query: query,
         storeId: import.meta.env.VITE_STORE_ID,
@@ -107,11 +107,14 @@ const Header = ({ status, onSearch }) => {
 
       // Cache data in localStorage for SearchResults to use
       const cacheKey = `search_cache_${query.toLowerCase()}`;
-      localStorage.setItem(cacheKey, JSON.stringify({
-        query: query,
-        products: products,
-        timestamp: Date.now()
-      }));
+      localStorage.setItem(
+        cacheKey,
+        JSON.stringify({
+          query: query,
+          products: products,
+          timestamp: Date.now(),
+        })
+      );
 
       // Remember last successful query/results in state
       setLastQuery(query);
@@ -120,7 +123,6 @@ const Header = ({ status, onSearch }) => {
       // Show suggestions dropdown
       setSearchSuggestions(products.slice(0, 10));
       setShowSuggestions(true);
-      
     } catch (error) {
       console.error("❌ Header Search API error:", error);
       setSearchSuggestions([]);
@@ -149,7 +151,8 @@ const Header = ({ status, onSearch }) => {
 
   // Handle suggestion click - navigate to search page with cached data
   const handleSuggestionClick = (product) => {
-    const query = lastQuery || localSearch.trim() || product.name || product.title || "";
+    const query =
+      lastQuery || localSearch.trim() || product.name || product.title || "";
     const productsToSend =
       lastQueryResults.length > 0 ? lastQueryResults : searchSuggestions;
 
@@ -183,8 +186,8 @@ const Header = ({ status, onSearch }) => {
           {showSearchModal && isMobileViewport ? (
             <div className="show-search-bar">
               <div ref={searchDropdownRef} className="search-wrapper">
-                <SearchBar 
-                  onSearch={onChangeSearch} 
+                <SearchBar
+                  onSearch={onChangeSearch}
                   value={localSearch}
                   onEnterPress={handleSearch} // ✅ Enter key press
                   onIconClick={handleSearch}
@@ -230,8 +233,12 @@ const Header = ({ status, onSearch }) => {
                 <div className="header-left-area">
                   {/* Brand logo */}
                   <div className="brand-logo-container">
-                    <a href={payload_url}>
-                      <img src={brandLogo} alt="Brand Logo" />
+                    <a className="brand-logo-Link" href={payload_url}>
+                      <img
+                        className="brand-logo-img"
+                        src={brandLogo}
+                        alt="Brand Logo"
+                      />
                     </a>
                   </div>
 
@@ -303,7 +310,7 @@ const Header = ({ status, onSearch }) => {
                       className="right-side-icons"
                     />
                   )}
-                  
+
                   {/* Account/Login button */}
                   <div className="account-container">
                     {isAuthenticated ? (

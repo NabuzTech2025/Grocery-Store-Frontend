@@ -6,12 +6,20 @@
 
 .header-left-area .brand-logo-container {
   margin-right: 40px;
-  width: 54%;
+  /* width: 54%; */
 }
 
 .header-left-area .brand-logo-container.mobile {
   margin-right: 75px;
   width: 5%;
+}
+
+.brand-logo-Link {
+  display: inline-block;
+}
+
+.brand-logo-img {
+  width: 160px;
 }
 
 /* .header-left-area .brand-logo-container img {
@@ -310,8 +318,6 @@
 .suggestion-item:last-child {
   border-bottom: none;
 }
-
-
 
 /* Loading & No Results States */
 .suggestion-item.loading,
