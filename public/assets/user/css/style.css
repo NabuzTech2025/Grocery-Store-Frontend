@@ -430,7 +430,7 @@ ul.hm-category-list li a h6 {
   /* Override existing sidebar styles for mobile horizontal layout */
   .sidebar.hm-category-list.mobile-horizontal {
     position: sticky !important;
-    top: 49px !important;
+    top: 85px !important;
     z-index: 998 !important;
     height: auto !important;
     width: 100% !important;
