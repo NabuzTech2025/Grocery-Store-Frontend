@@ -48,6 +48,7 @@ const OrderSuccess = ({ orderId }) => {
 
   // Socket.IO connection and event listeners
   useEffect(() => {
+    console.log("order Id =======>", orderId);
     if (!orderId) return;
 
     const newSocket = io(import.meta.env.VITE_API_BASE_URL, {
@@ -65,7 +66,6 @@ const OrderSuccess = ({ orderId }) => {
     });
 
     newSocket.on("order_updated", (data) => {
-      console.log("Order update received: =====>", data);
       if (data.order_id === parseInt(orderId)) {
         if (data.approval_status === 2) {
           setStatus("accepted");

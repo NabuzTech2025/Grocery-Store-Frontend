@@ -91,11 +91,10 @@ const StripePayment = ({
           <PaymentElement
             options={{
               layout: {
-                type: "accordion",
+                type: "tabs",
                 defaultCollapsed: false,
-                radios: true,
-                spacedAccordionItems: false,
               },
+              paymentMethodOrder: ["card", "applePay", "googlePay"],
               wallets: {
                 applePay: "auto",
                 googlePay: "auto",

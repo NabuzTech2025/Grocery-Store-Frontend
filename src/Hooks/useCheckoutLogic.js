@@ -269,6 +269,28 @@ export const useCheckoutLogic = () => {
 
   // Place order
   const handlePlaceOrder = async (paymentDetails = null) => {
+    // If we already have an orderId and this is a Stripe payment callback,
+    // just update the payment status instead of creating a new order
+    if (orderId && paymentMethod === "stripe" && paymentDetails) {
+      setPlacing(true);
+      try {
+        setOrderSuccess(true);
+        setAwaitingStripePayment(false);
+        localStorage.setItem("order_placed", "true");
+        localStorage.setItem("navigation_timestamp", Date.now().toString());
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
+        // Don't auto-redirect, let socket handle it
+        // Socket will confirm order approval
+      } catch (err) {
+        console.error("Payment update error:", err);
+        alert("Failed to update payment status");
+      } finally {
+        setPlacing(false);
+      }
+      return;
+    }
+
     setPlacing(true);
 
     let delivery_time = null;
@@ -383,11 +405,8 @@ export const useCheckoutLogic = () => {
         localStorage.setItem("navigation_timestamp", Date.now().toString());
         window.scrollTo({ top: 0, behavior: "smooth" });
 
-        setTimeout(() => {
-          setIsRedirecting(true);
-          localStorage.removeItem("cartItems");
-          window.location.replace(payload_url);
-        }, 3000);
+        // Don't auto-redirect for any payment method
+        // Let the OrderSuccess component handle it via socket
       }
     } catch (err) {
       console.error("OrderPlace error:", err);
