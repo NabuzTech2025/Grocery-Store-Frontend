@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import React, { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
+import PayPalPayment from "./PaymentMethod/PayPalPayment";
+import StripePaymentModal from "./modals/StripePaymentModal";
 
 const PaymentMethodSelector = ({
   onPaymentMethodChange,
@@ -8,341 +9,151 @@ const PaymentMethodSelector = ({
   grandTotal,
   placing,
   orderSuccess,
+  orderId,
+  awaitingStripePayment,
+  clientSecret,
 }) => {
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [{ options, isPending }, dispatch] = usePayPalScriptReducer();
-  const [currency, setCurrency] = useState(options.currency);
-  const [paypalPaymentCompleted, setPaypalPaymentCompleted] = useState(false);
-  const [paypalTransactionId, setPaypalTransactionId] = useState(null);
-  const [paypalError, setPaypalError] = useState(null);
-  const [paypalLoadingError, setPaypalLoadingError] = useState(false);
-  const [paypalTimeout, setPaypalTimeout] = useState(false);
-  const {
-    language,
-    translations: currentLanguage,
-    changeLanguage,
-  } = useLanguage();
-
-  // Handle PayPal loading errors
-  useEffect(() => {
-    const handlePayPalError = (event) => {
-      if (event.target && event.target.src && event.target.src.includes('paypal')) {
-        console.warn('PayPal script blocked by browser or ad blocker');
-        setPaypalLoadingError(true);
-      }
-    };
-
-    // Listen for PayPal script loading errors
-    window.addEventListener('error', handlePayPalError);
-
-    // Also check for blocked requests
-    const originalFetch = window.fetch;
-    window.fetch = function(...args) {
-      return originalFetch.apply(this, args).catch(error => {
-        if (args[0] && args[0].includes('paypal')) {
-          console.warn('PayPal API request blocked');
-          setPaypalLoadingError(true);
-        }
-        throw error;
-      });
-    };
-
-    // Set timeout for PayPal loading
-    const timeout = setTimeout(() => {
-      if (isPending) {
-        console.warn('PayPal loading timeout');
-        setPaypalTimeout(true);
-      }
-    }, 10000); // 10 second timeout
-
-    return () => {
-      window.removeEventListener('error', handlePayPalError);
-      window.fetch = originalFetch;
-      clearTimeout(timeout);
-    };
-  }, [isPending]);
+  const [showStripeModal, setShowStripeModal] = useState(false);
+  const { translations: currentLanguage } = useLanguage();
 
   const handleChange = (method) => {
     setPaymentMethod(method);
     onPaymentMethodChange(method);
-
-    // Reset PayPal states when switching payment methods
-    if (method !== "online") {
-      setPaypalPaymentCompleted(false);
-      setPaypalTransactionId(null);
-      setPaypalError(null);
-    }
   };
 
-  const onCreateOrder = (data, actions) => {
-    // Convert total to the format PayPal expects
-    const paypalAmount = grandTotal.toFixed(2);
-
-    return actions.order.create({
-      purchase_units: [
-        {
-          amount: {
-            value: paypalAmount,
-            currency_code: currency || "USD",
-          },
-          description: "Order Payment",
-        },
-      ],
-    });
-  };
-
-  const onApproveOrder = (data, actions) => {
-    return actions.order
-      .capture()
-      .then((details) => {
-        console.log("PayPal Transaction Details: ===>", details);
-
-        const capture = details?.purchase_units?.[0]?.payments?.captures?.[0];
-        if (!capture) {
-          setPaypalError("No payment capture found. Please try again.");
-          return;
-        }
-
-        const transactionId = details.id;
-        const captureId = capture.id;
-        const payerName = details?.payer?.name?.given_name || "Customer";
-        const paidAmount = parseFloat(capture.amount.value);
-        const expectedAmount = parseFloat(grandTotal.toFixed(2));
-
-        // Handle declined / failed instruments
-        if (capture.status === "DECLINED" || capture.status === "FAILED") {
-          const reason = capture.status_details?.reason || "Unknown reason";
-
-          if (reason === "INSTRUMENT_DECLINED") {
-            return actions.restart().catch(() => {
-              setPaypalError(currentLanguage.paypal_declined);
-            });
-          }
-
-          if (reason === "INSUFFICIENT_FUNDS") {
-            setPaypalError(currentLanguage.paypal_insufficient_funds);
-            return;
-          }
-
-          if (reason === "CARD_EXPIRED") {
-            setPaypalError(currentLanguage.paypal_card_expired);
-            return;
-          }
-
-          setPaypalError(`${currentLanguage.paypal_failed}: ${reason}`);
-          return;
-        }
-
-        if (
-          capture.status === "PENDING" &&
-          capture.status_details?.reason !==
-            "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION"
-        ) {
-          setPaypalError(currentLanguage.paypal_pending);
-
-          return;
-        }
-        if (paidAmount !== expectedAmount) {
-          setPaypalError(
-            `Payment amount mismatch. Expected ${expectedAmount} but received ${paidAmount}. Transaction cancelled.`
-          );
-          return;
-        }
-        // Validate the payment
-        if (details.status === "COMPLETED") {
-          // Check if capture is COMPLETED, PENDING, or other successful states
-          // PENDING with RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION means payment needs manual approval
-          if (
-            capture.status === "COMPLETED" ||
-            (capture.status === "PENDING" &&
-              capture.status_details?.reason ===
-                "RECEIVING_PREFERENCE_MANDATES_MANUAL_ACTION")
-          ) {
-            // Set payment as completed
-            setPaypalPaymentCompleted(true);
-            setPaypalTransactionId(transactionId);
-            setPaypalError(null);
-
-            // Automatically trigger order placement after successful payment
-            handlePlaceOrderWithPayPal({
-              transactionId,
-              captureId,
-              payerDetails: details.payer,
-            });
-          } else {
-            setPaypalError(
-              `${currentLanguage.paypal_capture_status}: ${capture.status}`
-            );
-            setPaypalPaymentCompleted(false);
-          }
-        } else {
-          setPaypalError(currentLanguage.paypal_not_completed);
-          setPaypalPaymentCompleted(false);
-        }
-      })
-      .catch((error) => {
-        console.error("PayPal payment error:", error);
-        setPaypalError(currentLanguage.paypal_failed);
-        setPaypalPaymentCompleted(false);
-      });
-  };
-
-  const onErrorOrder = (err) => {
-    console.error("PayPal Error:", err);
-    setPaypalError(currentLanguage.paypal_error);
-    setPaypalPaymentCompleted(false);
-  };
-
-  const onCancelOrder = (data) => {
-    console.log("PayPal payment cancelled:", data);
-    setPaypalError(currentLanguage.paypal_cancelled);
-    setPaypalPaymentCompleted(false);
-  };
-
-  // Modified handlePlaceOrder to include PayPal transaction details
-  const handlePlaceOrderWithPayPal = (paypalDetails = null) => {
+  // Open Stripe modal when order is created and clientSecret is available
+  React.useEffect(() => {
     if (
-      paymentMethod === "online" &&
-      !paypalPaymentCompleted &&
-      !paypalDetails
+      paymentMethod === "stripe" &&
+      orderId &&
+      clientSecret &&
+      awaitingStripePayment
     ) {
-      setPaypalError(currentLanguage.paypal_complete_first);
-      return;
+      setShowStripeModal(true);
     }
+  }, [paymentMethod, orderId, clientSecret, awaitingStripePayment]);
 
-    // Call the parent's handlePlaceOrder with PayPal details
-    handlePlaceOrder(paypalDetails);
-  };
-
-  // Handle cash payment order placement
-  const handleCashOrderPlacement = () => {
-    if (paymentMethod === "cash") {
-      handlePlaceOrder();
+  const handleCloseStripeModal = () => {
+    if (!placing) {
+      setShowStripeModal(false);
     }
   };
 
   return (
-    <div className="payment-method-col">
-      <h2>{currentLanguage.select_payment_method}</h2>
-      <div className="select-payment-mode">
-        {/* PayPal Payment Option */}
-        <div className="radio">
-          <label>
-            <input
-              type="radio"
-              name="payment"
-              value="online"
-              checked={paymentMethod === "online"}
-              onChange={() => handleChange("online")}
-            />
-            <span className="checkmark"></span>
-            {currentLanguage.online_payment}
-          </label>
+    <>
+      <div className="payment-method-col">
+        <h2>{currentLanguage.select_payment_method}</h2>
 
-          {paymentMethod === "online" && (
-            <div className="paypal-container mt-3">
-              {paypalLoadingError || paypalTimeout ? (
-                <div className="alert alert-warning">
-                  <i className="fas fa-exclamation-triangle"></i>
-                  <p>
-                    {paypalLoadingError 
-                      ? "PayPal is blocked by your browser or ad blocker. Please disable ad blockers or use cash payment."
-                      : "PayPal is taking too long to load. Please use cash payment or try again later."
-                    }
-                  </p>
-                  <button 
-                    className="btn btn-sm btn-outline-primary mt-2"
-                    onClick={() => {
-                      setPaypalLoadingError(false);
-                      setPaypalTimeout(false);
-                      window.location.reload();
-                    }}
-                  >
-                    Retry PayPal
-                  </button>
-                </div>
-              ) : isPending ? (
-                <div className="text-center">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="sr-only">
-                      {currentLanguage.loading} PayPal...
-                    </span>
-                  </div>
-                  <p className="mt-2">{currentLanguage.loading} PayPal...</p>
-                </div>
-              ) : (
-                <>
-                  <PayPalButtons
-                    style={{
-                      layout: "vertical",
-                      color: "gold",
-                      shape: "rect",
-                      label: "paypal",
-                    }}
-                    createOrder={(data, actions) =>
-                      onCreateOrder(data, actions)
-                    }
-                    onApprove={(data, actions) => onApproveOrder(data, actions)}
-                    onError={onErrorOrder}
-                    onCancel={onCancelOrder}
-                    disabled={placing || orderSuccess}
-                  />
-                </>
-              )}
+        {awaitingStripePayment && (
+          <div className="alert alert-warning mb-3">
+            <i className="fas fa-clock"></i>
+            <strong> Payment Required</strong>
+            <p style={{ margin: "0.5rem 0 0 0" }}>
+              Your order has been created. Please complete your payment to
+              confirm.
+            </p>
+          </div>
+        )}
 
-              {/* PayPal Status Messages */}
-              {paypalPaymentCompleted && (
-                <div className="alert alert-success mt-2">
-                  <i className="fas fa-check-circle"></i>{" "}
-                  {currentLanguage.payment_completed_message}
-                  <br />
-                  <small>
-                    {currentLanguage.transaction_id}: {paypalTransactionId}
-                  </small>
-                </div>
-              )}
+        <div className="select-payment-mode">
+          {/* PayPal Payment Option - DISABLED */}
+          {/* <div className="radio">
+            <label>
+              <input
+                type="radio"
+                name="payment"
+                value="online"
+                checked={paymentMethod === "online"}
+                onChange={() => handleChange("online")}
+                disabled={awaitingStripePayment}
+              />
+              <span className="checkmark"></span>
+              {currentLanguage.online_payment || "PayPal"}
+            </label>
 
-              {paypalError && (
-                <div className="alert alert-danger mt-2">
-                  <i className="fas fa-exclamation-triangle"></i> {paypalError}
-                </div>
-              )}
+            {paymentMethod === "online" && (
+              <div className="paypal-container mt-3">
+                <PayPalPayment
+                  grandTotal={grandTotal}
+                  handlePlaceOrder={handlePlaceOrder}
+                  placing={placing}
+                  orderSuccess={orderSuccess}
+                />
+              </div>
+            )}
+          </div> */}
+
+          {/* Stripe Payment Option */}
+          <div className="radio">
+            <label>
+              <input
+                type="radio"
+                name="payment"
+                value="stripe"
+                checked={paymentMethod === "stripe"}
+                onChange={() => handleChange("stripe")}
+              />
+              <span className="checkmark"></span>
+              <div style={{ display: "inline-flex", flexDirection: "column" }}>
+                <span>Stripe</span>
+              </div>
+            </label>
+          </div>
+
+          {/* Cash Payment Option */}
+          <div className="radio mt-3">
+            <label>
+              <input
+                type="radio"
+                name="payment"
+                value="cash"
+                checked={paymentMethod === "cash"}
+                onChange={() => handleChange("cash")}
+                disabled={awaitingStripePayment}
+              />
+              <span className="checkmark"></span>
+              {currentLanguage.cash || "Cash on Delivery"}
+            </label>
+          </div>
+        </div>
+
+        {/* Payment Instructions */}
+        <div className="payment-instructions mt-3">
+          {paymentMethod === "online" && !awaitingStripePayment && (
+            <div className="alert alert-info">
+              <i className="fas fa-info-circle"></i>{" "}
+              {currentLanguage.online_payment_instructions ||
+                "Complete payment through PayPal to confirm your order."}
+            </div>
+          )}
+          {paymentMethod === "stripe" && !awaitingStripePayment && !orderId && (
+            <div className="alert alert-info">
+              <i className="fas fa-info-circle"></i> Secure payment powered by
+              Stripe. Supports 100+ payment methods worldwide.
+            </div>
+          )}
+          {paymentMethod === "cash" && (
+            <div className="alert alert-info">
+              <i className="fas fa-info-circle"></i>{" "}
+              {currentLanguage.cash_payment_instructions ||
+                "Pay with cash when your order is delivered."}
             </div>
           )}
         </div>
-
-        {/* Cash Payment Option */}
-        <div className="radio mt-3">
-          <label>
-            <input
-              type="radio"
-              name="payment"
-              value="cash"
-              checked={paymentMethod === "cash"}
-              onChange={() => handleChange("cash")}
-            />
-            <span className="checkmark"></span>
-            {currentLanguage.cash}
-          </label>
-        </div>
       </div>
 
-      {/* General Instructions */}
-      <div className="payment-instructions mt-3">
-        {paymentMethod === "online" && (
-          <div className="alert alert-info">
-            <i className="fas fa-info-circle"></i>{" "}
-            {currentLanguage.online_payment_instructions}
-          </div>
-        )}
-        {paymentMethod === "cash" && (
-          <div className="alert alert-info">
-            <i className="fas fa-info-circle"></i>{" "}
-            {currentLanguage.cash_payment_instructions}
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Stripe Payment Modal */}
+      <StripePaymentModal
+        show={showStripeModal}
+        onClose={handleCloseStripeModal}
+        clientSecret={clientSecret}
+        grandTotal={grandTotal}
+        handlePlaceOrder={handlePlaceOrder}
+        placing={placing}
+        orderSuccess={orderSuccess}
+      />
+    </>
   );
 };
 

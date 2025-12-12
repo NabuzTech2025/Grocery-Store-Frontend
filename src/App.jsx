@@ -126,7 +126,10 @@ function App() {
                             {/* Front end routes */}
                             <Route path="/" element={<HomeMain />} />
                             <Route path="/store" element={<Restaurant />} />
-                            <Route path="/search" element={<SearchProductPage />} />
+                            <Route
+                              path="/search"
+                              element={<SearchProductPage />}
+                            />
 
                             {/* User-protected routes */}
                             <Route element={<UserRoute />}>
