@@ -36,8 +36,8 @@ jobs:
           echo "VITE_PAYMENT_LIVE_CLIENT_ID=${{ secrets.PAYPAL_LIVE_CLIENT_ID_LANDSHUTMARKT }}" >> $GITHUB_ENV
 
           # Common environment variables
-          echo "VITE_IMAGE_BASE_URL=https://magskr.com" >> $GITHUB_ENV
-          echo "VITE_API_BASE_URL=https://magskr.com" >> $GITHUB_ENV
+          echo "VITE_IMAGE_BASE_URL=https://magskr.site" >> $GITHUB_ENV
+          echo "VITE_API_BASE_URL=https://magskr.site" >> $GITHUB_ENV
           echo "NODE_ENV=production" >> $GITHUB_ENV
 
       - name: Build Docker Image
