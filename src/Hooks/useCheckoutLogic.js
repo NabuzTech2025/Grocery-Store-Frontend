@@ -111,7 +111,7 @@ export const useCheckoutLogic = () => {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                amount: Math.round(grandTotal * 100),
+                amount: grandTotal,
                 currency: "eur",
               }),
             }
