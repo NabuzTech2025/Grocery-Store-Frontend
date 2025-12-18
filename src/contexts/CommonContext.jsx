@@ -12,9 +12,15 @@ import React, { createContext, useContext, useState, useEffect } from "react";
  */
 
 /**
+ * @typedef {'cash' | 'stripe'} PaymentMethodType
+ */
+
+/**
  * @typedef {Object} CommonContextType
  * @property {PostCodeData} selectedPostCodeData
  * @property {(data: PostCodeData) => void} setPostCodeDataINContext
+ * @property {PaymentMethodType} paymentMethod
+ * @property {(method: PaymentMethodType) => void} setPaymentMethod
  */
 
 /** @type {React.Context<CommonContextType>} */
@@ -37,6 +43,9 @@ export const CommonContextProvider = ({ children }) => {
   const [selectedPostCodeData, setSelectedPostCodeData] =
     useState(defaultValue);
 
+  /** @type {[PaymentMethodType, React.Dispatch<React.SetStateAction<PaymentMethodType>>]} */
+  const [paymentMethod, setPaymentMethodState] = useState("cash");
+
   // Load from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem("postcode-data");
@@ -47,6 +56,12 @@ export const CommonContextProvider = ({ children }) => {
       } catch (err) {
         console.error("Failed to parse postcode-data from localStorage", err);
       }
+    }
+
+    // Load payment method from localStorage
+    const storedPaymentMethod = localStorage.getItem("payment-method");
+    if (storedPaymentMethod) {
+      setPaymentMethodState(storedPaymentMethod);
     }
   }, []);
 
@@ -66,11 +81,28 @@ export const CommonContextProvider = ({ children }) => {
     localStorage.setItem("postcode-data", JSON.stringify(safeData));
   };
 
+  /**
+   * @param {PaymentMethodType} method
+   */
+  const setPaymentMethod = (method) => {
+    // Validate that method is either 'cash' or 'stripe'
+    if (method !== "cash" && method !== "stripe") {
+      console.error(
+        `Invalid payment method: ${method}. Must be 'cash' or 'stripe'.`
+      );
+      return;
+    }
+    setPaymentMethodState(method);
+    localStorage.setItem("payment-method", method);
+  };
+
   return (
     <CommonContext.Provider
       value={{
         selectedPostCodeData,
         setPostCodeDataINContext,
+        paymentMethod,
+        setPaymentMethod,
       }}
     >
       {children}

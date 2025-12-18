@@ -12,6 +12,8 @@ import { useCart } from "../contexts/CartContext";
 import { payload_url } from "../utils/common_urls";
 import { loadStripe } from "@stripe/stripe-js";
 import { useAuth } from "../auth/AuthProvider";
+import { useCommonData } from "../contexts/CommonContext";
+import { useStoreDetails } from "./useStoreDetails";
 
 const stripePromise = loadStripe(
   "pk_test_51SQmeLRvxHgksgYLk9IoLKNNXtGYbXotycDdZDNr7c0MIzq6JZoeVZlt9zwzSW1KnOP3eAbcJnleNVlwHZRrxpxL00nLqgZdAI"
@@ -21,7 +23,7 @@ export const useCheckoutLogic = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const { orderNote, setOrderNote } = useCart();
-
+  const { paymentMethod, setPaymentMethod } = useCommonData();
   // State
   const [orderType, setOrderType] = useState("delivery");
   const [orderTypeCode, setOrderTypeCode] = useState(1);
@@ -29,7 +31,6 @@ export const useCheckoutLogic = () => {
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [discountPercent, setDiscountPercent] = useState(0);
   const [discountId, setDiscountId] = useState(0);
-  const [paymentMethod, setPaymentMethod] = useState("cash");
   const [placing, setPlacing] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [orderId, setOrderId] = useState(null);
@@ -39,6 +40,7 @@ export const useCheckoutLogic = () => {
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [clientSecret, setClientSecret] = useState(null);
   const [awaitingStripePayment, setAwaitingStripePayment] = useState(false);
+  const { storeDetails, isLoading, error } = useStoreDetails();
 
   const isGuestLogin = searchParams.get("isGuestLogin");
 
@@ -57,7 +59,12 @@ export const useCheckoutLogic = () => {
 
   const subtotal = calculateSubtotal();
   const discountAmount = (discountPercent / 100) * subtotal;
-  const grandTotal = subtotal - discountAmount + deliveryFee;
+  const servicefee = isLoading
+    ? 0.0
+    : paymentMethod === "stripe"
+    ? storeDetails.stripe_service_fee
+    : 0.0;
+  const grandTotal = subtotal - discountAmount + deliveryFee + servicefee;
 
   // Check for Stripe redirect
   useEffect(() => {

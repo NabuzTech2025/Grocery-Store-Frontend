@@ -220,16 +220,6 @@ export const getDisscount = async (id) => {
   }
 };
 
-export const getStoreDetails = async (store_id) => {
-  try {
-    const response = await axiosInstance.get(`/stores/${store_id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Get stores Error:", error);
-    throw error;
-  }
-};
-
 export const getToppings = async (store_id) => {
   try {
     const response = await axiosInstance.get(`toppings/?store_id=${store_id}`);

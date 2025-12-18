@@ -2,6 +2,10 @@ import React from "react";
 import { Edit2 } from "lucide-react";
 import { useLanguage } from "../../../contexts/LanguageContext";
 import { formatCurrencySync } from "../../../utils/helper/lang_translate";
+import { useStoreDetails } from "../../../Hooks/useStoreDetails";
+import { useCheckoutLogic } from "../../../Hooks/useCheckoutLogic";
+import { useCommonData } from "../../../contexts/CommonContext";
+import { Spinner } from "react-bootstrap";
 
 const CheckoutOrderSummary = ({
   cartItems,
@@ -18,6 +22,9 @@ const CheckoutOrderSummary = ({
   isMobileViewport,
 }) => {
   const { language, translations: currentLanguage } = useLanguage();
+  const { storeDetails, isLoading, error } = useStoreDetails();
+  const { paymentMethod, setPaymentMethod } = useCommonData();
+
   const format = (amount) => formatCurrencySync(amount, language);
 
   const getCartItemKey = (item) => {
@@ -160,6 +167,16 @@ const CheckoutOrderSummary = ({
               <h6>{currentLanguage.delivery_charges}</h6>
               <span>{format(deliveryFee)}</span>
             </li>
+          )}
+          {isLoading ? (
+            <Spinner size="sm" />
+          ) : (
+            paymentMethod === "stripe" && (
+              <li>
+                <h6>{currentLanguage.Servicefee}</h6>
+                <span>{format(storeDetails.stripe_service_fee)}</span>
+              </li>
+            )
           )}
           <li>
             <h6>{currentLanguage.total}</h6>

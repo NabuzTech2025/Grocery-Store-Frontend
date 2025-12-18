@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLanguage } from "../../contexts/LanguageContext";
 import PayPalPayment from "./PaymentMethod/PayPalPayment";
 import StripePaymentModal from "./modals/StripePaymentModal";
+import { useCommonData } from "../../contexts/CommonContext";
 
 const PaymentMethodSelector = ({
   onPaymentMethodChange,
@@ -13,12 +14,17 @@ const PaymentMethodSelector = ({
   awaitingStripePayment,
   clientSecret,
 }) => {
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const {
+    paymentMethod: contextPaymentMethod,
+    setPaymentMethod: setContextPaymentMethod,
+  } = useCommonData();
+  const [paymentMethod, setPaymentMethod] = useState(contextPaymentMethod);
   const [showStripeModal, setShowStripeModal] = useState(false);
   const { translations: currentLanguage } = useLanguage();
 
   const handleChange = (method) => {
     setPaymentMethod(method);
+    setContextPaymentMethod(method);
     onPaymentMethodChange(method);
   };
 

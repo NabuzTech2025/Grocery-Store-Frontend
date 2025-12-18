@@ -1,5 +1,6 @@
 import axiosInstance from "./axiosConfig";
 
+const STORE_ID = import.meta.env.VITE_STORE_ID;
 export const getUserMe = async () => {
   try {
     const response = await axiosInstance.get("/users/me");
@@ -40,9 +41,12 @@ export const getProductsByCategory = async (categoryId, storeId) => {
   }
 };
 
-export const getStoreDetails = async (store_id) => {
+export const getStoreDetails = async () => {
   try {
-    const response = await axiosInstance.get(`/stores/${store_id}`);
+    if (!STORE_ID) {
+      throw new Error("Store ID not found");
+    }
+    const response = await axiosInstance.get(`/stores/${STORE_ID}`);
     return response.data;
   } catch (error) {
     console.error("Get stores Error:", error);
@@ -182,34 +186,34 @@ export const adjustInventory = async ({ productId, variantId, delta }) => {
   }
 };
 
-     export const searchProducts = async ({ query, storeId, limit = 20, _t }) => {
-       if (!query?.trim()) return [];
-       const params = {
-         q: query,
-         store_id: storeId ?? import.meta.env.VITE_STORE_ID,
-         limit,
-       };
-       
-       // Add timestamp to prevent caching
-       if (_t) {
-         params._t = _t;
-       }
-       
-       try {
-         const response = await axiosInstance.get(
-           "https://magskr.com/search/products",
-           { 
-             params,
-             // Disable axios caching
-             headers: {
-               'Cache-Control': 'no-cache',
-               'Pragma': 'no-cache'
-             }
-           }
-         );
-         return response.data; // structure confirm कर लो
-       } catch (error) {
-         console.error("Search products API error:", error);
-         throw error;
-       }
-     };
+export const searchProducts = async ({ query, storeId, limit = 20, _t }) => {
+  if (!query?.trim()) return [];
+  const params = {
+    q: query,
+    store_id: storeId ?? import.meta.env.VITE_STORE_ID,
+    limit,
+  };
+
+  // Add timestamp to prevent caching
+  if (_t) {
+    params._t = _t;
+  }
+
+  try {
+    const response = await axiosInstance.get(
+      "https://magskr.com/search/products",
+      {
+        params,
+        // Disable axios caching
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      }
+    );
+    return response.data; // structure confirm कर लो
+  } catch (error) {
+    console.error("Search products API error:", error);
+    throw error;
+  }
+};

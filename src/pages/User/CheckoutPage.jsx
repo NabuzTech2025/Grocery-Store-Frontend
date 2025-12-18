@@ -11,6 +11,7 @@ import { useLanguage } from "../../contexts/LanguageContext";
 import { useCheckoutLogic } from "../../Hooks/useCheckoutLogic";
 import CheckoutOrderSummary from "../../components/User/Checkout/CheckoutOrderSummary";
 import CheckoutMobileFooter from "../../components/User/Checkout/CheckoutMobileFooter";
+import { useCommonData } from "../../contexts/CommonContext";
 
 const CheckoutPage = () => {
   const { isMobileViewport } = useViewport();
@@ -26,7 +27,6 @@ const CheckoutPage = () => {
     deliveryFee,
     discountPercent,
     discountId,
-    paymentMethod,
     placing,
     orderSuccess,
     orderId,
@@ -46,6 +46,8 @@ const CheckoutPage = () => {
     handlePlaceOrder,
     handlePostcodeSelect,
   } = useCheckoutLogic();
+
+  const { paymentMethod } = useCommonData();
 
   const handleAddNoteClick = () => {
     setShowNoteModal(true);

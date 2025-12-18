@@ -1,9 +1,7 @@
-import { NavLink } from "react-router-dom";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import Swal from "sweetalert2";
-import { getStoreDetails } from "@/api/AdminServices";
 import { removeuserAccessToken } from "../../utils/helper/accessToken";
+import { getStoreDetails } from "../../api/UserServices";
 
 const AdminSidebar = ({ isPcBarOpen }) => {
   const location = useLocation();
@@ -18,7 +16,7 @@ const AdminSidebar = ({ isPcBarOpen }) => {
   useEffect(() => {
     const fetchStore = async () => {
       try {
-        const res = await getStoreDetails(localStorage.getItem("store_id"));
+        const res = await getStoreDetails();
         if (res?.name) {
           setStoreName(res.name); // server se aaya store name set karo
         }
@@ -72,17 +70,12 @@ const AdminSidebar = ({ isPcBarOpen }) => {
       // Redirect with state reset
       window.location.href = "/admin"; // Full page reload to clear state
       // OR if you prefer SPA navigation:
-      
-
-      
     } catch (error) {
       // Handle 401 specifically
       if (error.response?.status === 401) {
         // Still proceed with client-side cleanup
         localStorage.clear();
-        
       }
-    
     }
   };
 
@@ -291,7 +284,9 @@ const AdminSidebar = ({ isPcBarOpen }) => {
                 </li> */}
                 <li
                   className={`pc-item ${
-                    location.pathname.includes("/admin/item-allergy") ? "active" : ""
+                    location.pathname.includes("/admin/item-allergy")
+                      ? "active"
+                      : ""
                   }`}
                 >
                   <a className="pc-link" href="/admin/item-allergy">
@@ -301,32 +296,30 @@ const AdminSidebar = ({ isPcBarOpen }) => {
               </ul>
             </li>
 
+            {/* categoriespage sidebar   */}
 
-             {/* categoriespage sidebar   */}
-
-             {/* CategoriesPage sidebar */}
-<li
-  className={`pc-item ${
-    location.pathname.includes("/categories-page") ? "active" : ""
-  }`}
->
-  <a
-    href="#!"
-    className="pc-link"
-    onClick={(e) => {
-      e.preventDefault(); // sidebar collapse hone se roka
-      window.history.pushState({}, "", "/admin/categories-page"); // url change
-      window.dispatchEvent(new PopStateEvent("popstate")); // react-router ko notify
-    }}
-  >
-    <span className="pc-micon">
-      <i className="ph-duotone ph-list-bullets"></i> {/* Category icon */}
-    </span>
-    <span className="pc-mtext">Category</span>
-  </a>
-</li>
-
-             
+            {/* CategoriesPage sidebar */}
+            <li
+              className={`pc-item ${
+                location.pathname.includes("/categories-page") ? "active" : ""
+              }`}
+            >
+              <a
+                href="#!"
+                className="pc-link"
+                onClick={(e) => {
+                  e.preventDefault(); // sidebar collapse hone se roka
+                  window.history.pushState({}, "", "/admin/categories-page"); // url change
+                  window.dispatchEvent(new PopStateEvent("popstate")); // react-router ko notify
+                }}
+              >
+                <span className="pc-micon">
+                  <i className="ph-duotone ph-list-bullets"></i>{" "}
+                  {/* Category icon */}
+                </span>
+                <span className="pc-mtext">Category</span>
+              </a>
+            </li>
 
             <li
               className={`pc-item ${

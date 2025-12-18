@@ -228,17 +228,16 @@ export const StoreStatusProvider = ({ children }) => {
 
   const fetchStore = async () => {
     try {
-      console.log("Fetching store with ID:", STORE_ID);
-      const response = await getStoreDetails(STORE_ID);
+      const response = await getStoreDetails();
       console.log("Store response:", response);
       setStore(response);
 
       const berlinNow = DateTime.now().setZone("Europe/Berlin");
       const today = berlinNow.weekday % 7;
 
-      const hours = response.store_hours ? response.store_hours.filter(
-        (slot) => slot.day_of_week === today
-      ) : [];
+      const hours = response.store_hours
+        ? response.store_hours.filter((slot) => slot.day_of_week === today)
+        : [];
 
       setTodayHours(hours);
       cachedHoursRef.current = hours;
@@ -265,7 +264,7 @@ export const StoreStatusProvider = ({ children }) => {
         name: "Demo Store",
         address: "123 Demo Street",
         country: "Germany",
-        store_hours: []
+        store_hours: [],
       });
     }
   };

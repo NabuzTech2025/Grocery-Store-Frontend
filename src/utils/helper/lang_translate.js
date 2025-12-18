@@ -148,6 +148,7 @@ const translations = {
     time: "Time",
     no_available_time_slots: "No available time slots",
     confirm_location: "Confirm Location",
+    Servicefee: "Service Fee",
   },
   // German
   de: {
@@ -293,6 +294,7 @@ const translations = {
     time: "Zeit",
     no_available_time_slots: "Keine verfügbaren Zeitslots",
     confirm_location: "Standort bestätigen",
+    Servicefee: "Servicegebühr",
   },
 };
 
