@@ -10,11 +10,11 @@ const CheckoutMobileFooter = ({
   grandTotal,
   orderType,
   paymentMethod,
-  orderId,
   placing,
+  onPlaceOrder,
   orderSuccess,
   awaitingStripePayment,
-  onPlaceOrder,
+  orderId,
 }) => {
   const { language, translations: currentLanguage } = useLanguage();
   const format = (amount) => formatCurrencySync(amount, language);

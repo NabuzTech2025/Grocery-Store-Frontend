@@ -25,27 +25,27 @@ const PaymentMethodSelector = ({
   const PaymentMethods = [
     {
       value: "amazon-pay",
-      icon: "../../../public/assets/images/PatmentMethod/amzon-pay.png",
+      icon: "/assets/images/PatmentMethod/amzon-pay.png",
     },
     {
       value: "apple-pay",
-      icon: "../../../public/assets/images/PatmentMethod/apple-pay.png",
+      icon: "/assets/images/PatmentMethod/apple-pay.png",
     },
     {
       value: "google-pay",
-      icon: "../../../public/assets/images/PatmentMethod/google-pay.png",
+      icon: "/assets/images/PatmentMethod/google-pay.png",
     },
     {
       value: "master-card",
-      icon: "../../../public/assets/images/PatmentMethod/mastercard.png",
+      icon: "/assets/images/PatmentMethod/mastercard.png",
     },
     {
       value: "paypal",
-      icon: "../../../public/assets/images/PatmentMethod/paypal.png",
+      icon: "/assets/images/PatmentMethod/paypal.png",
     },
     {
       value: "visa-card",
-      icon: "../../../public/assets/images/PatmentMethod/visa-card.png",
+      icon: "/assets/images/PatmentMethod/visa-card.png",
     },
   ];
 
