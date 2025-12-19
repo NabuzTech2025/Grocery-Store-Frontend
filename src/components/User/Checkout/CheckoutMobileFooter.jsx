@@ -1,6 +1,9 @@
 import React from "react";
 import { formatCurrencySync } from "../../../utils/helper/lang_translate";
 import { useLanguage } from "../../../contexts/LanguageContext";
+import { useStoreDetails } from "../../../Hooks/useStoreDetails";
+import { useCommonData } from "../../../contexts/CommonContext";
+import { Spinner } from "react-bootstrap";
 
 const CheckoutMobileFooter = ({
   subtotal,
@@ -9,7 +12,6 @@ const CheckoutMobileFooter = ({
   deliveryFee,
   grandTotal,
   orderType,
-  paymentMethod,
   placing,
   onPlaceOrder,
   orderSuccess,
@@ -18,6 +20,8 @@ const CheckoutMobileFooter = ({
 }) => {
   const { language, translations: currentLanguage } = useLanguage();
   const format = (amount) => formatCurrencySync(amount, language);
+  const { storeDetails, isLoading, error } = useStoreDetails();
+  const { paymentMethod, setPaymentMethod } = useCommonData();
 
   const showButton =
     paymentMethod === "cash" || (paymentMethod === "stripe" && !orderId);
@@ -60,6 +64,16 @@ const CheckoutMobileFooter = ({
               <h6>{currentLanguage.delivery_charges}</h6>
               <span>{format(deliveryFee)}</span>
             </li>
+          )}
+          {isLoading ? (
+            <Spinner size="sm" />
+          ) : (
+            paymentMethod === "stripe" && (
+              <li>
+                <h6>{currentLanguage.Servicefee}</h6>
+                <span>{format(storeDetails.stripe_service_fee)}</span>
+              </li>
+            )
           )}
           <li>
             <h6>{currentLanguage.total}</h6>
