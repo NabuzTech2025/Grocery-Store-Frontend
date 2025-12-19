@@ -22,6 +22,33 @@ const PaymentMethodSelector = ({
   const [showStripeModal, setShowStripeModal] = useState(false);
   const { translations: currentLanguage } = useLanguage();
 
+  const PaymentMethods = [
+    {
+      value: "amazon-pay",
+      icon: "../../../public/assets/images/PatmentMethod/amzon-pay.png",
+    },
+    {
+      value: "apple-pay",
+      icon: "../../../public/assets/images/PatmentMethod/apple-pay.png",
+    },
+    {
+      value: "google-pay",
+      icon: "../../../public/assets/images/PatmentMethod/google-pay.png",
+    },
+    {
+      value: "master-card",
+      icon: "../../../public/assets/images/PatmentMethod/mastercard.png",
+    },
+    {
+      value: "paypal",
+      icon: "../../../public/assets/images/PatmentMethod/paypal.png",
+    },
+    {
+      value: "visa-card",
+      icon: "../../../public/assets/images/PatmentMethod/visa-card.png",
+    },
+  ];
+
   const handleChange = (method) => {
     setPaymentMethod(method);
     setContextPaymentMethod(method);
@@ -91,20 +118,43 @@ const PaymentMethodSelector = ({
           </div> */}
 
           {/* Stripe Payment Option */}
-          <div className="radio">
-            <label>
-              <input
-                type="radio"
-                name="payment"
-                value="stripe"
-                checked={paymentMethod === "stripe"}
-                onChange={() => handleChange("stripe")}
-              />
-              <span className="checkmark"></span>
-              <div style={{ display: "inline-flex", flexDirection: "column" }}>
-                <span>Stripe</span>
-              </div>
-            </label>
+          <div>
+            <div className="radio">
+              <label>
+                <input
+                  type="radio"
+                  name="payment"
+                  value="stripe"
+                  checked={paymentMethod === "stripe"}
+                  onChange={() => handleChange("stripe")}
+                />
+                <span className="checkmark"></span>
+                <div
+                  style={{ display: "inline-flex", flexDirection: "column" }}
+                >
+                  <span>Stripe</span>
+                </div>
+              </label>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: "0.5rem",
+                alignItems: "center",
+              }}
+            >
+              {PaymentMethods.map((method) => (
+                <img
+                  style={{
+                    width: "60px",
+                    height: "40px",
+                  }}
+                  src={method.icon}
+                  alt={method.value}
+                />
+              ))}
+            </div>
           </div>
 
           {/* Cash Payment Option */}
